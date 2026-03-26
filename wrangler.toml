@@ -1,0 +1,7 @@
+name = "niche-s"
+compatibility_date = "2026-03-27"
+route = { pattern = "niche-s.com/*", zone_name = "niche-s.com" }
+
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
