@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>部屋干し除湿機サイズ診断 | 梅雨前に30秒で目安がわかる</title>
+    <meta
+      name="description"
+      content="部屋の広さ・洗濯頻度・部屋干し量・梅雨の悩みから、部屋干し向け除湿機の目安容量と向いているタイプを30秒で診断。梅雨前の比較検討に。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="canonical" href="https://niche-s.com/dehumidifier/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="部屋干し除湿機サイズ診断 | 梅雨前に30秒で目安がわかる" />
+    <meta
+      property="og:description"
+      content="部屋の広さ・洗濯量・悩みから、除湿機の目安容量と比較ポイントをすぐ整理。"
+    />
+    <meta property="og:url" content="https://niche-s.com/dehumidifier/" />
+    <meta property="og:image" content="https://niche-s.com/dehumidifier/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="部屋干し除湿機サイズ診断" />
+    <meta name="twitter:description" content="梅雨前に30秒で、部屋干し向け除湿機の目安容量を整理。" />
+    <meta name="twitter:image" content="https://niche-s.com/dehumidifier/og-image.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "部屋干し除湿機サイズ診断",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Any",
+            "inLanguage": "ja",
+            "url": "https://niche-s.com/dehumidifier/",
+            "description": "部屋干し向け除湿機の目安容量と選び方を30秒で整理する無料ミニ診断"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "除湿機は何L/日を目安に見ればいいですか？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "部屋の広さだけでなく、部屋干しの洗濯量や毎日の使用頻度でも必要な余力は変わります。このページでは簡易的に6L未満・6〜8L・8〜10L・10L以上の目安へ整理しています。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "コンプレッサー式とデシカント式はどちら向きですか？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "梅雨〜夏の除湿力重視ならコンプレッサー式が有力、冬の部屋干しや軽さ重視ならデシカント式、迷うなら通年バランス型のハイブリッドを比較候補にすると選びやすいです。"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">Niche-s seasonal tool</p>
+        <h1>部屋干し除湿機、<br />どのサイズ感から見ればいい？</h1>
+        <p class="lede">
+          部屋の広さ・洗濯量・悩みを入れると、<strong>最初に比較すべき除湿能力の目安</strong>と、<strong>向いている方式</strong>を30秒で整理します。
+          梅雨前に「どこから比較するか分からない」を減らすための軽量チェックです。
+        </p>
+        <div class="hero-points">
+          <span>30秒診断</span>
+          <span>SEO + SNS向け</span>
+          <span> affiliate-first </span>
+        </div>
+      </section>
+
+      <section class="card diagnostic">
+        <div class="section-head">
+          <p class="section-label">Quick input</p>
+          <h2>4つだけ選ぶ</h2>
+        </div>
+        <form id="diagnosticForm" class="form-grid">
+          <label>
+            <span>部屋の広さ</span>
+            <select id="roomSize">
+              <option value="small">6畳未満</option>
+              <option value="medium" selected>6〜10畳</option>
+              <option value="large">11〜15畳</option>
+              <option value="xlarge">16畳以上</option>
+            </select>
+          </label>
+          <label>
+            <span>部屋干しの量</span>
+            <select id="laundryLoad">
+              <option value="light">少なめ（1人分中心）</option>
+              <option value="medium" selected>普通（2人分くらい）</option>
+              <option value="heavy">多め（家族ぶん）</option>
+            </select>
+          </label>
+          <label>
+            <span>使う頻度</span>
+            <select id="usageFrequency">
+              <option value="sometimes">雨の日中心</option>
+              <option value="often" selected>週に数回</option>
+              <option value="daily">ほぼ毎日</option>
+            </select>
+          </label>
+          <label>
+            <span>いちばん困っていること</span>
+            <select id="mainPain">
+              <option value="drying" selected>洗濯物が乾きにくい</option>
+              <option value="mold">湿気・カビっぽさ</option>
+              <option value="space">置き場所・重さが気になる</option>
+              <option value="power">電気代が不安</option>
+            </select>
+          </label>
+        </form>
+      </section>
+
+      <section id="result" class="card result" aria-live="polite">
+        <div class="section-head">
+          <p class="section-label">Your starting point</p>
+          <h2>最初に見るべき目安</h2>
+        </div>
+        <div class="result-top">
+          <div>
+            <p class="result-kicker">おすすめの比較スタート</p>
+            <h3 id="capacityLabel">8〜10L/日クラス</h3>
+            <p id="summaryText" class="summary"></p>
+          </div>
+          <div class="score-card">
+            <span>優先方式</span>
+            <strong id="typeLabel">コンプレッサー式寄り</strong>
+            <small id="typeReason"></small>
+          </div>
+        </div>
+
+        <div class="recommend-grid">
+          <article class="recommend-card accent">
+            <h3>まず比べる軸</h3>
+            <ul id="checkpoints"></ul>
+          </article>
+          <article class="recommend-card">
+            <h3>向いている人</h3>
+            <p id="fitText"></p>
+          </article>
+          <article class="recommend-card">
+            <h3>買う前のひとこと</h3>
+            <p id="cautionText"></p>
+          </article>
+        </div>
+
+        <section class="money-block">
+          <div class="section-head compact">
+            <p class="section-label">Monetization hook</p>
+            <h2>このあと自然につなげやすい比較導線</h2>
+          </div>
+          <div class="cta-grid">
+            <a id="rakutenLink" class="cta-card" href="https://search.rakuten.co.jp/search/mall/%E9%99%A4%E6%B9%BF%E6%A9%9F%20%E9%83%A8%E5%B1%8B%E5%B9%B2%E3%81%97/" target="_blank" rel="noopener noreferrer sponsored">
+              <strong>楽天で候補を見る</strong>
+              <span>価格帯とレビュー件数をざっと比較したい向け</span>
+            </a>
+            <a id="amazonLink" class="cta-card" href="https://www.amazon.co.jp/s?k=%E9%99%A4%E6%B9%BF%E6%A9%9F+%E9%83%A8%E5%B1%8B%E5%B9%B2%E3%81%97" target="_blank" rel="noopener noreferrer sponsored">
+              <strong>Amazonで候補を見る</strong>
+              <span>方式・容量の在庫比較を早く進めたい向け</span>
+            </a>
+            <a id="yahooLink" class="cta-card" href="https://shopping.yahoo.co.jp/search?p=%E9%99%A4%E6%B9%BF%E6%A9%9F+%E9%83%A8%E5%B1%8B%E5%B9%B2%E3%81%97" target="_blank" rel="noopener noreferrer sponsored">
+              <strong>Yahoo!ショッピングで候補を見る</strong>
+              <span>ポイント還元込みで見たい向け</span>
+            </a>
+          </div>
+          <p class="affiliate-note">
+            ※ 現時点では検索結果ページへの比較導線です。将来アフィリエイトIDや個別比較記事へ差し替えやすい構成にしています。
+          </p>
+        </section>
+      </section>
+
+      <section class="card share-card">
+        <div class="section-head compact">
+          <p class="section-label">SNS hook</p>
+          <h2>シェア用ひとこと</h2>
+        </div>
+        <textarea id="shareCopy" readonly></textarea>
+        <button id="copyButton" class="button primary" type="button">診断結果をコピー</button>
+        <p id="copyStatus" class="copy-status" aria-live="polite"></p>
+      </section>
+
+      <section class="card notes">
+        <div class="section-head">
+          <p class="section-label">How to think</p>
+          <h2>ざっくり選び方</h2>
+        </div>
+        <div class="notes-grid">
+          <article>
+            <h3>乾燥速度を優先</h3>
+            <p>梅雨〜夏の部屋干し中心なら、まずは除湿能力とタンク容量を確認。家族ぶんを頻繁に干すなら余力が大事です。</p>
+          </article>
+          <article>
+            <h3>静音・軽さを優先</h3>
+            <p>寝室兼用や移動前提なら、サイズ・持ち手・動作音の記載も早めに見ると失敗しにくいです。</p>
+          </article>
+          <article>
+            <h3>電気代だけで決めない</h3>
+            <p>消費電力だけでなく、乾くまでの時間差も実使用コストに効きます。まずは使い方に合う方式を絞るのが先です。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card faq">
+        <div class="section-head">
+          <p class="section-label">FAQ</p>
+          <h2>よくある疑問</h2>
+        </div>
+        <details>
+          <summary>この診断だけで機種を決めていい？</summary>
+          <p>まだ入口です。ここでは「何L/日クラスから比較するか」「どの方式寄りか」を整理し、次の比較を楽にするのが目的です。</p>
+        </details>
+        <details>
+          <summary>衣類乾燥除湿機と普通の除湿機の違いは？</summary>
+          <p>衣類乾燥向けは送風や部屋干し導線が強いモデルが多めです。部屋干し中心なら、その表記があるモデルを優先して比較すると分かりやすいです。</p>
+        </details>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
