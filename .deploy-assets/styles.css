@@ -239,74 +239,30 @@ a {
   background: #ffffff;
 }
 .announcement-points,
-.ecosystem-grid,
-.freshness-grid {
+.ecosystem-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-top: 18px;
 }
 .announcement-points article,
-.ecosystem-card,
-.fresh-card {
+.ecosystem-card {
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 .announcement-points h3,
-.ecosystem-card h3,
-.fresh-card h3 {
+.ecosystem-card h3 {
   margin: 0 0 8px;
 }
 .announcement-points p,
-.ecosystem-card p,
-.fresh-card p {
+.ecosystem-card p {
   margin: 0;
   color: var(--muted);
 }
 .ecosystem-card .project-actions {
   margin-top: 16px;
-}
-.freshness {
-  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-}
-.fresh-card {
-  display: grid;
-  gap: 14px;
-}
-.fresh-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-.status-pill.live {
-  background: #fef3c7;
-  color: #92400e;
-}
-.status-pill.updated {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-.status-pill.growing {
-  background: #ede9fe;
-  color: #6d28d9;
-}
-.fresh-note {
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-weight: 600;
 }
 @media (max-width: 720px) {
   .shell {

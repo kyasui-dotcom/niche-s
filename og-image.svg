@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="40" fill="#0F172A"/>
+  <rect x="48" y="48" width="1104" height="534" rx="32" fill="url(#paint0_linear)"/>
+  <rect x="84" y="94" width="180" height="42" rx="21" fill="#DBEAFE"/>
+  <text x="112" y="121" fill="#1D4ED8" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Niche-s</text>
+  <text x="84" y="220" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">ニッチな小さな</text>
+  <text x="84" y="300" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Webプロダクトを</text>
+  <text x="84" y="380" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">束ねるハブ</text>
+  <text x="84" y="452" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="500">比較・診断・情報整理・業務支援の小さなサイト群をまとめて発見</text>
+  <rect x="84" y="500" width="278" height="56" rx="28" fill="#2563EB"/>
+  <text x="127" y="536" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">https://niche-s.com</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="96" y1="64" x2="1113" y2="583" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+</svg>

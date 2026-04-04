@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>母の日 楽天ギフト予算診断 | 予算とカテゴリからRakuten候補を出す</title>
+    <meta name="description" content="母の日ギフトを予算・カテゴリ・贈り方の軸から絞り込み、Rakuten API の実商品候補をそのまま見られる軽量診断サイト。" />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#7c2d12" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="母の日 楽天ギフト予算診断" />
+    <meta property="og:description" content="母の日ギフトを予算・カテゴリ・贈り方から絞って、楽天の商品候補をそのまま確認できるミニ診断。" />
+    <meta property="og:url" content="https://niche-s.com/mothers-day/" />
+    <meta property="og:image" content="https://niche-s.com/mothers-day/og-image.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="母の日 楽天ギフト予算診断" />
+    <meta name="twitter:description" content="母の日ギフトを予算・カテゴリ・贈り方から絞って、楽天の商品候補をそのまま確認できるミニ診断。" />
+    <meta name="twitter:image" content="https://niche-s.com/mothers-day/og-image.svg" />
+    <link rel="canonical" href="https://niche-s.com/mothers-day/" />
+    <link rel="sitemap" type="application/xml" href="./sitemap.xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "母の日 楽天ギフト予算診断",
+            "applicationCategory": "ShoppingApplication",
+            "operatingSystem": "Any",
+            "inLanguage": "ja",
+            "description": "母の日ギフトを予算・カテゴリ・贈り方の軸から絞り込み、Rakuten API の商品候補を見られる軽量診断サイト。",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "JPY"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "このページは何をしてくれますか？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "母の日ギフトを予算とカテゴリから絞り込み、Rakuten API の候補商品をそのまま表示します。花・スイーツ・実用品・癒し系などを予算帯ごとに見やすく整理しています。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "母の日ギフトの予算相場は？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "このページでは 3,000円前後、5,000円前後、8,000円前後、10,000円以上の4ゾーンで見やすくしています。"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">Rakuten API only</p>
+        <h1>母の日 楽天ギフト予算診断</h1>
+        <p class="lede">
+          予算・カテゴリ・贈り方の軸を選ぶと、<strong>楽天の商品候補をそのまま6件</strong>まで表示します。
+          「まず何を見るべきか」で迷う人向けに、<strong>診断の軽さ</strong>と<strong>実商品の即時性</strong>を両立させた MVP です。
+        </p>
+        <div class="hero-actions">
+          <a href="#diagnosis" class="button primary">診断する</a>
+          <a href="#budget-guide" class="button ghost">予算の目安を見る</a>
+        </div>
+        <ul class="hero-points">
+          <li>Rakuten API のみで候補を取得</li>
+          <li>予算帯ごとに見やすい価格フィルタ</li>
+          <li>レビュー件数・価格・ショップ名を同時表示</li>
+        </ul>
+      </section>
+
+      <section class="card strategy">
+        <div class="section-head">
+          <p class="section-label">Why this works</p>
+          <h2>診断 → 実商品 → 楽天送客の一本道</h2>
+        </div>
+        <p>
+          単なるカテゴリ診断だけで終わらせず、<strong>そのまま楽天の商品候補</strong>まで出す構成です。
+          季節ニーズが強い「母の日」で、迷っている人を短時間で比較フェーズへ進めやすい形にしています。
+        </p>
+      </section>
+
+      <section id="diagnosis" class="card diagnosis">
+        <div class="section-head">
+          <p class="section-label">Diagnosis</p>
+          <h2>30秒で候補を絞る</h2>
+          <p class="section-copy">選んだ条件に合わせて、Rakuten API から候補を取りにいきます。</p>
+        </div>
+
+        <form id="diagnosis-form" class="gift-form">
+          <label>
+            予算感
+            <select name="budget" id="budget">
+              <option value="lite">3,000円前後</option>
+              <option value="standard" selected>5,000円前後</option>
+              <option value="premium">8,000円前後</option>
+              <option value="luxe">10,000円以上</option>
+            </select>
+          </label>
+          <label>
+            メインカテゴリ
+            <select name="category" id="category">
+              <option value="flowers" selected>花・フラワーギフト</option>
+              <option value="sweets">スイーツ・お菓子</option>
+              <option value="gourmet">グルメ・飲み物</option>
+              <option value="practical">実用品・雑貨</option>
+              <option value="relax">癒し・セルフケア</option>
+            </select>
+          </label>
+          <label>
+            どう喜ばれたい？
+            <select name="purpose" id="purpose">
+              <option value="classic" selected>定番で外しにくい</option>
+              <option value="easy">気軽に受け取りやすい</option>
+              <option value="useful">使ってもらいやすい</option>
+              <option value="special">少し特別感を出したい</option>
+            </select>
+          </label>
+          <label>
+            急ぎ具合
+            <select name="urgency" id="urgency">
+              <option value="relaxed" selected>まだ比較する余裕あり</option>
+              <option value="soon">今週中には決めたい</option>
+              <option value="urgent">かなり直前。配送優先</option>
+            </select>
+          </label>
+          <button type="submit" class="button primary">楽天の商品候補を見る</button>
+        </form>
+
+        <div id="summary" class="summary" aria-live="polite"></div>
+        <div id="status" class="status"></div>
+        <div id="results" class="results"></div>
+      </section>
+
+      <section id="budget-guide" class="card comparison">
+        <div class="section-head">
+          <p class="section-label">Budget guide</p>
+          <h2>予算帯ごとの見え方</h2>
+        </div>
+        <div class="comparison-grid">
+          <article>
+            <h3>3,000円前後</h3>
+            <p>焼き菓子、ミニ花束、ハンドケアなどの軽めギフトが選びやすい帯です。</p>
+          </article>
+          <article>
+            <h3>5,000円前後</h3>
+            <p>花＋お菓子、小さめ実用品、紅茶ギフトがまとまりやすい王道帯です。</p>
+          </article>
+          <article>
+            <h3>8,000円前後</h3>
+            <p>少し特別感を出しやすく、上質スイーツやストール、ケア家電も比較しやすい帯です。</p>
+          </article>
+          <article>
+            <h3>10,000円以上</h3>
+            <p>品質や高級感を優先したいときの帯。見た目とレビューの両方で比較したいゾーンです。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card faq">
+        <div class="section-head">
+          <p class="section-label">FAQ</p>
+          <h2>よくある迷い</h2>
+        </div>
+        <details open>
+          <summary>このページはRakuten APIだけで動いていますか？</summary>
+          <p>はい。商品候補の取得は Rakuten Ichiba Item Search API のみを使う構成です。</p>
+        </details>
+        <details>
+          <summary>紹介している商品は固定ですか？</summary>
+          <p>固定ではなく、選んだ条件に応じて API 結果から候補を出し直します。</p>
+        </details>
+        <details>
+          <summary>直前に選ぶときは何を見ればいいですか？</summary>
+          <p>最短発送、レビュー件数、冷蔵・常温、ショップ評価あたりを優先して比較すると絞りやすいです。</p>
+        </details>
+      </section>
+
+      <p class="footer-note">母の日ギフトの「最初の一歩」を、楽天の商品候補まで一気につなぐ軽量MVP。</p>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

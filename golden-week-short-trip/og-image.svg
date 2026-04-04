@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">ゴールデンウィーク近場おでかけ予算診断</title>
+  <desc id="desc">予算・移動時間・人数・重視ポイントから、近場の日帰り・1泊プランを整理するGW向けミニ診断。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfeff" />
+      <stop offset="55%" stop-color="#ccfbf1" />
+      <stop offset="100%" stop-color="#99f6e4" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)" />
+  <circle cx="180" cy="120" r="110" fill="#67e8f9" opacity="0.28" />
+  <circle cx="1040" cy="120" r="120" fill="#2dd4bf" opacity="0.22" />
+  <circle cx="960" cy="520" r="140" fill="#0ea5e9" opacity="0.12" />
+  <g fill="#0f172a" opacity="0.92">
+    <text x="88" y="118" font-size="34" font-family="Inter, Arial, sans-serif" font-weight="700">Niche-s seasonal MVP</text>
+    <text x="88" y="230" font-size="72" font-family="Inter, Arial, sans-serif" font-weight="800">ゴールデンウィーク</text>
+    <text x="88" y="320" font-size="72" font-family="Inter, Arial, sans-serif" font-weight="800">近場おでかけ予算診断</text>
+    <text x="88" y="406" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="500">日帰り・1泊の現実解を 30秒で整理</text>
+    <text x="88" y="458" font-size="24" font-family="Inter, Arial, sans-serif" font-weight="500">予算 / 移動時間 / 人数 / 重視ポイント</text>
+  </g>
+  <g transform="translate(820 208)">
+    <rect width="256" height="190" rx="28" fill="#ffffff" opacity="0.92" />
+    <rect x="24" y="28" width="208" height="24" rx="12" fill="#ccfbf1" />
+    <rect x="24" y="72" width="156" height="18" rx="9" fill="#99f6e4" />
+    <rect x="24" y="108" width="190" height="18" rx="9" fill="#a5f3fc" />
+    <rect x="24" y="144" width="132" height="18" rx="9" fill="#67e8f9" />
+  </g>
+</svg>

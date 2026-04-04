@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="母の日 楽天ギフト予算診断">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7ed" />
+      <stop offset="55%" stop-color="#ffe4e6" />
+      <stop offset="100%" stop-color="#fee2e2" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" rx="36" />
+  <g fill="#881337">
+    <text x="82" y="158" font-size="34" font-family="Inter, Arial, sans-serif" font-weight="700">Rakuten API only</text>
+    <text x="82" y="264" font-size="76" font-family="Inter, Arial, sans-serif" font-weight="800">母の日 楽天ギフト</text>
+    <text x="82" y="350" font-size="76" font-family="Inter, Arial, sans-serif" font-weight="800">予算診断 MVP</text>
+    <text x="82" y="434" font-size="34" font-family="Inter, Arial, sans-serif" font-weight="500">予算・カテゴリ・贈り方の軸から</text>
+    <text x="82" y="482" font-size="34" font-family="Inter, Arial, sans-serif" font-weight="500">楽天の商品候補をそのまま表示</text>
+  </g>
+</svg>

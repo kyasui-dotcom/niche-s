@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>引っ越し費用の目安計算 | Niche-s</title>
+    <meta name="description" content="引っ越し費用のざっくり目安を、部屋タイプ、距離、繁忙期、荷造りサポート、オプションから計算できる簡易ツール。" />
+    <link rel="canonical" href="https://niche-s.com/moving/cost-estimate.html" />
+    <meta name="robots" content="index,follow" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "引っ越し費用の目安計算",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "ja",
+        "description": "部屋タイプ、距離、時期、荷造り、オプションから引っ越し費用のざっくり目安を出せる簡易ツール",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="breadcrumbs"><a href="/">Niche-s</a><span>›</span><a href="./">引っ越しハブ</a><span>›</span><span>費用目安計算</span></nav>
+      <section class="hero card">
+        <p class="eyebrow">Cost estimate</p>
+        <h1>引っ越し費用の目安計算</h1>
+        <p class="lede">見積もり前にざっくり予算感をつかむための簡易計算です。<strong>単身か家族か</strong>、<strong>近距離か遠距離か</strong>、<strong>繁忙期か</strong>でかなり変わるので、条件別に動かして相場感を見やすくしています。</p>
+      </section>
+
+      <section class="card">
+        <form id="moving-cost-form" class="calc-form">
+          <div class="grid-2">
+            <label>部屋タイプ
+              <select name="homeSize">
+                <option value="studio">ワンルーム / 1K</option>
+                <option value="1k">1K / 1DK</option>
+                <option value="1ldk">1LDK / 2DK</option>
+                <option value="family">2LDK以上 / 家族</option>
+              </select>
+            </label>
+            <label>移動距離
+              <select name="distance">
+                <option value="local">同一区内・かなり近距離</option>
+                <option value="nearby">市内・近隣市</option>
+                <option value="mid">県内〜近県</option>
+                <option value="far">長距離</option>
+              </select>
+            </label>
+            <label>時期
+              <select name="season">
+                <option value="normal">通常期</option>
+                <option value="busy">繁忙期（2〜4月）</option>
+                <option value="offpeak">閑散期</option>
+              </select>
+            </label>
+            <label>荷造りサポート
+              <select name="packing">
+                <option value="self">自分でやる</option>
+                <option value="half">一部だけ頼む</option>
+                <option value="full">梱包もかなり任せる</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <p class="helper">追加したいオプション</p>
+            <div class="tag-row">
+              <label><input type="checkbox" name="options" value="ac" /> エアコン</label>
+              <label><input type="checkbox" name="options" value="piano" /> ピアノ / 大型品</label>
+              <label><input type="checkbox" name="options" value="disposal" /> 不用品処分</label>
+              <label><input type="checkbox" name="options" value="storage" /> 一時保管</label>
+              <label><input type="checkbox" name="options" value="cleaning" /> 清掃オプション</label>
+            </div>
+          </div>
+        </form>
+
+        <div class="results-box">
+          <div>
+            <p class="section-label">Estimated total</p>
+            <div id="estimated-total" class="total">¥0</div>
+            <p class="small">業者比較前のラフな目安です。実際の見積もりでは時間帯・階段・養生・車両条件で上下します。</p>
+          </div>
+          <div id="cost-breakdown"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">How to use</p><h2>この計算の見方</h2></div>
+        <ul class="bullet-list">
+          <li>1回目は今の想定条件で計算し、2回目は平日便や通常期に変えて差を見る</li>
+          <li>差額が大きいなら、時期・時間帯・オプションを見直す余地があります</li>
+          <li>計算額が高めでも、相見積もりで下がる場合があるので即決しない</li>
+        </ul>
+      </section>
+    </main>
+    <script src="./cost-calculator.js"></script>
+  </body>
+</html>
