@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mothers-day-rakuten-gift-finder.ichigoichie-en.workers.dev/sitemap.xml

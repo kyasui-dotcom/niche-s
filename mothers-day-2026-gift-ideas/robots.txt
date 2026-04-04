@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mothers-day-2026-gift-ideas.pages.dev/sitemap.xml

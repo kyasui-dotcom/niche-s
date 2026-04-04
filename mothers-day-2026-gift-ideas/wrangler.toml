@@ -1,0 +1,6 @@
+name = "mothers-day-2026-gift-ideas"
+compatibility_date = "2026-03-27"
+
+[assets]
+directory = "."
+binding = "ASSETS"

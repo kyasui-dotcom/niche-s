@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ゴールデンウィーク 2026 有給つなぎ診断 | 何日休めるか30秒でわかる</title>
+    <meta
+      name="description"
+      content="2026年のゴールデンウィーク前後で、有給をどこに入れると何連休になるかをすぐ確認できる無料ミニツール。日本の祝日カレンダー前提で、1日・2日・3日の有給パターンを比較できます。"
+    />
+    <meta name="theme-color" content="#111827" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ゴールデンウィーク 2026 有給つなぎ診断" />
+    <meta property="og:description" content="2026年GWで有給をどこに入れると何連休になるか、30秒で確認できる無料ツール。" />
+    <meta property="og:url" content="https://gw2026-bridge.pages.dev/" />
+    <meta property="og:image" content="https://gw2026-bridge.pages.dev/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ゴールデンウィーク 2026 有給つなぎ診断" />
+    <meta name="twitter:description" content="1日・2日・3日の有給で何連休になるかをすぐ比較。" />
+    <link rel="canonical" href="https://gw2026-bridge.pages.dev/" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ゴールデンウィーク 2026 有給つなぎ診断",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "ja",
+        "description": "2026年のゴールデンウィーク前後で、有給をどこに入れると何連休になるかをすぐ確認できる無料ミニツール。",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "JPY"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">2026年GWの予定を30秒で整理</p>
+        <h1>ゴールデンウィーク 2026<br />有給つなぎ診断</h1>
+        <p class="lede">
+          2026年の祝日配置を前提に、<strong>有給をどこへ入れると何連休になるか</strong>をすぐ比較できる小さな診断ツールです。
+          ジョーク運用として、まずは「有給20日まで」で好き放題試せます。
+        </p>
+        <div class="hero-actions">
+          <a href="#planner" class="button primary">診断する</a>
+          <a href="#ideas" class="button ghost">SNS向けネタを見る</a>
+        </div>
+        <ul class="hero-points">
+          <li>日本の祝日ベース</li>
+          <li>2026年4月25日〜5月10日を自動判定</li>
+          <li>結果はそのまま共有向け文章に変換</li>
+        </ul>
+      </section>
+
+      <section id="planner" class="card planner">
+        <div class="section-head">
+          <p class="section-label">Planner</p>
+          <h2>有給の上限を選ぶだけ</h2>
+        </div>
+        <form id="planner-form" class="planner-form">
+          <label>
+            有給で使ってよい最大日数
+            <select id="max-pto" name="max-pto">
+              <option value="0">0日</option>
+              <option value="1">1日</option>
+              <option value="2">2日</option>
+              <option value="3">3日</option>
+              <option value="4">4日</option>
+              <option value="5">5日</option>
+              <option value="6">6日</option>
+              <option value="7">7日</option>
+              <option value="8">8日</option>
+              <option value="9">9日</option>
+              <option value="10">10日</option>
+              <option value="11">11日</option>
+              <option value="12">12日</option>
+              <option value="13">13日</option>
+              <option value="14">14日</option>
+              <option value="15">15日</option>
+              <option value="16">16日</option>
+              <option value="17">17日</option>
+              <option value="18">18日</option>
+              <option value="19">19日</option>
+              <option value="20" selected>20日</option>
+            </select>
+          </label>
+          <button type="submit" class="button primary">おすすめ連休を見る</button>
+        </form>
+        <p class="microcopy">※ 土日・祝日に加えて、平日に有給を入れた場合だけを計算しています。</p>
+        <div id="summary" class="summary" aria-live="polite"></div>
+        <div id="results" class="results"></div>
+      </section>
+
+      <section class="card calendar-block">
+        <div class="section-head">
+          <p class="section-label">Calendar</p>
+          <h2>2026年GWざっくり配置</h2>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </section>
+
+      <section id="ideas" class="card ideas">
+        <div class="section-head">
+          <p class="section-label">Share hook</p>
+          <h2>SNSで共有しやすい一言ネタ</h2>
+        </div>
+        <div id="share-copy" class="share-copy"></div>
+      </section>
+
+      <section class="card faq">
+        <div class="section-head">
+          <p class="section-label">FAQ</p>
+          <h2>よくある確認</h2>
+        </div>
+        <details open>
+          <summary>2026年のGWは何連休が狙えますか？</summary>
+          <p>このツールでは、4月25日〜5月10日の範囲で、指定した有給日数以内に作れる最長連休を出します。</p>
+        </details>
+        <details>
+          <summary>祝日は固定ですか？</summary>
+          <p>2026年の日本の祝日想定をベースにしています。正式運用前には会社カレンダーも確認してください。</p>
+        </details>
+        <details>
+          <summary>会社独自の休業日には対応していますか？</summary>
+          <p>まだ未対応です。次改善では会社休日を追加できるモードを入れるのがよさそうです。</p>
+        </details>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

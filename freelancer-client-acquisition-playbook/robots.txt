@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://freelancer-client-acquisition-playbook.ichigoichie-en.workers.dev/sitemap.xml

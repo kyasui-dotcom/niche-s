@@ -1,0 +1,11 @@
+name = "mothers-day-rakuten-gift-finder"
+main = "src/index.js"
+compatibility_date = "2026-03-27"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[vars]
+SITE_URL = "https://mothers-day-rakuten-gift-finder.ichigoichie-en.workers.dev"
+DEFAULT_LOCALE = "ja-JP"
