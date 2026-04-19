@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>契約範囲ぬけ漏れチェック | 事業手続きナビ</title>
+    <meta
+      name="description"
+      content="修正回数、納期、素材引き渡し、納品後サポートの条件から、受注前に決めておきたい契約範囲のぬけ漏れを整理するツール。"
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/contract-scope-checker.html" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">事業手続きナビ / ツール</p>
+        <h1>契約範囲ぬけ漏れチェック</h1>
+        <p class="lede">
+          開業直後は、契約書の有無より前に<strong>どこまで含むか</strong>が曖昧で崩れやすいです。
+          修正回数、納期、素材引き渡し、納品後サポートから、受注前に決める項目を洗い出します。
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="scope-form" class="calc-form">
+          <div class="grid-2">
+            <label>
+              仕事のタイプ
+              <select name="work">
+                <option value="creative">制作・開発</option>
+                <option value="ops">運用代行</option>
+                <option value="consulting">相談・コンサル</option>
+                <option value="local">現地対応</option>
+              </select>
+            </label>
+            <label>
+              修正回数
+              <select name="revisions">
+                <option value="1">1回まで</option>
+                <option value="2">2回まで</option>
+                <option value="many">多め</option>
+                <option value="undecided">まだ未定</option>
+              </select>
+            </label>
+            <label>
+              納期の厳しさ
+              <select name="deadline">
+                <option value="normal">通常</option>
+                <option value="fixed">固定日で厳守</option>
+                <option value="urgent">急ぎ</option>
+              </select>
+            </label>
+            <label>
+              素材・データの引き渡し
+              <select name="assets">
+                <option value="simple">成果物だけ</option>
+                <option value="files">編集用データも渡す</option>
+                <option value="all">全部まとめて渡す</option>
+              </select>
+            </label>
+            <label>
+              納品後サポート
+              <select name="support">
+                <option value="none">なし</option>
+                <option value="short">7日程度</option>
+                <option value="month">1か月</option>
+                <option value="ongoing">継続対応</option>
+              </select>
+            </label>
+          </div>
+        </form>
+        <div class="results-box">
+          <div>
+            <p class="section-label">Scope check</p>
+            <div id="scope-main" class="total" style="font-size: 2rem;">整理項目 0件</div>
+            <p id="scope-note" class="small">法的助言ではなく、受注前に言語化しておきたい実務項目です。</p>
+          </div>
+          <div id="scope-results" class="summary-grid"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Related</p>
+          <h2>関連ページ</h2>
+        </div>
+        <div class="snapshot-links">
+          <a href="./service-menu-setup.html">サービス内容とプラン設計の決め方</a>
+          <a href="./service-menu-builder.html">サービスメニューたたき台ツール</a>
+          <a href="./quote-invoice-receipt-guide.html">見積書・請求書・領収書の作り方</a>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById('scope-form');
+      const main = document.getElementById('scope-main');
+      const note = document.getElementById('scope-note');
+      const results = document.getElementById('scope-results');
+
+      function card(title, text) {
+        return `<article class="summary-card"><h3>${title}</h3><p>${text}</p></article>`;
+      }
+
+      function render() {
+        const work = form.work.value;
+        const revisions = form.revisions.value;
+        const deadline = form.deadline.value;
+        const assets = form.assets.value;
+        const support = form.support.value;
+        const items = [];
+
+        items.push(card('作業範囲', work === 'ops' ? '毎月やる作業と対象外作業を分けて書きます。' : '何を納品して何を含まないかを明文化します。'));
+        items.push(card('支払い条件', deadline === 'urgent' ? '着手前入金や前金条件を先に決めたほうが安全です。' : '請求日、支払期限、遅延時の扱いを決めます。'));
+
+        if (revisions === 'undecided' || revisions === 'many') {
+          items.push(card('修正回数', '修正回数が曖昧なので、回数または範囲の上限を先に決めます。'));
+        }
+        if (deadline === 'fixed' || deadline === 'urgent') {
+          items.push(card('納期条件', '遅延の前提条件、相手の確認待ちで止まる場合の扱いを決めます。'));
+        }
+        if (assets === 'files' || assets === 'all') {
+          items.push(card('データ引き渡し', 'どの形式を渡すか、再利用可否、二次利用の扱いを言葉にします。'));
+        }
+        if (support === 'month' || support === 'ongoing') {
+          items.push(card('納品後サポート', '無償で含む期間と、以降を別料金にする境界を決めます。'));
+        }
+
+        const count = items.length;
+        main.textContent = `整理項目 ${count}件`;
+        note.textContent =
+          count >= 6
+            ? '条件が多めなので、見積と一緒に範囲メモを必ず添えたほうが安全です。'
+            : count >= 5
+              ? '標準契約に加えて、個別条件を短く添えるだけでも崩れにくくなります。'
+              : '大枠は整理しやすいので、見積や申込文面に条件を先に書く前提で進められます。';
+        results.innerHTML = items.join('');
+      }
+
+      form.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>

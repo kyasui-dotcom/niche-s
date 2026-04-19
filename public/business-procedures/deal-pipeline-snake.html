@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deal Pipeline Snake | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="見込み客を集め、作業ノイズを避けながら商談パイプラインを伸ばす起業家向けの小さなスネークゲーム。行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="Deal Pipeline Snake | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="見込み客を集め、作業ノイズを避けながら商談パイプラインを伸ばす小さな起業家ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/deal-pipeline-snake.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/deal-pipeline-snake.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #pipelineGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: none;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ Deal Pipeline Snake</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>Deal Pipeline Snake</h1>
+        <p class="lede">
+          見込み客を集め、作業ノイズを避けながら商談パイプラインを伸ばす小さなスネークゲームです。
+          行政・税務・法務などの判断には踏み込まない、休憩用の軽いコンテンツです。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./launch-block-breaker.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>リードを拾って、ノイズを避ける</h2>
+          <p class="section-copy">矢印キーで移動。緑のリードを取ると商談数が増え、赤いノイズに当たると失敗です。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="pipelineGame" width="720" height="540" aria-label="Deal Pipeline Snake game canvas"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>商談</span>
+              <strong id="dealText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>パイプライン</span>
+              <strong id="lengthText">4</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="modeText">Ready</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">操作: ↑ ↓ ← → / W A S D。スペースで開始、Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、見込み客対応と集中の比喩だけを扱います。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("pipelineGame");
+        const ctx = canvas.getContext("2d");
+        const dealText = document.getElementById("dealText");
+        const lengthText = document.getElementById("lengthText");
+        const modeText = document.getElementById("modeText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const cell = 24;
+        const cols = Math.floor(canvas.width / cell);
+        const rows = Math.floor(canvas.height / cell);
+        const keys = new Set();
+        const state = {
+          mode: "ready",
+          deals: 0,
+          tickMs: 120,
+          elapsedMs: 0,
+          lastTime: 0,
+          dir: { x: 1, y: 0 },
+          nextDir: { x: 1, y: 0 },
+          snake: [],
+          lead: { x: 18, y: 10 },
+          noise: [],
+        };
+
+        function reset() {
+          state.mode = "ready";
+          state.deals = 0;
+          state.elapsedMs = 0;
+          state.dir = { x: 1, y: 0 };
+          state.nextDir = { x: 1, y: 0 };
+          state.snake = [
+            { x: 8, y: 11 },
+            { x: 7, y: 11 },
+            { x: 6, y: 11 },
+            { x: 5, y: 11 },
+          ];
+          state.noise = [
+            { x: 14, y: 6 },
+            { x: 23, y: 14 },
+          ];
+          state.lead = { x: 14, y: 11 };
+          updateHud();
+          render();
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          state.mode = "playing";
+          state.lastTime = performance.now();
+          requestAnimationFrame(loop);
+          updateHud();
+        }
+
+        function placeLead() {
+          state.lead = freeCell();
+        }
+
+        function addNoise() {
+          if (state.noise.length < 8) state.noise.push(freeCell());
+        }
+
+        function freeCell() {
+          for (let attempt = 0; attempt < 200; attempt += 1) {
+            const candidate = {
+              x: 2 + Math.floor(Math.random() * (cols - 4)),
+              y: 2 + Math.floor(Math.random() * (rows - 4)),
+            };
+            if (!hitsSnake(candidate) && !hitsNoise(candidate)) return candidate;
+          }
+          return { x: 3, y: 3 };
+        }
+
+        function loop(now) {
+          if (state.mode !== "playing") return;
+          const dtMs = Math.min(250, now - state.lastTime);
+          state.lastTime = now;
+          step(dtMs);
+          render();
+          requestAnimationFrame(loop);
+        }
+
+        function step(dtMs) {
+          if (state.mode !== "playing") return;
+          readDirection();
+          state.elapsedMs += dtMs;
+          while (state.elapsedMs >= state.tickMs) {
+            state.elapsedMs -= state.tickMs;
+            moveOnce();
+          }
+          updateHud();
+        }
+
+        function readDirection() {
+          const wantsRight = keys.has("ArrowRight") || keys.has("d");
+          const wantsLeft = keys.has("ArrowLeft") || keys.has("a");
+          const wantsDown = keys.has("ArrowDown") || keys.has("s");
+          const wantsUp = keys.has("ArrowUp") || keys.has("w");
+          if (wantsRight && state.dir.x !== -1) state.nextDir = { x: 1, y: 0 };
+          else if (wantsLeft && state.dir.x !== 1) state.nextDir = { x: -1, y: 0 };
+          else if (wantsDown && state.dir.y !== -1) state.nextDir = { x: 0, y: 1 };
+          else if (wantsUp && state.dir.y !== 1) state.nextDir = { x: 0, y: -1 };
+        }
+
+        function moveOnce() {
+          state.dir = state.nextDir;
+          const head = state.snake[0];
+          const next = { x: head.x + state.dir.x, y: head.y + state.dir.y };
+          if (next.x < 0 || next.x >= cols || next.y < 0 || next.y >= rows || hitsSnake(next) || hitsNoise(next)) {
+            state.mode = "over";
+            updateHud();
+            return;
+          }
+          state.snake.unshift(next);
+          if (next.x === state.lead.x && next.y === state.lead.y) {
+            state.deals += 1;
+            if (state.deals % 2 === 0) addNoise();
+            placeLead();
+          } else {
+            state.snake.pop();
+          }
+          if (state.deals >= 12) state.mode = "clear";
+        }
+
+        function hitsSnake(pos) {
+          return state.snake.some((part) => part.x === pos.x && part.y === pos.y);
+        }
+
+        function hitsNoise(pos) {
+          return state.noise.some((noise) => noise.x === pos.x && noise.y === pos.y);
+        }
+
+        function updateHud() {
+          dealText.textContent = String(state.deals);
+          lengthText.textContent = String(state.snake.length);
+          modeText.textContent = state.mode === "playing" ? "Running" : state.mode === "clear" ? "Clear" : state.mode === "over" ? "Over" : "Ready";
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#f8fafc";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = "#e2e8f0";
+          ctx.lineWidth = 1;
+          for (let x = 0; x <= canvas.width; x += cell) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+          }
+          for (let y = 0; y <= canvas.height; y += cell) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+          }
+          drawCell(state.lead, "#16a34a", "L");
+          state.noise.forEach((noise) => drawCell(noise, "#dc2626", "!"));
+          state.snake.forEach((part, index) => drawCell(part, index === 0 ? "#2563eb" : "#60a5fa", index === 0 ? "→" : ""));
+          if (state.mode !== "playing") drawOverlay();
+        }
+
+        function drawCell(pos, color, label) {
+          const x = pos.x * cell;
+          const y = pos.y * cell;
+          ctx.fillStyle = color;
+          ctx.fillRect(x + 3, y + 3, cell - 6, cell - 6);
+          if (!label) return;
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 13px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(label, x + cell / 2, y + cell / 2 + 1);
+        }
+
+        function drawOverlay() {
+          const message = state.mode === "clear" ? "12件の商談を作りました" : state.mode === "over" ? "ノイズに当たりました" : "Startで開始";
+          ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 32px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(message, canvas.width / 2, canvas.height / 2 - 14);
+          ctx.font = "16px sans-serif";
+          ctx.fillText("リードを集め、赤いノイズと壁を避ける", canvas.width / 2, canvas.height / 2 + 24);
+        }
+
+        function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+            canvas.requestFullscreen?.();
+          } else {
+            document.exitFullscreen?.();
+          }
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "grid origin top-left; x increases right; y increases down",
+            mode: state.mode,
+            deals: state.deals,
+            snakeLength: state.snake.length,
+            head: state.snake[0],
+            direction: state.dir,
+            lead: state.lead,
+            noise: state.noise,
+          });
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+          if (event.key === " ") start();
+          if (event.key.toLowerCase() === "f") toggleFullscreen();
+          keys.add(event.key.toLowerCase() === event.key ? event.key : event.key);
+        });
+        document.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase() === event.key ? event.key : event.key));
+        canvas.addEventListener("pointerdown", (event) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
+          const y = ((event.clientY - rect.top) / rect.height) * canvas.height;
+          const head = state.snake[0];
+          const dx = x / cell - head.x;
+          const dy = y / cell - head.y;
+          if (Math.abs(dx) > Math.abs(dy) && Math.sign(dx) !== -state.dir.x) state.nextDir = { x: Math.sign(dx) || 1, y: 0 };
+          if (Math.abs(dy) >= Math.abs(dx) && Math.sign(dy) !== -state.dir.y) state.nextDir = { x: 0, y: Math.sign(dy) || 1 };
+          start();
+        });
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) step(1000 / 60);
+          render();
+        };
+        window.render_game_to_text = renderGameToText;
+        reset();
+      })();
+    </script>
+  </body>
+</html>

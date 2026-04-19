@@ -2,6 +2,16 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    if (isQuarantinedPath(url.pathname)) {
+      return withSecurityHeaders(new Response('Gone', {
+        status: 410,
+        headers: {
+          'content-type': 'text/plain; charset=utf-8',
+          'x-robots-tag': 'noindex, nofollow, noarchive'
+        }
+      }));
+    }
+
     if (url.pathname === '/api/diagnose' || url.pathname === '/mothers-day/api/diagnose') {
       return handleDiagnose(request, env, url);
     }
@@ -17,9 +27,44 @@ export default {
       return Response.redirect(redirectUrl.toString(), 301);
     }
 
-    return env.ASSETS.fetch(request);
+    if (isBlockedAssetPath(url.pathname)) {
+      return withSecurityHeaders(new Response('Not Found', {
+        status: 404,
+        headers: {
+          'content-type': 'text/plain; charset=utf-8',
+          'x-robots-tag': 'noindex, nofollow, noarchive'
+        }
+      }));
+    }
+
+    return withSecurityHeaders(await env.ASSETS.fetch(request));
   }
 };
+
+const BLOCKED_ASSET_PREFIXES = ['/src/', '/.git/', '/.wrangler/', '/.deploy-assets/', '/node_modules/'];
+const BLOCKED_ASSET_FILES = new Set(['/wrangler.toml', '/README.md', '/HANDOFF.md', '/.gitignore']);
+const QUARANTINED_PATH_PREFIXES = [
+  '/app-article-1000-knock',
+  '/uiux-improvement-1000-knock'
+];
+const QUARANTINED_PATHS = new Set();
+
+function isBlockedAssetPath(pathname) {
+  return BLOCKED_ASSET_FILES.has(pathname) || BLOCKED_ASSET_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+function isQuarantinedPath(pathname) {
+  return QUARANTINED_PATHS.has(pathname) || QUARANTINED_PATH_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
+
+function withSecurityHeaders(response) {
+  const secured = new Response(response.body, response);
+  secured.headers.set('x-content-type-options', 'nosniff');
+  secured.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
+  secured.headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  secured.headers.set('content-security-policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://openapi.rakuten.co.jp; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+  return secured;
+}
 
 const CATEGORY_MAP = {
   flowers: {

@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="40" fill="#0F172A"/>
+  <rect x="48" y="48" width="1104" height="534" rx="32" fill="url(#paint0_linear)"/>
+  <rect x="84" y="94" width="252" height="42" rx="21" fill="#DBEAFE"/>
+  <text x="112" y="121" fill="#1D4ED8" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">事業手続きナビ</text>
+  <text x="84" y="220" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">開業・許認可・届出を</text>
+  <text x="84" y="300" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">迷わず進める</text>
+  <text x="84" y="380" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">事業手続きの入口</text>
+  <text x="84" y="452" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="500">開業届 / 青色申告 / 古物商 / 飲食店営業許可 / 顧客対応導線</text>
+  <rect x="84" y="500" width="390" height="56" rx="28" fill="#2563EB"/>
+  <text x="124" y="536" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700">https://niche-s.com/business-procedures/</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="96" y1="64" x2="1113" y2="583" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>サービスメニューたたき台ツール | 事業手続きナビ</title>
+    <meta
+      name="description"
+      content="サービス種別、提供形態、サポート負荷、予算帯から、最初の3プラン構成をざっくり作るツール。"
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/service-menu-builder.html" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">事業手続きナビ / ツール</p>
+        <h1>サービスメニューたたき台ツール</h1>
+        <p class="lede">
+          価格の前に、<strong>何を含むか</strong>と<strong>どこから追加料金か</strong>を決めておくと崩れにくいです。
+          サービス種別と予算帯から、最初の3プラン構成をざっくり作ります。
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="menu-form" class="calc-form">
+          <div class="grid-2">
+            <label>
+              サービス種別
+              <select name="service">
+                <option value="creative">制作・デザイン・開発</option>
+                <option value="ops">運用支援・代行</option>
+                <option value="consulting">相談・コンサル</option>
+                <option value="local">現地対応・店舗支援</option>
+              </select>
+            </label>
+            <label>
+              提供の形
+              <select name="delivery">
+                <option value="once">単発</option>
+                <option value="monthly">月額</option>
+                <option value="hybrid">単発から継続</option>
+              </select>
+            </label>
+            <label>
+              サポート負荷
+              <select name="support">
+                <option value="light">軽め</option>
+                <option value="normal">標準</option>
+                <option value="heavy">重め</option>
+              </select>
+            </label>
+            <label>
+              カスタム要求の多さ
+              <select name="custom">
+                <option value="low">少ない</option>
+                <option value="mid">普通</option>
+                <option value="high">多い</option>
+              </select>
+            </label>
+            <label>
+              想定したい標準価格（円）
+              <input type="number" name="budget" value="80000" min="10000" step="5000" />
+            </label>
+          </div>
+        </form>
+        <div class="results-box">
+          <div>
+            <p class="section-label">Draft menu</p>
+            <div id="menu-main" class="total" style="font-size: 2rem;">3プラン案</div>
+            <p id="menu-note" class="small">主力プランを真ん中に置いて、入口と上位を両側に作る前提です。</p>
+          </div>
+          <div id="menu-results" class="summary-grid"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Related</p>
+          <h2>関連ページ</h2>
+        </div>
+        <div class="snapshot-links">
+          <a href="./service-menu-setup.html">サービス内容とプラン設計の決め方</a>
+          <a href="./pricing-draft-builder.html">料金表たたき台ツール</a>
+          <a href="./contract-scope-checker.html">契約範囲ぬけ漏れチェック</a>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById('menu-form');
+      const main = document.getElementById('menu-main');
+      const note = document.getElementById('menu-note');
+      const results = document.getElementById('menu-results');
+      const yen = (v) =>
+        new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }).format(
+          Math.round(v)
+        );
+
+      function render() {
+        const service = form.service.value;
+        const delivery = form.delivery.value;
+        const support = form.support.value;
+        const custom = form.custom.value;
+        const budget = Math.max(10000, Number(form.budget.value || 80000));
+
+        const supportText =
+          support === 'light'
+            ? '連絡窓口と修正回数を小さめに切る前提です。'
+            : support === 'heavy'
+              ? '返信頻度と伴走範囲を明文化しないと崩れやすい前提です。'
+              : '標準の返信頻度と通常修正を含む前提です。';
+
+        const baseScope =
+          service === 'creative'
+            ? '成果物の点数と修正回数を決めます。'
+            : service === 'ops'
+              ? '毎月やる作業とやらない作業を切ります。'
+              : service === 'consulting'
+                ? '相談回数、事前準備、資料の有無を切ります。'
+                : '現地回数、移動条件、追加作業を切ります。';
+
+        const addOn =
+          custom === 'high'
+            ? 'カスタム要求が多そうなので、追加対応は全部オプション化したほうが安全です。'
+            : custom === 'mid'
+              ? '一部はオプションで分け、標準範囲を先に明示します。'
+              : '標準メニュー中心で回しやすい前提です。';
+
+        const deliveryLabel =
+          delivery === 'monthly' ? '月額の主力メニュー' : delivery === 'hybrid' ? '単発から継続へ流すメニュー' : '単発で完結するメニュー';
+
+        const light = budget * 0.7;
+        const standard = budget;
+        const strong = budget * 1.35;
+
+        main.textContent = deliveryLabel;
+        note.textContent = `${baseScope} ${supportText} ${addOn}`;
+
+        const lightText =
+          service === 'creative'
+            ? '最小構成の成果物だけを出す入口用です。'
+            : service === 'ops'
+              ? '作業範囲を細く切った入口プランです。'
+              : service === 'consulting'
+                ? '短時間の相談と要点整理だけに絞った入口用です。'
+                : '現地対応を最小回数で切る入口用です。';
+
+        const standardText =
+          delivery === 'monthly'
+            ? '一番継続しやすい標準プランとして置きます。'
+            : '一番売りたい標準プランとして置きます。';
+
+        const strongText =
+          support === 'heavy'
+            ? '伴走や追加提案を含む上位プランです。'
+            : '急ぎ対応や追加支援を載せる上位プランです。';
+
+        results.innerHTML = `
+          <article class="summary-card">
+            <h3>入口プラン</h3>
+            <p>${yen(light)}</p>
+            <p class="small">${lightText}</p>
+          </article>
+          <article class="summary-card">
+            <h3>標準プラン</h3>
+            <p>${yen(standard)}</p>
+            <p class="small">${standardText}</p>
+          </article>
+          <article class="summary-card">
+            <h3>上位プラン</h3>
+            <p>${yen(strong)}</p>
+            <p class="small">${strongText}</p>
+          </article>
+          <article class="summary-card">
+            <h3>先に切る項目</h3>
+            <p>${baseScope}</p>
+          </article>
+        `;
+      }
+
+      form.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>

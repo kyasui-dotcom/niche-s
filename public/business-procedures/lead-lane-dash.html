@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lead Lane Dash | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="商談の兆しを拾い、通知や迷いを避けながら集中レーンを走る起業家向けの小さな避けゲー。行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="Lead Lane Dash | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="商談の兆しを拾い、通知や迷いを避けながら集中レーンを走る小さな起業家ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/lead-lane-dash.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/lead-lane-dash.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #laneGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: none;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ Lead Lane Dash</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>Lead Lane Dash</h1>
+        <p class="lede">
+          集中レーンを切り替えながら「相談」「紹介」「反応」を拾い、通知や迷いを避ける小さな起業家ゲームです。
+          行政・税務・法務などの判断には踏み込まない、休憩用の軽いコンテンツです。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./task-triage-invaders.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>よい兆しだけを拾う</h2>
+          <p class="section-copy">左右移動だけ。緑と青のシグナルを拾い、赤と黄色のノイズを避けます。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="laneGame" width="720" height="540" aria-label="Lead Lane Dash game canvas"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>商談シグナル</span>
+              <strong id="signalText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>集中</span>
+              <strong id="focusText">5</strong>
+            </div>
+            <div class="game-stat">
+              <span>残り時間</span>
+              <strong id="timeText">40秒</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">操作: ← → / A D / タッチ。Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは営業の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、見込み客の反応、紹介、集中の配分だけを扱います。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("laneGame");
+        const ctx = canvas.getContext("2d");
+        const signalText = document.getElementById("signalText");
+        const focusText = document.getElementById("focusText");
+        const timeText = document.getElementById("timeText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const lanes = [108, 234, 360, 486, 612];
+        const keys = new Set();
+        const itemTypes = [
+          { type: "lead", label: "相談", good: true, color: "#16a34a" },
+          { type: "referral", label: "紹介", good: true, color: "#0284c7" },
+          { type: "noise", label: "通知", good: false, color: "#ef4444" },
+          { type: "doubt", label: "迷い", good: false, color: "#eab308" },
+        ];
+        const state = {
+          mode: "ready",
+          signals: 0,
+          focus: 5,
+          timeLeft: 40,
+          lane: 2,
+          playerX: lanes[2],
+          spawnTimer: 0,
+          nextSpawn: 0,
+          lastTime: 0,
+          items: [],
+        };
+
+        function reset() {
+          state.mode = "ready";
+          state.signals = 0;
+          state.focus = 5;
+          state.timeLeft = 40;
+          state.lane = 2;
+          state.playerX = lanes[2];
+          state.spawnTimer = 0;
+          state.nextSpawn = 0;
+          state.items = [];
+          updateHud();
+          render();
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          if (state.mode === "won" || state.mode === "lost") reset();
+          state.mode = "playing";
+          state.lastTime = performance.now();
+          requestAnimationFrame(loop);
+        }
+
+        function spawnItem() {
+          const pattern = [
+            { lane: 2, type: 0 },
+            { lane: 0, type: 2 },
+            { lane: 3, type: 1 },
+            { lane: 1, type: 3 },
+            { lane: 4, type: 0 },
+            { lane: 2, type: 2 },
+            { lane: 1, type: 1 },
+            { lane: 3, type: 0 },
+          ][state.nextSpawn % 8];
+          const spec = itemTypes[pattern.type];
+          state.items.push({
+            lane: pattern.lane,
+            x: lanes[pattern.lane],
+            y: -36,
+            r: 24,
+            vy: 128 + Math.min(100, state.nextSpawn * 7),
+            label: spec.label,
+            type: spec.type,
+            good: spec.good,
+            color: spec.color,
+          });
+          state.nextSpawn += 1;
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing") return;
+          if (keys.has("ArrowLeft") || keys.has("a")) moveLane(-1);
+          if (keys.has("ArrowRight") || keys.has("d")) moveLane(1);
+          state.playerX += (lanes[state.lane] - state.playerX) * Math.min(1, dt * 12);
+          state.spawnTimer -= dt;
+          if (state.spawnTimer <= 0) {
+            spawnItem();
+            state.spawnTimer = Math.max(0.55, 1.05 - state.nextSpawn * 0.02);
+          }
+          state.timeLeft = Math.max(0, state.timeLeft - dt);
+          for (const item of state.items) item.y += item.vy * dt;
+          for (const item of state.items) {
+            if (item.hit) continue;
+            const sameLane = Math.abs(item.x - state.playerX) < 38;
+            const closeY = Math.abs(item.y - 446) < 38;
+            if (sameLane && closeY) {
+              item.hit = true;
+              if (item.good) {
+                state.signals += 1;
+              } else {
+                state.focus -= 1;
+              }
+            }
+          }
+          state.items = state.items.filter((item) => !item.hit && item.y < canvas.height + 48);
+          if (state.focus <= 0) state.mode = "lost";
+          if (state.timeLeft <= 0 && state.focus > 0) state.mode = "won";
+          updateHud();
+        }
+
+        function moveLane(delta) {
+          state.lane = clamp(state.lane + delta, 0, lanes.length - 1);
+          keys.delete("ArrowLeft");
+          keys.delete("ArrowRight");
+          keys.delete("a");
+          keys.delete("d");
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#ecfdf5");
+          grad.addColorStop(0.55, "#f8fafc");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 22px sans-serif";
+          ctx.fillText("lead lane", 24, 38);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Catch useful signals. Avoid work noise.", 24, 62);
+
+          for (const x of lanes) {
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 12]);
+            ctx.beginPath();
+            ctx.moveTo(x, 92);
+            ctx.lineTo(x, 510);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
+
+          for (const item of state.items) {
+            ctx.fillStyle = item.color;
+            ctx.beginPath();
+            ctx.arc(item.x, item.y, item.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = item.type === "doubt" ? "#0f172a" : "#ffffff";
+            ctx.font = "700 13px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(item.label, item.x, item.y);
+          }
+
+          ctx.fillStyle = "#2563eb";
+          roundRect(ctx, state.playerX - 42, 414, 84, 64, 8);
+          ctx.fill();
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 14px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("FOCUS", state.playerX, 446);
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            const title = state.mode === "won" ? "Signals secured" : state.mode === "lost" ? "Focus scattered" : "Lead Lane Dash";
+            ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 18);
+            ctx.font = "18px sans-serif";
+            ctx.fillText("Press Start or Space. Move with arrows, A/D, or touch.", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.033, (now - state.lastTime) / 1000 || 0);
+          state.lastTime = now;
+          update(dt);
+          render();
+          if (state.mode === "playing") requestAnimationFrame(loop);
+        }
+
+        function updateHud() {
+          signalText.textContent = String(state.signals);
+          focusText.textContent = String(state.focus);
+          timeText.textContent = `${Math.ceil(state.timeLeft)}秒`;
+        }
+
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
+        }
+
+        function roundRect(context, x, y, w, h, r) {
+          context.beginPath();
+          context.moveTo(x + r, y);
+          context.arcTo(x + w, y, x + w, y + h, r);
+          context.arcTo(x + w, y + h, x, y + h, r);
+          context.arcTo(x, y + h, x, y, r);
+          context.arcTo(x, y, x + w, y, r);
+          context.closePath();
+        }
+
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        window.addEventListener("keydown", (event) => {
+          if (["ArrowLeft", "ArrowRight", "a", "d"].includes(event.key)) keys.add(event.key);
+          if (event.key === " ") {
+            event.preventDefault();
+            start();
+          }
+          if (event.key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else canvas.requestFullscreen().catch(() => {});
+          }
+        });
+        window.addEventListener("keyup", (event) => keys.delete(event.key));
+        canvas.addEventListener("pointermove", (event) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
+          let nearest = 0;
+          for (let i = 1; i < lanes.length; i += 1) {
+            if (Math.abs(lanes[i] - x) < Math.abs(lanes[nearest] - x)) nearest = i;
+          }
+          state.lane = nearest;
+          state.playerX = lanes[nearest];
+          render();
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            signals: state.signals,
+            focus: state.focus,
+            timeLeftSeconds: Number(state.timeLeft.toFixed(1)),
+            player: { lane: state.lane, x: Math.round(state.playerX), y: 446 },
+            items: state.items.slice(0, 8).map((item) => ({
+              type: item.type,
+              label: item.label,
+              lane: item.lane,
+              x: item.x,
+              y: Math.round(item.y),
+              good: item.good,
+            })),
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>

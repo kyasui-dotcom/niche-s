@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>月次締めチェックツール | 事業手続きナビ</title>
+    <meta
+      name="description"
+      content="請求件数、支払い手段、レシート整理状況、記帳の遅れ、引当ての有無から、月次締めの負荷と最初に直すべき点を整理するツール。"
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/monthly-close-checker.html" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">事業手続きナビ / ツール</p>
+        <h1>月次締めチェックツール</h1>
+        <p class="lede">
+          月末に請求、記帳、引当て、フォロー確認が一気に溜まると崩れやすいです。
+          月次締めの負荷をざっくり見て、先に直すべき点を整理します。
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="close-form" class="calc-form">
+          <div class="grid-2">
+            <label>
+              月の請求件数
+              <select name="invoices">
+                <option value="low">5件未満</option>
+                <option value="mid">5〜15件</option>
+                <option value="high">16件以上</option>
+              </select>
+            </label>
+            <label>
+              支払い手段の混ざり方
+              <select name="payments">
+                <option value="simple">ほぼ銀行振込だけ</option>
+                <option value="mixed">カードや現金もある</option>
+                <option value="complex">かなり混ざる</option>
+              </select>
+            </label>
+            <label>
+              レシートや証憑の整理
+              <select name="receipts">
+                <option value="good">その都度まとめている</option>
+                <option value="some">月内で少し散らかる</option>
+                <option value="bad">かなり後回し</option>
+              </select>
+            </label>
+            <label>
+              記帳の遅れ
+              <select name="lag">
+                <option value="0">ほぼ当週中</option>
+                <option value="7">1週間くらい遅れる</option>
+                <option value="30">月末まで溜める</option>
+              </select>
+            </label>
+            <label>
+              税金・社保の引当て
+              <select name="reserve">
+                <option value="yes">毎月分けている</option>
+                <option value="some">ときどき分ける</option>
+                <option value="no">まだ分けていない</option>
+              </select>
+            </label>
+          </div>
+        </form>
+        <div class="results-box">
+          <div>
+            <p class="section-label">Close load</p>
+            <div id="close-main" class="total" style="font-size: 2rem;">月次負荷 低め</div>
+            <p id="close-note" class="small">会計ソフトの選定より先に、月次で回す順番を固定するほうが効きます。</p>
+          </div>
+          <div id="close-results" class="summary-grid"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Related</p>
+          <h2>関連ページ</h2>
+        </div>
+        <div class="snapshot-links">
+          <a href="./startup-monthly-routine.html">開業後の月次ルーティンの回し方</a>
+          <a href="./invoice-schedule-planner.html">請求スケジュール整理ツール</a>
+          <a href="./reserve-rate-checker.html">税金・社保の引当て目安ツール</a>
+          <a href="./cash-runway-planner.html">資金繰りざっくり計画ツール</a>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById('close-form');
+      const main = document.getElementById('close-main');
+      const note = document.getElementById('close-note');
+      const results = document.getElementById('close-results');
+
+      function render() {
+        const invoices = form.invoices.value;
+        const payments = form.payments.value;
+        const receipts = form.receipts.value;
+        const lag = Number(form.lag.value || 0);
+        const reserve = form.reserve.value;
+
+        let score = 0;
+        if (invoices === 'mid') score += 1;
+        if (invoices === 'high') score += 2;
+        if (payments === 'mixed') score += 1;
+        if (payments === 'complex') score += 2;
+        if (receipts === 'some') score += 1;
+        if (receipts === 'bad') score += 2;
+        if (lag >= 7) score += 1;
+        if (lag >= 30) score += 2;
+        if (reserve === 'some') score += 1;
+        if (reserve === 'no') score += 2;
+
+        const level = score >= 7 ? '高め' : score >= 4 ? '中くらい' : '低め';
+        main.textContent = `月次負荷 ${level}`;
+        note.textContent =
+          score >= 7
+            ? '月末に一気に溜まりやすい状態です。週次処理へ分ける前提に変えたほうが楽です。'
+            : score >= 4
+              ? '仕組み化できる余地があります。請求と記帳を別日に固定すると回しやすくなります。'
+              : '基本の型は作りやすい状態です。毎月同じ順番で回すことを優先します。';
+
+        results.innerHTML = `
+          <article class="summary-card">
+            <h3>先に直す場所</h3>
+            <p>${receipts === 'bad' ? '証憑整理' : reserve === 'no' ? '引当て分け' : payments === 'complex' ? '支払い手段の整理' : '請求と記帳の固定日化'}</p>
+          </article>
+          <article class="summary-card">
+            <h3>週次に分けるもの</h3>
+            <p>${lag >= 7 ? 'レシート処理と記帳を週1回へ分割します。' : '請求予定と未入金確認だけでも週1回に固定します。'}</p>
+          </article>
+          <article class="summary-card">
+            <h3>月末に見るもの</h3>
+            <p>売上、固定費、引当て残高、未入金、返事待ち案件を同じ面で見ます。</p>
+          </article>
+          <article class="summary-card">
+            <h3>次の一歩</h3>
+            <p>${reserve === 'no' ? '別口座か別置き場を決めて、月初に先取りします。' : '請求・記帳・フォローの曜日を先に固定します。'}</p>
+          </article>
+        `;
+      }
+
+      form.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>

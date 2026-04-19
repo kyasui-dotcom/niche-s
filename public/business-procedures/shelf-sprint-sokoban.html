@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shelf Sprint Sokoban | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="商品棚を整えて、提案カードを顧客ニーズの棚へ押し込む起業家向けの小さな倉庫番ゲーム。行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="Shelf Sprint Sokoban | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="提案カードを顧客ニーズの棚へ押し込む、起業家向けの小さな倉庫番ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/shelf-sprint-sokoban.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/shelf-sprint-sokoban.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #shelfGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 9 / 7;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: none;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls,
+      .pad {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .pad button {
+        min-width: 54px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button,
+        .pad .button {
+          flex: 1 1 92px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ Shelf Sprint Sokoban</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>Shelf Sprint Sokoban</h1>
+        <p class="lede">
+          提案カードを押して、顧客ニーズの棚へ並べる小さな倉庫番ゲームです。
+          扱うのは商品・サービスの見せ方だけ。行政・税務・法務などの判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./lead-lane-dash.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>提案カードを棚へそろえる</h2>
+          <p class="section-copy">矢印キーで移動。カードを押して、3つのニーズ棚に重ねるとクリアです。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="shelfGame" width="720" height="560" aria-label="Shelf Sprint Sokoban game canvas"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>配置できた棚</span>
+              <strong id="matchText">0 / 3</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="moveText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="modeText">準備</strong>
+            </div>
+            <div class="game-controls">
+              <button id="resetBtn" class="button primary" type="button">Reset</button>
+              <button id="undoBtn" class="button ghost" type="button">Undo</button>
+            </div>
+            <div class="pad" aria-label="touch controls">
+              <button class="button ghost" type="button" data-dir="up">上</button>
+              <button class="button ghost" type="button" data-dir="left">左</button>
+              <button class="button ghost" type="button" data-dir="down">下</button>
+              <button class="button ghost" type="button" data-dir="right">右</button>
+            </div>
+            <p class="game-note">操作: ← ↑ ↓ → / WASD / ボタン。Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは提案整理の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、顧客ニーズに合わせて提案の置き場所を整える比喩です。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("shelfGame");
+        const ctx = canvas.getContext("2d");
+        const matchText = document.getElementById("matchText");
+        const moveText = document.getElementById("moveText");
+        const modeText = document.getElementById("modeText");
+        const resetBtn = document.getElementById("resetBtn");
+        const undoBtn = document.getElementById("undoBtn");
+        const tile = 64;
+        const offset = { x: 72, y: 56 };
+        const walls = new Set([
+          "0,0","1,0","2,0","3,0","4,0","5,0","6,0","7,0","8,0",
+          "0,1","8,1","0,2","8,2","0,3","8,3","0,4","8,4","0,5","8,5",
+          "0,6","1,6","2,6","3,6","4,6","5,6","6,6","7,6","8,6",
+          "3,2","3,3","6,4"
+        ]);
+        const goals = [
+          { x: 6, y: 1, label: "相談" },
+          { x: 6, y: 2, label: "見積" },
+          { x: 6, y: 3, label: "納品" },
+        ];
+        const initialBoxes = [
+          { x: 2, y: 2, label: "提案" },
+          { x: 4, y: 3, label: "価格" },
+          { x: 2, y: 4, label: "手順" },
+        ];
+        const state = {
+          mode: "playing",
+          moves: 0,
+          player: { x: 1, y: 3 },
+          boxes: [],
+          history: [],
+        };
+        const dirs = {
+          ArrowUp: { x: 0, y: -1 },
+          ArrowDown: { x: 0, y: 1 },
+          ArrowLeft: { x: -1, y: 0 },
+          ArrowRight: { x: 1, y: 0 },
+          w: { x: 0, y: -1 },
+          s: { x: 0, y: 1 },
+          a: { x: -1, y: 0 },
+          d: { x: 1, y: 0 },
+          up: { x: 0, y: -1 },
+          down: { x: 0, y: 1 },
+          left: { x: -1, y: 0 },
+          right: { x: 1, y: 0 },
+        };
+
+        function reset() {
+          state.mode = "playing";
+          state.moves = 0;
+          state.player = { x: 1, y: 3 };
+          state.boxes = initialBoxes.map((box) => ({ ...box }));
+          state.history = [];
+          updateHud();
+          render();
+        }
+
+        function move(dir) {
+          if (state.mode !== "playing") return;
+          const next = { x: state.player.x + dir.x, y: state.player.y + dir.y };
+          if (blocked(next.x, next.y)) return;
+          const boxIndex = state.boxes.findIndex((box) => box.x === next.x && box.y === next.y);
+          if (boxIndex >= 0) {
+            const pushed = { x: next.x + dir.x, y: next.y + dir.y };
+            if (blocked(pushed.x, pushed.y) || boxAt(pushed.x, pushed.y)) return;
+            snapshot();
+            state.boxes[boxIndex].x = pushed.x;
+            state.boxes[boxIndex].y = pushed.y;
+          } else {
+            snapshot();
+          }
+          state.player = next;
+          state.moves += 1;
+          if (matches() === goals.length) state.mode = "won";
+          updateHud();
+          render();
+        }
+
+        function undo() {
+          const prev = state.history.pop();
+          if (!prev) return;
+          state.mode = "playing";
+          state.moves = prev.moves;
+          state.player = prev.player;
+          state.boxes = prev.boxes;
+          updateHud();
+          render();
+        }
+
+        function snapshot() {
+          state.history.push({
+            moves: state.moves,
+            player: { ...state.player },
+            boxes: state.boxes.map((box) => ({ ...box })),
+          });
+          if (state.history.length > 80) state.history.shift();
+        }
+
+        function blocked(x, y) {
+          return walls.has(`${x},${y}`);
+        }
+
+        function boxAt(x, y) {
+          return state.boxes.some((box) => box.x === x && box.y === y);
+        }
+
+        function goalAt(x, y) {
+          return goals.find((goal) => goal.x === x && goal.y === y);
+        }
+
+        function matches() {
+          return state.boxes.filter((box) => goalAt(box.x, box.y)).length;
+        }
+
+        function updateHud() {
+          matchText.textContent = `${matches()} / ${goals.length}`;
+          moveText.textContent = String(state.moves);
+          modeText.textContent = state.mode === "won" ? "クリア" : "配置中";
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eefdf8");
+          grad.addColorStop(0.55, "#f8fafc");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 22px sans-serif";
+          ctx.fillText("shelf sprint", 28, 34);
+          ctx.fillStyle = "#475569";
+          ctx.font = "15px sans-serif";
+          ctx.fillText("Push offer cards onto matching customer shelves.", 28, 58);
+
+          for (let y = 0; y < 7; y += 1) {
+            for (let x = 0; x < 9; x += 1) {
+              drawTile(x, y);
+            }
+          }
+          for (const goal of goals) drawGoal(goal);
+          for (const box of state.boxes) drawBox(box);
+          drawPlayer();
+
+          if (state.mode === "won") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            ctx.fillText("Shelves aligned", canvas.width / 2, canvas.height / 2 - 12);
+            ctx.font = "18px sans-serif";
+            ctx.fillText(`${state.moves} moves. Press Reset for another run.`, canvas.width / 2, canvas.height / 2 + 26);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function drawTile(x, y) {
+          const px = offset.x + x * tile;
+          const py = offset.y + y * tile;
+          const isWall = blocked(x, y);
+          ctx.fillStyle = isWall ? "#334155" : "#ffffff";
+          ctx.strokeStyle = isWall ? "#1e293b" : "#dbe3ee";
+          roundRect(ctx, px + 3, py + 3, tile - 6, tile - 6, 8);
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        function drawGoal(goal) {
+          const px = offset.x + goal.x * tile;
+          const py = offset.y + goal.y * tile;
+          ctx.fillStyle = "#d9f99d";
+          roundRect(ctx, px + 12, py + 12, tile - 24, tile - 24, 8);
+          ctx.fill();
+          ctx.fillStyle = "#365314";
+          ctx.font = "700 12px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(goal.label, px + tile / 2, py + tile / 2);
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function drawBox(box) {
+          const px = offset.x + box.x * tile;
+          const py = offset.y + box.y * tile;
+          const placed = Boolean(goalAt(box.x, box.y));
+          ctx.fillStyle = placed ? "#16a34a" : "#0ea5e9";
+          roundRect(ctx, px + 8, py + 8, tile - 16, tile - 16, 8);
+          ctx.fill();
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 13px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(box.label, px + tile / 2, py + tile / 2);
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function drawPlayer() {
+          const px = offset.x + state.player.x * tile + tile / 2;
+          const py = offset.y + state.player.y * tile + tile / 2;
+          ctx.fillStyle = "#f59e0b";
+          ctx.beginPath();
+          ctx.arc(px, py, 23, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#111827";
+          ctx.font = "800 12px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("YOU", px, py);
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function roundRect(context, x, y, w, h, r) {
+          context.beginPath();
+          context.moveTo(x + r, y);
+          context.arcTo(x + w, y, x + w, y + h, r);
+          context.arcTo(x + w, y + h, x, y + h, r);
+          context.arcTo(x, y + h, x, y, r);
+          context.arcTo(x, y, x + w, y, r);
+          context.closePath();
+        }
+
+        window.addEventListener("keydown", (event) => {
+          if (dirs[event.key]) {
+            event.preventDefault();
+            move(dirs[event.key]);
+          }
+          if (event.key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else canvas.requestFullscreen().catch(() => {});
+          }
+        });
+        resetBtn.addEventListener("click", reset);
+        undoBtn.addEventListener("click", undo);
+        document.querySelectorAll("[data-dir]").forEach((button) => {
+          button.addEventListener("click", () => move(dirs[button.dataset.dir]));
+        });
+
+        window.advanceTime = () => render();
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "origin top-left grid, x right, y down",
+            mode: state.mode,
+            moves: state.moves,
+            matches: matches(),
+            player: state.player,
+            boxes: state.boxes.map((box) => ({
+              label: box.label,
+              x: box.x,
+              y: box.y,
+              onGoal: Boolean(goalAt(box.x, box.y)),
+            })),
+            goals,
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>

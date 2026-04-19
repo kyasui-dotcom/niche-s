@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>集客チャネル整理ツール | 事業手続きナビ</title>
+    <meta
+      name="description"
+      content="使える時間、得意な接点、相手のタイプ、急ぎ度から、開業直後に優先したい集客チャネルと今週の行動を整理するツール。"
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/startup-channel-planner.html" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <p class="eyebrow">事業手続きナビ / ツール</p>
+        <h1>集客チャネル整理ツール</h1>
+        <p class="lede">
+          開業直後は、全部の集客をやるより<strong>今の強み</strong>と<strong>使える時間</strong>に合わせて絞るほうが早いです。
+          いま優先するチャネルと、今週の最初の動きを整理します。
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="channel-form" class="calc-form">
+          <div class="grid-2">
+            <label>
+              週に使える集客時間
+              <select name="hours">
+                <option value="3">3時間以下</option>
+                <option value="6">4〜6時間</option>
+                <option value="10">7〜10時間</option>
+                <option value="15">10時間以上</option>
+              </select>
+            </label>
+            <label>
+              いま一番強い接点
+              <select name="strength">
+                <option value="referral">既存の知人・紹介</option>
+                <option value="sns">Xなどの発信</option>
+                <option value="local">地元・現地の接点</option>
+                <option value="seo">記事や検索流入</option>
+                <option value="outreach">直接声をかけるのが得意</option>
+              </select>
+            </label>
+            <label>
+              相手のタイプ
+              <select name="target">
+                <option value="smallbiz">小規模事業者</option>
+                <option value="individual">個人客</option>
+                <option value="localbiz">店舗・現地系</option>
+                <option value="creator">フリーランス・制作系</option>
+              </select>
+            </label>
+            <label>
+              どれくらい急ぐか
+              <select name="urgency">
+                <option value="now">すぐ案件化したい</option>
+                <option value="month">1〜2か月で形にしたい</option>
+                <option value="steady">じわじわ育てたい</option>
+              </select>
+            </label>
+          </div>
+        </form>
+        <div class="results-box">
+          <div>
+            <p class="section-label">Channel plan</p>
+            <div id="channel-main" class="total" style="font-size: 2rem;">今週の優先チャネル</div>
+            <p id="channel-note" class="small">最初は1〜2チャネルに寄せたほうが動きが見えやすいです。</p>
+          </div>
+          <div id="channel-results" class="summary-grid"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Related</p>
+          <h2>関連ページ</h2>
+        </div>
+        <div class="snapshot-links">
+          <a href="../client-ops/x-to-consultation-flow.html">Xの反応から相談化までの導線整理</a>
+          <a href="../client-ops/referral-request-template.html">紹介依頼メールの例文</a>
+          <a href="https://x.niche-s.com/" target="_blank" rel="noopener noreferrer">X運用ワークスペース</a>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.getElementById('channel-form');
+      const main = document.getElementById('channel-main');
+      const note = document.getElementById('channel-note');
+      const results = document.getElementById('channel-results');
+
+      function render() {
+        const hours = Number(form.hours.value || 3);
+        const strength = form.strength.value;
+        const target = form.target.value;
+        const urgency = form.urgency.value;
+
+        let primary = '紹介';
+        let next = 'X発信';
+        let action = '知人3人へ近況共有と相談受付の一文を送ります。';
+
+        if (strength === 'sns') {
+          primary = 'X発信';
+          next = urgency === 'now' ? '紹介依頼' : '記事化';
+          action = '今週は実務ネタを3本出し、反応者へ相談導線を付けます。';
+        } else if (strength === 'local') {
+          primary = '地域接点';
+          next = '紹介';
+          action = '近場の見込み先を5件だけ絞り、直接会える導線を作ります。';
+        } else if (strength === 'seo') {
+          primary = '記事導線';
+          next = 'X発信';
+          action = '悩みが具体的な記事を1本増やし、Xでも同じ論点を切り出します。';
+        } else if (strength === 'outreach') {
+          primary = '直接アプローチ';
+          next = '紹介';
+          action = '対象を10件以下に絞り、共通課題ベースの一文で声をかけます。';
+        }
+
+        if (urgency === 'now') {
+          note.textContent = 'すぐ案件化したい段階なので、反応の早いチャネルを優先します。';
+        } else if (urgency === 'steady') {
+          note.textContent = '急ぎすぎず、継続で積み上がるチャネルを主軸にします。';
+        } else {
+          note.textContent = '短期と中期のバランスを見て、2チャネルだけ回す前提です。';
+        }
+
+        if (hours <= 3) {
+          action = '今週は1チャネルに絞り、1回の発信か3件の個別連絡だけにします。';
+        }
+
+        const targetText =
+          target === 'smallbiz'
+            ? '小規模事業者向けなら、紹介と実務系コンテンツの相性が強いです。'
+            : target === 'individual'
+              ? '個人客向けなら、分かりやすい価格と事例の見せ方が先です。'
+              : target === 'localbiz'
+                ? '店舗・現地系なら、地域接点と紹介が効きやすいです。'
+                : '制作系なら、実績の見せ方と発信の継続が重要です。';
+
+        main.textContent = `${primary} + ${next}`;
+        results.innerHTML = `
+          <article class="summary-card">
+            <h3>主軸チャネル</h3>
+            <p>${primary}</p>
+          </article>
+          <article class="summary-card">
+            <h3>補助チャネル</h3>
+            <p>${next}</p>
+          </article>
+          <article class="summary-card">
+            <h3>今週の最初の行動</h3>
+            <p>${action}</p>
+          </article>
+          <article class="summary-card">
+            <h3>見方</h3>
+            <p>${targetText}</p>
+          </article>
+        `;
+      }
+
+      form.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>
+
