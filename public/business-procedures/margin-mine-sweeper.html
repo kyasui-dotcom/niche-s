@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Margin Mine Sweeper | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="粗利の見込みがあるマスを開け、赤字トラップを避ける起業家向けの小さなマインスイーパー風ゲーム。行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="Margin Mine Sweeper | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="粗利の見込みがあるマスを開け、赤字トラップを避ける起業家向けの小さなマインスイーパー風ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/margin-mine-sweeper.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/margin-mine-sweeper.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a,
+      .mine-cell {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .mine-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(145deg, #f8fafc, #ecfdf5);
+        padding: 14px;
+      }
+      .mine-board {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(30px, 1fr));
+        gap: 8px;
+        width: 100%;
+        max-width: 620px;
+        aspect-ratio: 1;
+      }
+      .mine-cell {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f172a;
+        font: 800 clamp(0.85rem, 2.4vw, 1.15rem) / 1 system-ui, sans-serif;
+        cursor: pointer;
+        min-width: 0;
+        transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+      }
+      .mine-cell:hover,
+      .mine-cell:focus-visible {
+        border-color: #0f766e;
+        transform: translateY(-1px);
+        outline: none;
+      }
+      .mine-cell.open {
+        background: #dcfce7;
+        border-color: #86efac;
+        cursor: default;
+      }
+      .mine-cell.flagged {
+        background: #fef3c7;
+        border-color: #f59e0b;
+      }
+      .mine-cell.trap {
+        background: #fee2e2;
+        border-color: #ef4444;
+      }
+      .mine-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .mine-stage {
+          padding: 10px;
+        }
+        .mine-board {
+          gap: 6px;
+        }
+        .game-controls .button {
+          flex: 1 1 120px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ Margin Mine Sweeper</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>Margin Mine Sweeper</h1>
+        <p class="lede">
+          需要の手応えを見ながら、粗利につながるマスを開ける小さなマインスイーパー風ゲームです。
+          価格、仕入れ、導線の感覚だけを扱い、行政・税務・法務などの判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./shelf-sprint-sokoban.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>赤字トラップを避けて粗利マスを開ける</h2>
+          <p class="section-copy">クリックでマスを開き、長押しまたは右クリックで注意フラグ。数字は近くにある赤字トラップの数です。</p>
+        </div>
+        <div class="game-shell">
+          <div class="mine-stage">
+            <div id="mineBoard" class="mine-board" role="grid" aria-label="Margin Mine Sweeper board"></div>
+          </div>
+          <aside class="mine-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>開いた粗利マス</span>
+              <strong id="openText">0 / 54</strong>
+            </div>
+            <div class="game-stat">
+              <span>注意フラグ</span>
+              <strong id="flagText">0 / 10</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="modeText">準備</strong>
+            </div>
+            <div class="game-controls">
+              <button id="resetBtn" class="button primary" type="button">Reset</button>
+              <button id="hintBtn" class="button ghost" type="button">Hint</button>
+            </div>
+            <p class="game-note">操作: クリックで開く。右クリック、長押し、または Shift+クリックでフラグ。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは商売感覚の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、粗利、需要、仕入れ、導線を俯瞰する練習用の比喩です。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const size = 8;
+        const traps = new Set(["1,1", "5,1", "6,2", "2,3", "4,3", "7,4", "0,5", "3,5", "5,6", "1,7"]);
+        const board = document.getElementById("mineBoard");
+        const openText = document.getElementById("openText");
+        const flagText = document.getElementById("flagText");
+        const modeText = document.getElementById("modeText");
+        const resetBtn = document.getElementById("resetBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        const cells = [];
+        const safeTotal = size * size - traps.size;
+        let mode = "playing";
+        let opened = new Set();
+        let flagged = new Set();
+        let pressTimer = 0;
+
+        function key(x, y) {
+          return `${x},${y}`;
+        }
+
+        function reset() {
+          mode = "playing";
+          opened = new Set();
+          flagged = new Set();
+          render();
+        }
+
+        function neighbors(x, y) {
+          const list = [];
+          for (let dy = -1; dy <= 1; dy += 1) {
+            for (let dx = -1; dx <= 1; dx += 1) {
+              if (dx === 0 && dy === 0) continue;
+              const nx = x + dx;
+              const ny = y + dy;
+              if (nx >= 0 && nx < size && ny >= 0 && ny < size) list.push([nx, ny]);
+            }
+          }
+          return list;
+        }
+
+        function countTraps(x, y) {
+          return neighbors(x, y).filter(([nx, ny]) => traps.has(key(nx, ny))).length;
+        }
+
+        function openCell(x, y) {
+          if (mode !== "playing") return;
+          const id = key(x, y);
+          if (opened.has(id) || flagged.has(id)) return;
+          opened.add(id);
+          if (traps.has(id)) {
+            mode = "lost";
+            render();
+            return;
+          }
+          if (countTraps(x, y) === 0) {
+            for (const [nx, ny] of neighbors(x, y)) {
+              const nid = key(nx, ny);
+              if (!opened.has(nid) && !traps.has(nid)) openCell(nx, ny);
+            }
+          }
+          if ([...opened].filter((id) => !traps.has(id)).length === safeTotal) mode = "won";
+          render();
+        }
+
+        function toggleFlag(x, y) {
+          if (mode !== "playing") return;
+          const id = key(x, y);
+          if (opened.has(id)) return;
+          if (flagged.has(id)) flagged.delete(id);
+          else flagged.add(id);
+          render();
+        }
+
+        function showHint() {
+          if (mode !== "playing") return;
+          const safe = [];
+          for (let y = 0; y < size; y += 1) {
+            for (let x = 0; x < size; x += 1) {
+              const id = key(x, y);
+              if (!opened.has(id) && !flagged.has(id) && !traps.has(id)) safe.push([x, y]);
+            }
+          }
+          if (safe.length) {
+            const [x, y] = safe[Math.floor(Math.random() * safe.length)];
+            const cell = cells.find((button) => Number(button.dataset.x) === x && Number(button.dataset.y) === y);
+            cell?.focus();
+          }
+        }
+
+        function render() {
+          const safeOpened = [...opened].filter((id) => !traps.has(id)).length;
+          openText.textContent = `${safeOpened} / ${safeTotal}`;
+          flagText.textContent = `${flagged.size} / ${traps.size}`;
+          modeText.textContent = mode === "won" ? "クリア" : mode === "lost" ? "見直し" : "探索中";
+
+          for (const button of cells) {
+            const x = Number(button.dataset.x);
+            const y = Number(button.dataset.y);
+            const id = key(x, y);
+            const isOpen = opened.has(id);
+            const isTrap = traps.has(id);
+            button.className = "mine-cell";
+            button.disabled = mode !== "playing" || isOpen;
+            button.textContent = "";
+            button.setAttribute("aria-label", `row ${y + 1}, column ${x + 1}`);
+            if (flagged.has(id)) {
+              button.classList.add("flagged");
+              button.textContent = "!";
+            }
+            if (isOpen || (mode === "lost" && isTrap)) {
+              button.classList.add(isTrap ? "trap" : "open");
+              button.textContent = isTrap ? "X" : valueLabel(countTraps(x, y));
+            }
+          }
+        }
+
+        function valueLabel(value) {
+          if (value === 0) return "+";
+          return String(value);
+        }
+
+        for (let y = 0; y < size; y += 1) {
+          for (let x = 0; x < size; x += 1) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "mine-cell";
+            button.dataset.x = String(x);
+            button.dataset.y = String(y);
+            button.setAttribute("role", "gridcell");
+            button.addEventListener("click", (event) => {
+              if (event.shiftKey) toggleFlag(x, y);
+              else openCell(x, y);
+            });
+            button.addEventListener("contextmenu", (event) => {
+              event.preventDefault();
+              toggleFlag(x, y);
+            });
+            button.addEventListener("pointerdown", () => {
+              pressTimer = window.setTimeout(() => toggleFlag(x, y), 520);
+            });
+            button.addEventListener("pointerup", () => window.clearTimeout(pressTimer));
+            button.addEventListener("pointerleave", () => window.clearTimeout(pressTimer));
+            board.appendChild(button);
+            cells.push(button);
+          }
+        }
+
+        resetBtn.addEventListener("click", reset);
+        hintBtn.addEventListener("click", showHint);
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "8x8 grid, origin top-left",
+            mode,
+            opened: opened.size,
+            safeOpened: [...opened].filter((id) => !traps.has(id)).length,
+            flags: [...flagged],
+            traps: [...traps],
+          });
+        window.advanceTime = () => render();
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>

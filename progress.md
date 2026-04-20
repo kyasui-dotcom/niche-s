@@ -82,3 +82,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified a mobile 390px-wide screenshot with no console/page errors; the game stacks under the intro and the canvas remains visible.
 - Temporary server and generated screenshot artifacts were removed.
 - TODO: avoid reusing Sokoban / shelf-push puzzle, task triage, snake, memory, pong, invader, lane-dodger, catch, and block-breaker concepts on the next run.
+
+## 2026-04-20
+
+- Added `business-procedures/margin-mine-sweeper.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "Margin Mine Sweeper" - a small minesweeper-style game where entrepreneurs open rough-margin signal cells and avoid red-margin traps.
+- Kept the authority boundary explicit: the page only uses margin, demand, sourcing, and channel metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated game validation.
+- Verified local HTTP 200 for `/business-procedures/margin-mine-sweeper.html`.
+- Verified with the web game Playwright client: page renders, a safe cell opens, `render_game_to_text` reports `safeOpened: 1`, and no console/page errors were generated.
+- Verified mobile 390px screenshot, right-click flagging, trap loss, and reset with no console/page errors.
+- Deployed to Cloudflare with `npx wrangler deploy`; live checks returned HTTP 200 on `https://niche-s.com/business-procedures/margin-mine-sweeper.html` and the workers.dev URL.
+- TODO: avoid reusing minesweeper / margin-trap, Sokoban / shelf-push puzzle, task triage, snake, memory, pong, invader, lane-dodger, catch, and block-breaker concepts on the next run.
