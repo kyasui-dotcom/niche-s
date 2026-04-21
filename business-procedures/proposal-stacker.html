@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>提案スタッカー | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="提案ブロックを積み上げて1列そろえる、起業家向けの小さな落ちものパズル。営業や改善の比喩だけを扱い、行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="提案スタッカー | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="提案ブロックを積み上げて1列そろえる、小さな落ちものパズル風の起業家ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/proposal-stacker.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/proposal-stacker.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #stackerGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 5;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: none;
+      }
+      .touch-controls {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .touch-controls .button {
+        width: 100%;
+        min-height: 46px;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 140px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 提案スタッカー</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>提案スタッカー</h1>
+        <p class="lede">
+          「見積」「改善」「紹介」「提案」のブロックを落として、1列そろえて前進を作る小さな落ちものパズルです。
+          扱うのは営業と改善の比喩だけで、行政・税務・法務の判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./margin-mine-sweeper.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>ブロックをそろえて前進ラインを作る</h2>
+          <p class="section-copy">
+            左右移動、回転、即落下だけの最小ルールです。列が埋まると前進として消え、スコアが増えます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="stackerGame" width="720" height="900" aria-label="提案スタッカーのゲーム画面"></canvas>
+            <div class="touch-controls" aria-label="touch controls">
+              <button id="leftBtn" class="button ghost" type="button">左</button>
+              <button id="rotateBtn" class="button ghost" type="button">回転</button>
+              <button id="rightBtn" class="button ghost" type="button">右</button>
+              <button id="dropBtn" class="button primary" type="button">落下</button>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>前進ライン</span>
+              <strong id="linesText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>スコア</span>
+              <strong id="scoreText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="stateText">準備</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">リセット</button>
+            </div>
+            <p class="game-note">操作: ← → で移動、↑ または X で回転、↓ で加速、Space で開始・即落下。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは受注準備の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームが表しているのは、見積、提案、改善、紹介のような日々の前進だけです。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("stackerGame");
+        const ctx = canvas.getContext("2d");
+        const linesText = document.getElementById("linesText");
+        const scoreText = document.getElementById("scoreText");
+        const stateText = document.getElementById("stateText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const leftBtn = document.getElementById("leftBtn");
+        const rotateBtn = document.getElementById("rotateBtn");
+        const rightBtn = document.getElementById("rightBtn");
+        const dropBtn = document.getElementById("dropBtn");
+
+        const cols = 6;
+        const rows = 12;
+        const cell = 56;
+        const boardX = 42;
+        const boardY = 120;
+        const pieceCycle = [
+          { name: "提案", color: "#2563eb", matrix: [[1, 1], [1, 1]] },
+          { name: "見積", color: "#16a34a", matrix: [[1, 1, 1], [0, 1, 0]] },
+          { name: "紹介", color: "#f59e0b", matrix: [[1, 1, 0], [0, 1, 1]] },
+          { name: "改善", color: "#9333ea", matrix: [[0, 1, 1], [1, 1, 0]] },
+          { name: "実行", color: "#ef4444", matrix: [[1, 1, 1, 1]] },
+        ];
+        const state = {
+          mode: "ready",
+          board: [],
+          piece: null,
+          queueIndex: 0,
+          lines: 0,
+          score: 0,
+          dropTimer: 0,
+          lastTime: 0,
+        };
+
+        function createBoard() {
+          return Array.from({ length: rows }, () => Array(cols).fill(null));
+        }
+
+        function cloneMatrix(matrix) {
+          return matrix.map((row) => [...row]);
+        }
+
+        function rotateMatrix(matrix) {
+          const height = matrix.length;
+          const width = matrix[0].length;
+          return Array.from({ length: width }, (_, x) =>
+            Array.from({ length: height }, (_, y) => matrix[height - 1 - y][x])
+          );
+        }
+
+        function nextPiece() {
+          const spec = pieceCycle[state.queueIndex % pieceCycle.length];
+          state.queueIndex += 1;
+          return {
+            name: spec.name,
+            color: spec.color,
+            matrix: cloneMatrix(spec.matrix),
+            x: Math.floor((cols - spec.matrix[0].length) / 2),
+            y: -1,
+          };
+        }
+
+        function collides(piece, offsetX = 0, offsetY = 0, matrix = piece.matrix) {
+          for (let y = 0; y < matrix.length; y += 1) {
+            for (let x = 0; x < matrix[y].length; x += 1) {
+              if (!matrix[y][x]) continue;
+              const nx = piece.x + x + offsetX;
+              const ny = piece.y + y + offsetY;
+              if (nx < 0 || nx >= cols || ny >= rows) return true;
+              if (ny >= 0 && state.board[ny][nx]) return true;
+            }
+          }
+          return false;
+        }
+
+        function mergePiece() {
+          for (let y = 0; y < state.piece.matrix.length; y += 1) {
+            for (let x = 0; x < state.piece.matrix[y].length; x += 1) {
+              if (!state.piece.matrix[y][x]) continue;
+              const ny = state.piece.y + y;
+              const nx = state.piece.x + x;
+              if (ny < 0) {
+                state.mode = "lost";
+                return;
+              }
+              state.board[ny][nx] = { color: state.piece.color, label: state.piece.name.slice(0, 1) };
+            }
+          }
+          clearLines();
+          state.piece = nextPiece();
+          if (collides(state.piece)) state.mode = "lost";
+        }
+
+        function clearLines() {
+          let cleared = 0;
+          state.board = state.board.filter((row) => {
+            const full = row.every(Boolean);
+            if (full) cleared += 1;
+            return !full;
+          });
+          while (state.board.length < rows) state.board.unshift(Array(cols).fill(null));
+          if (cleared > 0) {
+            state.lines += cleared;
+            state.score += cleared * 100;
+          } else {
+            state.score += 8;
+          }
+        }
+
+        function reset() {
+          state.mode = "ready";
+          state.board = createBoard();
+          state.queueIndex = 0;
+          state.piece = nextPiece();
+          state.lines = 0;
+          state.score = 0;
+          state.dropTimer = 0;
+          updateHud();
+          render();
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          if (state.mode === "lost") reset();
+          state.mode = "playing";
+          state.lastTime = performance.now();
+          requestAnimationFrame(loop);
+          updateHud();
+        }
+
+        function move(delta) {
+          if (state.mode !== "playing") return;
+          if (!collides(state.piece, delta, 0)) state.piece.x += delta;
+          render();
+        }
+
+        function rotate() {
+          if (state.mode !== "playing") return;
+          const rotated = rotateMatrix(state.piece.matrix);
+          if (!collides(state.piece, 0, 0, rotated)) {
+            state.piece.matrix = rotated;
+          } else if (!collides(state.piece, -1, 0, rotated)) {
+            state.piece.x -= 1;
+            state.piece.matrix = rotated;
+          } else if (!collides(state.piece, 1, 0, rotated)) {
+            state.piece.x += 1;
+            state.piece.matrix = rotated;
+          }
+          render();
+        }
+
+        function hardDrop() {
+          if (state.mode === "ready") {
+            start();
+            return;
+          }
+          if (state.mode !== "playing") return;
+          while (!collides(state.piece, 0, 1)) state.piece.y += 1;
+          mergePiece();
+          updateHud();
+          render();
+        }
+
+        function stepDown() {
+          if (collides(state.piece, 0, 1)) {
+            mergePiece();
+          } else {
+            state.piece.y += 1;
+          }
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing") return;
+          state.dropTimer += dt;
+          if (state.dropTimer >= 0.7) {
+            state.dropTimer = 0;
+            stepDown();
+            updateHud();
+          }
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.05, (now - state.lastTime) / 1000 || 0);
+          state.lastTime = now;
+          update(dt);
+          render();
+          if (state.mode === "playing") requestAnimationFrame(loop);
+        }
+
+        function drawCell(x, y, fill, text = "") {
+          const px = boardX + x * cell;
+          const py = boardY + y * cell;
+          ctx.fillStyle = fill;
+          roundRect(ctx, px + 2, py + 2, cell - 4, cell - 4, 10);
+          ctx.fill();
+          if (text) {
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 18px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, px + cell / 2, py + cell / 2 + 1);
+          }
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eff6ff");
+          grad.addColorStop(0.5, "#f8fafc");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "800 34px sans-serif";
+          ctx.fillText("提案スタッカー", 42, 62);
+          ctx.font = "18px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("1列そろえて前進ラインを作る", 42, 92);
+
+          ctx.fillStyle = "#e2e8f0";
+          roundRect(ctx, boardX - 10, boardY - 10, cols * cell + 20, rows * cell + 20, 18);
+          ctx.fill();
+
+          for (let y = 0; y < rows; y += 1) {
+            for (let x = 0; x < cols; x += 1) {
+              ctx.fillStyle = "#ffffff";
+              roundRect(ctx, boardX + x * cell + 2, boardY + y * cell + 2, cell - 4, cell - 4, 10);
+              ctx.fill();
+              const tile = state.board[y][x];
+              if (tile) drawCell(x, y, tile.color, tile.label);
+            }
+          }
+
+          if (state.piece) {
+            for (let y = 0; y < state.piece.matrix.length; y += 1) {
+              for (let x = 0; x < state.piece.matrix[y].length; x += 1) {
+                if (!state.piece.matrix[y][x]) continue;
+                const drawY = state.piece.y + y;
+                if (drawY < 0) continue;
+                drawCell(state.piece.x + x, drawY, state.piece.color, state.piece.name.slice(0, 1));
+              }
+            }
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 22px sans-serif";
+          ctx.fillText("いまのブロック", 430, 168);
+          if (state.piece) {
+            ctx.fillStyle = state.piece.color;
+            roundRect(ctx, 430, 188, 210, 76, 14);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "800 26px sans-serif";
+            ctx.fillText(state.piece.name, 455, 235);
+          }
+
+          ctx.fillStyle = "#334155";
+          ctx.font = "18px sans-serif";
+          ctx.fillText("満列で消えるので、山を作りすぎないのがコツです。", 430, 318);
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 40px sans-serif";
+            const title = state.mode === "lost" ? "積み上がりすぎました" : "開始を押してスタート";
+            ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 22);
+            ctx.font = "20px sans-serif";
+            ctx.fillText("左右移動、回転、即落下だけの軽い休憩ゲームです。", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function updateHud() {
+          linesText.textContent = String(state.lines);
+          scoreText.textContent = String(state.score);
+          stateText.textContent = state.mode === "playing" ? "進行中" : state.mode === "lost" ? "積み上がり" : "準備";
+        }
+
+        function roundRect(context, x, y, w, h, r) {
+          context.beginPath();
+          context.moveTo(x + r, y);
+          context.arcTo(x + w, y, x + w, y + h, r);
+          context.arcTo(x + w, y + h, x, y + h, r);
+          context.arcTo(x, y + h, x, y, r);
+          context.arcTo(x, y, x + w, y, r);
+          context.closePath();
+        }
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") move(-1);
+          if (event.key === "ArrowRight") move(1);
+          if (event.key === "ArrowUp" || event.key.toLowerCase() === "x") rotate();
+          if (event.key === "ArrowDown") {
+            if (state.mode === "playing" && !collides(state.piece, 0, 1)) {
+              state.piece.y += 1;
+              render();
+            }
+          }
+          if (event.key === " ") {
+            event.preventDefault();
+            hardDrop();
+          }
+        });
+
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        leftBtn.addEventListener("click", () => move(-1));
+        rotateBtn.addEventListener("click", rotate);
+        rightBtn.addEventListener("click", () => move(1));
+        dropBtn.addEventListener("click", hardDrop);
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            lines: state.lines,
+            score: state.score,
+            activePiece: state.piece
+              ? {
+                  name: state.piece.name,
+                  x: state.piece.x,
+                  y: state.piece.y,
+                  width: state.piece.matrix[0].length,
+                  height: state.piece.matrix.length,
+                }
+              : null,
+            filledCells: state.board.flat().filter(Boolean).length,
+            boardTopRows: state.board.slice(0, 4).map((row) => row.map((cell) => (cell ? cell.label : "."))),
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>
