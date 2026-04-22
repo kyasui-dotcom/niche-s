@@ -95,3 +95,17 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified mobile 390px screenshot, right-click flagging, trap loss, and reset with no console/page errors.
 - Deployed to Cloudflare with `npx wrangler deploy`; live checks returned HTTP 200 on `https://niche-s.com/business-procedures/margin-mine-sweeper.html` and the workers.dev URL.
 - TODO: avoid reusing minesweeper / margin-trap, Sokoban / shelf-push puzzle, task triage, snake, memory, pong, invader, lane-dodger, catch, and block-breaker concepts on the next run.
+
+## 2026-04-22
+
+- Added `business-procedures/follow-up-maze.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "Follow-Up Maze" - a small maze-style game where entrepreneurs collect tiny follow-up touchpoints while avoiding noise.
+- Kept the authority boundary explicit: the page only uses follow-up and distraction metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated game validation.
+- Adjusted the maze board offset so the canvas title area stays visible on mobile and desktop screenshots.
+- Verified local HTTP 200 for `/business-procedures/follow-up-maze.html`.
+- Verified with the web game Playwright client: page renders, the planned route reaches `score: 10`, `mode: "clear"`, `lives: 3`, and no console/page errors were generated.
+- Verified a mobile 390px screenshot with no console/page errors; the page stacks correctly and the canvas remains visible.
+- Deployed to Cloudflare with `npx wrangler deploy`; live checks returned HTTP 200 on `https://niche-s.com/business-procedures/follow-up-maze.html` and the workers.dev URL.
+- TODO: avoid reusing minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, and this maze concept on later runs.
