@@ -109,3 +109,14 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified a mobile 390px screenshot with no console/page errors; the page stacks correctly and the canvas remains visible.
 - Deployed to Cloudflare with `npx wrangler deploy`; live checks returned HTTP 200 on `https://niche-s.com/business-procedures/follow-up-maze.html` and the workers.dev URL.
 - TODO: avoid reusing minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, and this maze concept on later runs.
+
+## 2026-04-23
+
+- Added `business-procedures/signal-whack-a-mole.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商機モグラたたき" - a very small whack-a-mole style game where entrepreneurs tap only consultation/referral/revisit signals and ignore notification noise.
+- Kept the authority boundary explicit: the page only uses lightweight sales-signal metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/signal-whack-a-mole.html`.
+- Verified with the develop-web-game Playwright client that gameplay advances and state is emitted; then verified with direct Playwright screenshots that desktop and 390px mobile layouts render correctly and no console/page errors occur.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, and whack-a-mole concepts on the next run.

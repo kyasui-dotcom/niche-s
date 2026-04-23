@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商機モグラたたき | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="小さな商機だけを素早く拾い、通知ノイズは触らない。起業家向けの最小モグラたたきゲームです。行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="商機モグラたたき | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="相談や紹介の芽だけをタップして拾う、起業家向けの小さなモグラたたきゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/signal-whack-a-mole.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/signal-whack-a-mole.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #moleGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 商機モグラたたき</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>商機モグラたたき</h1>
+        <p class="lede">
+          「相談」「紹介」「再訪」の小さな商機だけを拾い、通知ノイズは触らずに流す最小ゲームです。
+          扱うのは営業の空気感だけで、行政・税務・法務の判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./follow-up-maze.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>触るべき芽だけを叩く</h2>
+          <p class="section-copy">クリックかタップだけ。20秒で8点集めればクリア、青い通知を触ると集中が減ります。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="moleGame" width="720" height="540" aria-label="商機モグラたたきのゲーム画面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>商機スコア</span>
+              <strong id="scoreText">0 / 8</strong>
+            </div>
+            <div class="game-stat">
+              <span>集中</span>
+              <strong id="focusText">3</strong>
+            </div>
+            <div class="game-stat">
+              <span>残り時間</span>
+              <strong id="timeText">20秒</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">操作: クリック / タップ。数字キー 1-9 でも叩けます。Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは小さな営業シグナルだけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、相談・紹介・再訪のような軽い商機シグナルと通知ノイズの区別だけを扱います。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("moleGame");
+        const ctx = canvas.getContext("2d");
+        const scoreText = document.getElementById("scoreText");
+        const focusText = document.getElementById("focusText");
+        const timeText = document.getElementById("timeText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const holes = [
+          { x: 180, y: 190 }, { x: 360, y: 190 }, { x: 540, y: 190 },
+          { x: 180, y: 310 }, { x: 360, y: 310 }, { x: 540, y: 310 },
+          { x: 180, y: 430 }, { x: 360, y: 430 }, { x: 540, y: 430 },
+        ];
+        const labels = [
+          { kind: "good", text: "相談", color: "#16a34a" },
+          { kind: "good", text: "紹介", color: "#0284c7" },
+          { kind: "good", text: "再訪", color: "#f59e0b" },
+          { kind: "bad", text: "通知", color: "#60a5fa" },
+        ];
+        const pattern = [
+          { hole: 0, label: 0 }, { hole: 4, label: 3 }, { hole: 8, label: 1 },
+          { hole: 2, label: 0 }, { hole: 6, label: 3 }, { hole: 3, label: 2 },
+          { hole: 5, label: 3 }, { hole: 1, label: 1 }, { hole: 7, label: 0 },
+          { hole: 4, label: 2 }, { hole: 2, label: 3 }, { hole: 0, label: 1 },
+        ];
+        const state = {
+          mode: "ready",
+          score: 0,
+          targetScore: 8,
+          focus: 3,
+          timeLeft: 20,
+          active: null,
+          spawnIndex: 0,
+          spawnTimer: 0,
+          visibleTimer: 0,
+          lastTime: 0,
+          flash: null,
+        };
+
+        function reset() {
+          state.mode = "ready";
+          state.score = 0;
+          state.focus = 3;
+          state.timeLeft = 20;
+          state.active = null;
+          state.spawnIndex = 0;
+          state.spawnTimer = 0;
+          state.visibleTimer = 0;
+          state.flash = null;
+          updateHud();
+          render();
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          if (state.mode === "clear" || state.mode === "over") reset();
+          state.mode = "playing";
+          state.lastTime = performance.now();
+          requestAnimationFrame(loop);
+          updateHud();
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.033, (now - state.lastTime) / 1000 || 0);
+          state.lastTime = now;
+          update(dt);
+          render();
+          if (state.mode === "playing") requestAnimationFrame(loop);
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing") return;
+          state.timeLeft = Math.max(0, state.timeLeft - dt);
+          state.spawnTimer -= dt;
+          state.visibleTimer -= dt;
+          if (state.flash) {
+            state.flash.ttl -= dt;
+            if (state.flash.ttl <= 0) state.flash = null;
+          }
+
+          if (!state.active && state.spawnTimer <= 0) {
+            spawnSignal();
+          }
+
+          if (state.active && state.visibleTimer <= 0) {
+            missActive();
+          }
+
+          if (state.score >= state.targetScore) state.mode = "clear";
+          if (state.focus <= 0) state.mode = "over";
+          if (state.timeLeft <= 0 && state.mode === "playing") {
+            state.mode = state.score >= state.targetScore ? "clear" : "over";
+          }
+
+          updateHud();
+        }
+
+        function spawnSignal() {
+          const next = pattern[state.spawnIndex % pattern.length];
+          const label = labels[next.label];
+          state.active = {
+            holeIndex: next.hole,
+            kind: label.kind,
+            text: label.text,
+            color: label.color,
+          };
+          state.spawnIndex += 1;
+          state.visibleTimer = 0.9;
+          state.spawnTimer = 0.25;
+        }
+
+        function hitActive() {
+          if (!state.active || state.mode !== "playing") return;
+          if (state.active.kind === "good") {
+            state.score += 1;
+            state.flash = { text: "+1", color: "#166534", ttl: 0.35 };
+          } else {
+            state.focus -= 1;
+            state.flash = { text: "集中-1", color: "#1d4ed8", ttl: 0.45 };
+          }
+          state.active = null;
+          state.visibleTimer = 0;
+        }
+
+        function missActive() {
+          if (!state.active) return;
+          if (state.active.kind === "good") {
+            state.flash = { text: "見逃し", color: "#92400e", ttl: 0.4 };
+          }
+          state.active = null;
+          state.visibleTimer = 0;
+        }
+
+        function holeFromPoint(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (clientX - rect.left) * scaleX;
+          const y = (clientY - rect.top) * scaleY;
+          return holes.findIndex((hole) => ((x - hole.x) ** 2 + (y - hole.y) ** 2) <= 48 ** 2);
+        }
+
+        function hitByHole(index) {
+          if (state.mode === "ready") start();
+          if (!state.active || index !== state.active.holeIndex) return;
+          hitActive();
+          render();
+          updateHud();
+        }
+
+        function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+            canvas.requestFullscreen?.();
+          } else {
+            document.exitFullscreen?.();
+          }
+        }
+
+        function updateHud() {
+          scoreText.textContent = `${state.score} / ${state.targetScore}`;
+          focusText.textContent = String(Math.max(0, state.focus));
+          timeText.textContent = `${Math.ceil(state.timeLeft)}秒`;
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#ecfeff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.fillText("signal whack", 24, 40);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Tap only the useful signal.", 24, 64);
+
+          holes.forEach((hole, index) => {
+            ctx.fillStyle = "#cbd5e1";
+            ctx.beginPath();
+            ctx.ellipse(hole.x, hole.y + 18, 66, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#94a3b8";
+            ctx.beginPath();
+            ctx.arc(hole.x, hole.y, 52, 0, Math.PI, true);
+            ctx.fill();
+            ctx.fillStyle = "#64748b";
+            ctx.font = "700 16px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(String(index + 1), hole.x, hole.y + 56);
+          });
+
+          if (state.active) {
+            const hole = holes[state.active.holeIndex];
+            ctx.fillStyle = state.active.color;
+            ctx.beginPath();
+            ctx.arc(hole.x, hole.y - 22, 38, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = state.active.kind === "bad" ? "#0f172a" : "#ffffff";
+            ctx.font = "700 18px sans-serif";
+            ctx.fillText(state.active.text, hole.x, hole.y - 18);
+          }
+
+          if (state.flash) {
+            ctx.fillStyle = state.flash.color;
+            ctx.font = "800 24px sans-serif";
+            ctx.fillText(state.flash.text, 360, 100);
+          }
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.7)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "800 34px sans-serif";
+            ctx.fillText(
+              state.mode === "clear" ? "8点到達" : state.mode === "over" ? "時間切れ" : "Startで開始",
+              canvas.width / 2,
+              canvas.height / 2 - 18
+            );
+            ctx.font = "18px sans-serif";
+            ctx.fillText("商機だけを叩いて、通知は流します。", canvas.width / 2, canvas.height / 2 + 20);
+          }
+          ctx.textAlign = "start";
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            score: state.score,
+            targetScore: state.targetScore,
+            focus: state.focus,
+            timeLeftSeconds: Number(state.timeLeft.toFixed(1)),
+            active: state.active
+              ? {
+                  hole: state.active.holeIndex + 1,
+                  kind: state.active.kind,
+                  text: state.active.text,
+                }
+              : null,
+          });
+        }
+
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        canvas.addEventListener("pointerdown", (event) => {
+          const index = holeFromPoint(event.clientX, event.clientY);
+          if (index >= 0) hitByHole(index);
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key.toLowerCase() === "f") toggleFullscreen();
+          if (event.key >= "1" && event.key <= "9") {
+            hitByHole(Number(event.key) - 1);
+          }
+          if (event.key === " ") {
+            event.preventDefault();
+            start();
+          }
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+          updateHud();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>
