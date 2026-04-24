@@ -131,4 +131,6 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/focus-crossing.html`.
 - Verified with the develop-web-game Playwright client that gameplay advances and state is emitted; the smoke run reached `mode: "playing"` with `lives: 1` after collisions and no console/page errors.
 - Verified a 390px-wide mobile screenshot with HTTP 200 and no console/page errors; the page stacks correctly and the canvas remains visible.
+- Pushed commit `a8b80269aac9aea8b77e5074d4bc923c1c6ad367` to GitHub branch `backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/focus-crossing.html` and the workers.dev URL.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, and Frogger/crossing concepts on the next run.
