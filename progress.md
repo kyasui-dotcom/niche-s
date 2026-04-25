@@ -134,3 +134,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `a8b80269aac9aea8b77e5074d4bc923c1c6ad367` to GitHub branch `backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/focus-crossing.html` and the workers.dev URL.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, and Frogger/crossing concepts on the next run.
+
+## 2026-04-25
+
+- Added `business-procedures/signal-radar-asteroids.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談レーダーアステロイド" - a very small Asteroids-style game where entrepreneurs clear noise blobs from a deal radar without touching permit, tax, legal, or administrative guidance.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/signal-radar-asteroids.html`.
+- Verified with the develop-web-game Playwright client that the first deterministic shot lands, `render_game_to_text` reports `score: 1`, and no console/page errors were generated.
+- Verified a 390px-wide mobile screenshot with no console/page errors; the page stacks correctly and the canvas remains visible.
+- Temporary screenshot output should not be committed.
+- Blocker: Cloudflare deploy is currently failing in this non-interactive environment because `wrangler` has no `CLOUDFLARE_API_TOKEN`, and the Cloudflare API tool also returned an authentication error.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, and Asteroids concepts on the next run.
