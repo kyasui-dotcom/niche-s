@@ -147,3 +147,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Temporary screenshot output should not be committed.
 - Blocker: Cloudflare deploy is currently failing in this non-interactive environment because `wrangler` has no `CLOUDFLARE_API_TOKEN`, and the Cloudflare API tool also returned an authentication error.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, and Asteroids concepts on the next run.
+
+## 2026-04-26
+
+- Added `business-procedures/prospect-pack-run.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "見込み客パックラン" - a very small Pac-Man-style game where entrepreneurs collect prospect signals and avoid noise, without touching permit, tax, legal, or administrative guidance.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- Fixed a ghost navigation bug discovered by the Playwright client by introducing `nextDir` for the ghost AI.
+- Verified local HTTP 200 for `/business-procedures/prospect-pack-run.html`.
+- Verified with the develop-web-game Playwright client that gameplay advances and state is emitted; the smoke run reached `score: 3`, `mode: "playing"`, and `lives: 3` with no console/page errors.
+- Verified a 390px-wide mobile screenshot with no console/page errors; the page stacks correctly and the canvas remains visible.
+- Temporary screenshot output should not be committed.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, and Pac-Man route-collection concepts on the next run.
