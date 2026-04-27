@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>見積着地ランダー | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="推進を調整して見積を安全着地させる、起業家向けの小さなランダーゲーム。扱うのは提案・値付け・着地感覚の比喩だけで、行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="見積着地ランダー | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="推進を調整して、良い条件の着地点へ見積を安全着地させる小さな起業家ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/quote-lander.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/quote-lander.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #quoteLander {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: none;
+      }
+      .touch-controls {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .touch-controls .button {
+        width: 100%;
+        min-height: 46px;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 見積着地ランダー</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>見積着地ランダー</h1>
+        <p class="lede">
+          左右移動と軽い噴射だけで、見積ポッドを良い条件の着地点へ着地させる小さなランダーゲームです。
+          扱うのは提案と着地感覚の比喩だけで、行政・税務・法務などの判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./pricing-draft-builder.html">価格たたき台を見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>勢いを抑えて、受注ラインへやわらかく降りる</h2>
+          <p class="section-copy">
+            左右で位置調整、上で噴射。緑の着地帯へ低速で降りれば成功、赤い帯や強すぎる着地は失敗です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="quoteLander" width="720" height="540" aria-label="見積着地ランダーのゲーム画面"></canvas>
+            <div class="touch-controls" aria-label="touch controls">
+              <button id="leftBtn" class="button ghost" type="button">左へ</button>
+              <button id="thrustBtn" class="button primary" type="button">噴射</button>
+              <button id="rightBtn" class="button ghost" type="button">右へ</button>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>成功着地</span>
+              <strong id="scoreText">0 / 3</strong>
+            </div>
+            <div class="game-stat">
+              <span>残り燃料</span>
+              <strong id="fuelText">100</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="modeText">準備</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">リセット</button>
+            </div>
+            <p class="game-note">操作: ← → / A D で移動、↑ / W / Space で噴射、Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは見積調整の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームが扱うのは、提案、価格感、条件調整の軽い比喩だけです。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("quoteLander");
+        const ctx = canvas.getContext("2d");
+        const scoreText = document.getElementById("scoreText");
+        const fuelText = document.getElementById("fuelText");
+        const modeText = document.getElementById("modeText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const leftBtn = document.getElementById("leftBtn");
+        const thrustBtn = document.getElementById("thrustBtn");
+        const rightBtn = document.getElementById("rightBtn");
+        const keys = new Set();
+
+        const gravity = 90;
+        const thrustPower = 150;
+        const driftPower = 130;
+        const pad = { x: 430, y: 458, w: 140, h: 16 };
+        const badZone = { x: 180, y: 466, w: 120, h: 10 };
+        const state = {
+          mode: "ready",
+          successes: 0,
+          fuel: 100,
+          lastTime: 0,
+          message: "開始でスタート",
+          pod: null,
+        };
+
+        function freshPod() {
+          return { x: 340, y: 40, vx: 6, vy: 0, w: 26, h: 34 };
+        }
+
+        function resetRound() {
+          state.fuel = 100;
+          state.pod = freshPod();
+        }
+
+        function reset() {
+          state.mode = "ready";
+          state.successes = 0;
+          state.message = "開始でスタート";
+          resetRound();
+          updateHud();
+          render();
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          if (state.mode === "won" || state.mode === "lost") {
+            state.successes = 0;
+            resetRound();
+          }
+          state.mode = "playing";
+          state.message = "良い条件へ着地";
+          state.lastTime = performance.now();
+          updateHud();
+          requestAnimationFrame(loop);
+        }
+
+        function applyControls(dt) {
+          if ((keys.has("ArrowLeft") || keys.has("a")) && state.fuel > 0) {
+            state.pod.vx -= driftPower * dt;
+            state.fuel = Math.max(0, state.fuel - 8 * dt);
+          }
+          if ((keys.has("ArrowRight") || keys.has("d")) && state.fuel > 0) {
+            state.pod.vx += driftPower * dt;
+            state.fuel = Math.max(0, state.fuel - 8 * dt);
+          }
+          if ((keys.has("ArrowUp") || keys.has("w") || keys.has(" ")) && state.fuel > 0) {
+            state.pod.vy -= thrustPower * dt;
+            state.fuel = Math.max(0, state.fuel - 20 * dt);
+          }
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing") return;
+
+          applyControls(dt);
+          state.pod.vy += gravity * dt;
+          state.pod.x += state.pod.vx * dt;
+          state.pod.y += state.pod.vy * dt;
+
+          if (state.pod.x < 20) {
+            state.pod.x = 20;
+            state.pod.vx *= -0.5;
+          }
+          if (state.pod.x > canvas.width - 20) {
+            state.pod.x = canvas.width - 20;
+            state.pod.vx *= -0.5;
+          }
+
+          const bottom = state.pod.y + state.pod.h / 2;
+          const onGround = bottom >= 470;
+          if (!onGround) return;
+
+          const withinPad = state.pod.x >= pad.x && state.pod.x <= pad.x + pad.w;
+          const withinBadZone = state.pod.x >= badZone.x && state.pod.x <= badZone.x + badZone.w;
+          const safeVertical = Math.abs(state.pod.vy) <= 65;
+          const safeHorizontal = Math.abs(state.pod.vx) <= 55;
+
+          if (withinPad && safeVertical && safeHorizontal) {
+            state.successes += 1;
+            if (state.successes >= 3) {
+              state.mode = "won";
+              state.message = "3回着地成功";
+            } else {
+              state.message = "着地成功";
+              resetRound();
+            }
+          } else if (withinBadZone) {
+            state.mode = "lost";
+            state.message = "悪条件へ着地";
+          } else {
+            state.mode = "lost";
+            state.message = "着地が強すぎました";
+          }
+          updateHud();
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.033, (now - state.lastTime) / 1000 || 0);
+          state.lastTime = now;
+          update(dt);
+          render();
+          if (state.mode === "playing") requestAnimationFrame(loop);
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          sky.addColorStop(0, "#e0f2fe");
+          sky.addColorStop(0.65, "#eff6ff");
+          sky.addColorStop(1, "#ffffff");
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "800 32px sans-serif";
+          ctx.fillText("見積着地ランダー", 24, 46);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("勢いを整えて、良い条件の受注帯へ着地", 24, 72);
+
+          drawStars();
+
+          ctx.fillStyle = "#cbd5e1";
+          ctx.beginPath();
+          ctx.moveTo(0, 470);
+          ctx.lineTo(120, 430);
+          ctx.lineTo(250, 470);
+          ctx.lineTo(420, 420);
+          ctx.lineTo(560, 470);
+          ctx.lineTo(720, 438);
+          ctx.lineTo(720, 540);
+          ctx.lineTo(0, 540);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = "#16a34a";
+          ctx.fillRect(pad.x, pad.y, pad.w, pad.h);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("受注帯", pad.x + pad.w / 2, pad.y + 26);
+
+          ctx.fillStyle = "#ef4444";
+          ctx.fillRect(badZone.x, badZone.y, badZone.w, badZone.h);
+          ctx.fillStyle = "#7f1d1d";
+          ctx.fillText("値引き沼", badZone.x + badZone.w / 2, badZone.y - 10);
+          ctx.textAlign = "start";
+
+          drawPod();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 16px sans-serif";
+          ctx.fillText(`縦速度 ${state.pod.vy.toFixed(1)}`, 24, 110);
+          ctx.fillText(`横速度 ${state.pod.vx.toFixed(1)}`, 24, 132);
+          ctx.fillText("受注帯では 低速着地 が必要", 24, 154);
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            const title = state.mode === "won" ? "良い条件で着地完了" : state.mode === "lost" ? state.message : "見積着地ランダー";
+            ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 14);
+            ctx.font = "18px sans-serif";
+            ctx.fillText("開始を押して、左右移動と噴射で着地", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function drawPod() {
+          const { x, y, w, h } = state.pod;
+          ctx.fillStyle = "#2563eb";
+          roundRect(ctx, x - w / 2, y - h / 2, w, h, 8);
+          ctx.fill();
+          ctx.fillStyle = "#bfdbfe";
+          ctx.fillRect(x - 7, y - 6, 14, 12);
+          ctx.fillStyle = "#0f172a";
+          ctx.fillRect(x - 13, y + h / 2 - 2, 4, 10);
+          ctx.fillRect(x + 9, y + h / 2 - 2, 4, 10);
+
+          if ((keys.has("ArrowUp") || keys.has("w") || keys.has(" ")) && state.mode === "playing" && state.fuel > 0) {
+            ctx.fillStyle = "#f59e0b";
+            ctx.beginPath();
+            ctx.moveTo(x - 6, y + h / 2 + 4);
+            ctx.lineTo(x + 6, y + h / 2 + 4);
+            ctx.lineTo(x, y + h / 2 + 22);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        function drawStars() {
+          const stars = [
+            [88, 96], [140, 56], [248, 88], [312, 44], [410, 92], [588, 72], [650, 110]
+          ];
+          ctx.fillStyle = "#ffffff";
+          for (const [x, y] of stars) {
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function updateHud() {
+          scoreText.textContent = `${state.successes} / 3`;
+          fuelText.textContent = String(Math.round(state.fuel));
+          modeText.textContent =
+            state.mode === "playing" ? "飛行中" : state.mode === "won" ? "完了" : state.mode === "lost" ? "失敗" : "準備";
+        }
+
+        function roundRect(context, x, y, w, h, r) {
+          context.beginPath();
+          context.moveTo(x + r, y);
+          context.arcTo(x + w, y, x + w, y + h, r);
+          context.arcTo(x + w, y + h, x, y + h, r);
+          context.arcTo(x, y + h, x, y, r);
+          context.arcTo(x, y, x + w, y, r);
+          context.closePath();
+        }
+
+        function tapControl(type) {
+          if (state.mode !== "playing") return;
+          if (type === "left" && state.fuel > 0) {
+            state.pod.vx -= 20;
+            state.fuel = Math.max(0, state.fuel - 2);
+          }
+          if (type === "right" && state.fuel > 0) {
+            state.pod.vx += 20;
+            state.fuel = Math.max(0, state.fuel - 2);
+          }
+          if (type === "thrust" && state.fuel > 0) {
+            state.pod.vy -= 24;
+            state.fuel = Math.max(0, state.fuel - 4);
+          }
+          updateHud();
+          render();
+        }
+
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        leftBtn.addEventListener("click", () => tapControl("left"));
+        rightBtn.addEventListener("click", () => tapControl("right"));
+        thrustBtn.addEventListener("click", () => tapControl("thrust"));
+
+        window.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (["arrowleft", "arrowright", "arrowup", "a", "d", "w", " "].includes(event.key) || ["a", "d", "w"].includes(key)) {
+            keys.add(event.key);
+            keys.add(key);
+          }
+          if (event.key === " ") {
+            event.preventDefault();
+            if (state.mode !== "playing") start();
+          }
+          if (key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else canvas.requestFullscreen().catch(() => {});
+          }
+        });
+
+        window.addEventListener("keyup", (event) => {
+          const key = event.key.toLowerCase();
+          keys.delete(event.key);
+          keys.delete(key);
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+          updateHud();
+        };
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            successes: state.successes,
+            fuel: Math.round(state.fuel),
+            message: state.message,
+            pod: {
+              x: Math.round(state.pod.x),
+              y: Math.round(state.pod.y),
+              vx: Number(state.pod.vx.toFixed(2)),
+              vy: Number(state.pod.vy.toFixed(2)),
+              width: state.pod.w,
+              height: state.pod.h,
+            },
+            pad: {
+              x: pad.x,
+              y: pad.y,
+              width: pad.w,
+            },
+            badZone: {
+              x: badZone.x,
+              y: badZone.y,
+              width: badZone.w,
+            },
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>
