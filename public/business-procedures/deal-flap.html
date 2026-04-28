@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商談フラップ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="雑音の壁をよけて商談ウィンドウをくぐる、起業家向けの小さなフラップゲーム。扱うのは営業導線と集中の比喩だけで、行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="商談フラップ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="雑音をよけながら商談ウィンドウを通す、起業家向けの小さなフラップゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/deal-flap.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/deal-flap.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #dealFlap {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #eff6ff;
+        touch-action: manipulation;
+      }
+      .touch-controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .touch-controls .button {
+        width: 100%;
+        min-height: 48px;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 商談フラップ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>商談フラップ</h1>
+        <p class="lede">
+          小さな提案カプセルを上下に弾ませて、雑音の壁のあいだにある商談ウィンドウをくぐるだけの軽いゲームです。
+          扱うのは営業導線と集中の比喩だけで、行政・税務・法務などの判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./startup-channel-planner.html">集客導線を見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>上に弾いて、商談ウィンドウを連続で通す</h2>
+          <p class="section-copy">
+            Space かタップで上昇。青いカプセルを商談ウィンドウへ通すたびにスコアが増え、8本通過でクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="dealFlap" width="720" height="540" aria-label="商談フラップのゲーム画面"></canvas>
+            <div class="touch-controls" aria-label="touch controls">
+              <button id="flapBtn" class="button primary" type="button">上に弾く</button>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>通過数</span>
+              <strong id="scoreText">0 / 8</strong>
+            </div>
+            <div class="game-stat">
+              <span>残り挑戦</span>
+              <strong id="lifeText">3</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="modeText">準備</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">リセット</button>
+            </div>
+            <p class="game-note">操作: Space / クリック / タップで上昇、Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは営業導線の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、問い合わせや相談機会に向けて雑音を避ける感覚を軽く遊ぶためのものです。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("dealFlap");
+        const ctx = canvas.getContext("2d");
+        const scoreText = document.getElementById("scoreText");
+        const lifeText = document.getElementById("lifeText");
+        const modeText = document.getElementById("modeText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const flapBtn = document.getElementById("flapBtn");
+
+        const gravity = 700;
+        const flapPower = -245;
+        const pipeSpeed = 140;
+        const gapHeight = 200;
+        const pipeWidth = 92;
+        const spawnEvery = 1.8;
+        const gapSequence = [300, 250, 320, 270, 230, 310, 260, 340, 280, 240];
+
+        const state = {
+          mode: "ready",
+          score: 0,
+          lives: 3,
+          bird: null,
+          pipes: [],
+          spawnTimer: 0,
+          gapIndex: 0,
+          lastTime: 0,
+          message: "開始でスタート",
+        };
+
+        function freshBird() {
+          return { x: 190, y: 240, vy: 0, r: 18 };
+        }
+
+        function resetRound() {
+          state.gapIndex = 0;
+          state.bird = freshBird();
+          state.pipes = [makePipe(620), makePipe(930)];
+          state.spawnTimer = 0.8;
+          state.gapIndex = 2;
+        }
+
+        function reset() {
+          state.mode = "ready";
+          state.score = 0;
+          state.lives = 3;
+          state.message = "開始でスタート";
+          resetRound();
+          updateHud();
+          render();
+        }
+
+        function makePipe(x) {
+          const gapY = gapSequence[state.gapIndex % gapSequence.length];
+          state.gapIndex += 1;
+          return { x, gapY, passed: false };
+        }
+
+        function start() {
+          if (state.mode === "playing") return;
+          if (state.mode === "won") {
+            state.score = 0;
+            state.lives = 3;
+          }
+          if (state.mode === "lost" && state.lives <= 0) {
+            state.score = 0;
+            state.lives = 3;
+          }
+          if (state.mode !== "ready" && state.mode !== "playing") {
+            resetRound();
+          }
+          state.mode = "playing";
+          state.message = "商談ウィンドウを通過";
+          state.lastTime = performance.now();
+          flap();
+          updateHud();
+          requestAnimationFrame(loop);
+        }
+
+        function flap() {
+          if (state.mode !== "playing") return;
+          state.bird.vy = flapPower;
+        }
+
+        function loseRound(message) {
+          state.lives -= 1;
+          state.message = message;
+          if (state.lives <= 0) {
+            state.mode = "lost";
+            state.message = "挑戦終了";
+          } else {
+            state.mode = "ready";
+            resetRound();
+          }
+          updateHud();
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing") return;
+
+          state.bird.vy += gravity * dt;
+          state.bird.y += state.bird.vy * dt;
+
+          state.spawnTimer += dt;
+          if (state.spawnTimer >= spawnEvery) {
+            state.spawnTimer = 0;
+            const lastX = state.pipes.length ? state.pipes[state.pipes.length - 1].x : canvas.width;
+            state.pipes.push(makePipe(lastX + 270));
+          }
+
+          for (const pipe of state.pipes) {
+            pipe.x -= pipeSpeed * dt;
+            if (!pipe.passed && pipe.x + pipeWidth < state.bird.x) {
+              pipe.passed = true;
+              state.score += 1;
+              if (state.score >= 8) {
+                state.mode = "won";
+                state.message = "8本通過でクリア";
+              }
+            }
+          }
+
+          state.pipes = state.pipes.filter((pipe) => pipe.x + pipeWidth > -20);
+
+          if (state.bird.y - state.bird.r <= 24) {
+            state.bird.y = 24 + state.bird.r;
+            state.bird.vy = 0;
+          }
+          if (state.bird.y + state.bird.r >= canvas.height - 24) {
+            loseRound("下に落下");
+            return;
+          }
+
+          for (const pipe of state.pipes) {
+            const topHeight = pipe.gapY - gapHeight / 2;
+            const bottomY = pipe.gapY + gapHeight / 2;
+            const hitX = state.bird.x + state.bird.r > pipe.x && state.bird.x - state.bird.r < pipe.x + pipeWidth;
+            const hitTop = state.bird.y - state.bird.r < topHeight;
+            const hitBottom = state.bird.y + state.bird.r > bottomY;
+            if (hitX && (hitTop || hitBottom)) {
+              loseRound("雑音ブロックに接触");
+              return;
+            }
+          }
+
+          updateHud();
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.033, (now - state.lastTime) / 1000 || 0);
+          state.lastTime = now;
+          update(dt);
+          render();
+          if (state.mode === "playing") requestAnimationFrame(loop);
+        }
+
+        function drawBackground() {
+          const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          sky.addColorStop(0, "#dbeafe");
+          sky.addColorStop(0.7, "#eff6ff");
+          sky.addColorStop(1, "#ffffff");
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#ffffff";
+          const clouds = [
+            [120, 110, 70],
+            [280, 84, 56],
+            [510, 100, 76],
+            [630, 68, 48],
+          ];
+          for (const [x, y, w] of clouds) {
+            ctx.beginPath();
+            ctx.arc(x, y, 24, Math.PI, 0);
+            ctx.arc(x + 22, y - 8, 20, Math.PI, 0);
+            ctx.arc(x + 44, y, 24, Math.PI, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillRect(x, y, w, 18);
+          }
+
+          ctx.fillStyle = "#bfdbfe";
+          ctx.fillRect(0, canvas.height - 72, canvas.width, 72);
+        }
+
+        function drawPipes() {
+          for (const pipe of state.pipes) {
+            const topHeight = pipe.gapY - gapHeight / 2;
+            const bottomY = pipe.gapY + gapHeight / 2;
+            ctx.fillStyle = "#1d4ed8";
+            ctx.fillRect(pipe.x, 24, pipeWidth, topHeight - 24);
+            ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - 96 - bottomY);
+
+            ctx.fillStyle = "#60a5fa";
+            ctx.fillRect(pipe.x - 6, topHeight - 16, pipeWidth + 12, 16);
+            ctx.fillRect(pipe.x - 6, bottomY, pipeWidth + 12, 16);
+
+            ctx.strokeStyle = "rgba(255,255,255,0.9)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(pipe.x + 10, pipe.gapY - 40, pipeWidth - 20, 80);
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 14px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("商談", pipe.x + pipeWidth / 2, pipe.gapY - 8);
+            ctx.fillText("窓", pipe.x + pipeWidth / 2, pipe.gapY + 14);
+          }
+          ctx.textAlign = "start";
+        }
+
+        function drawBird() {
+          const { x, y, r, vy } = state.bird;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(Math.max(-0.6, Math.min(0.8, vy / 360)));
+          ctx.fillStyle = "#2563eb";
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#bfdbfe";
+          ctx.beginPath();
+          ctx.arc(4, -2, 8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#f59e0b";
+          ctx.beginPath();
+          ctx.moveTo(12, 2);
+          ctx.lineTo(26, 8);
+          ctx.lineTo(12, 12);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = "#0f172a";
+          ctx.beginPath();
+          ctx.arc(6, -4, 2.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#1d4ed8";
+          ctx.fillRect(-18, 2, 16, 7);
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawBackground();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "800 32px sans-serif";
+          ctx.fillText("商談フラップ", 24, 48);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("雑音の壁をよけて、商談ウィンドウを通過", 24, 74);
+
+          drawPipes();
+          drawBird();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 16px sans-serif";
+          ctx.fillText(`通過 ${state.score} / 8`, 24, 106);
+          ctx.fillText(`残り挑戦 ${state.lives}`, 24, 128);
+          ctx.fillText("1回でもぶつかると挑戦を1つ消費", 24, 150);
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            let title = "商談フラップ";
+            if (state.mode === "won") title = "クリア";
+            if (state.mode === "lost") title = "挑戦終了";
+            ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 18);
+            ctx.font = "18px sans-serif";
+            ctx.fillText(state.message, canvas.width / 2, canvas.height / 2 + 16);
+            ctx.fillText("開始後は Space / タップで上昇", canvas.width / 2, canvas.height / 2 + 46);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function updateHud() {
+          scoreText.textContent = `${state.score} / 8`;
+          lifeText.textContent = String(state.lives);
+          modeText.textContent =
+            state.mode === "playing" ? "飛行中" : state.mode === "won" ? "完了" : state.mode === "lost" ? "終了" : "準備";
+        }
+
+        function activateFlap() {
+          if (state.mode !== "playing") {
+            start();
+            return;
+          }
+          flap();
+          render();
+        }
+
+        startBtn.addEventListener("click", start);
+        resetBtn.addEventListener("click", reset);
+        flapBtn.addEventListener("click", activateFlap);
+        canvas.addEventListener("pointerdown", activateFlap);
+
+        window.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (event.key === " " || key === "arrowup" || key === "w") {
+            event.preventDefault();
+            activateFlap();
+          }
+          if (key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else canvas.requestFullscreen().catch(() => {});
+          }
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+          updateHud();
+        };
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            score: state.score,
+            lives: state.lives,
+            message: state.message,
+            bird: {
+              x: Math.round(state.bird.x),
+              y: Math.round(state.bird.y),
+              vy: Number(state.bird.vy.toFixed(2)),
+              r: state.bird.r,
+            },
+            pipes: state.pipes.slice(0, 3).map((pipe) => ({
+              x: Math.round(pipe.x),
+              gapY: pipe.gapY,
+              gapHeight,
+              width: pipeWidth,
+              passed: pipe.passed,
+            })),
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>

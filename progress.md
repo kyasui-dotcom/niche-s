@@ -176,3 +176,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Cloudflare deploy attempt with `npx wrangler deploy` failed in this non-interactive environment because `CLOUDFLARE_API_TOKEN` is not set.
 - Temporary screenshot output should not be committed.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, and Lunar Lander concepts on the next run.
+
+## 2026-04-28
+
+- Added `business-procedures/deal-flap.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談フラップ" - a very small Flappy Bird-style game where entrepreneurs guide a proposal capsule through meeting windows while avoiding noise blocks, without touching permit, tax, legal, or administrative guidance.
+- Kept the authority boundary explicit: the page only uses sales-flow and focus metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/deal-flap.html`.
+- Verified with the develop-web-game Playwright client that the page starts, state JSON is emitted in-flight, and a desktop gameplay screenshot renders correctly.
+- Verified a 390px-wide mobile screenshot with no console or page errors; the hero, canvas, CTA, and status cards stack correctly.
+- Temporary screenshot output should not be committed.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, and Flappy Bird-style concepts on the next run.
