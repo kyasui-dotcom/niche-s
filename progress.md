@@ -189,3 +189,13 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified a 390px-wide mobile screenshot with no console or page errors; the hero, canvas, CTA, and status cards stack correctly.
 - Temporary screenshot output should not be committed.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, and Flappy Bird-style concepts on the next run.
+
+## 2026-04-29
+
+- Added `business-procedures/priority-slide.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝イチ優先スライド" - a very small 3x3 sliding puzzle where entrepreneurs reorder the first eight morning actions, without touching permit, tax, legal, or administrative guidance.
+- Kept the authority boundary explicit: the page only uses morning-priority and workflow-order metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- The board starts from a fixed 4-move-solvable layout so smoke tests can cover both input handling and clear-state transition.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, and sliding-puzzle concepts on the next run.
