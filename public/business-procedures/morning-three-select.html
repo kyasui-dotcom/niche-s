@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝イチ3件セレクト | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="起業家が朝イチで先にやる3件を選ぶ、小さな日本語ミニゲーム。扱うのは優先順位の比喩だけで、行政・税務・法務など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝イチ3件セレクト | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="今日前に進める3件を選ぶだけの、起業家向け日本語ミニゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-three-select.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-three-select.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 16px;
+      }
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .task-card {
+        min-height: 144px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #ffffff;
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      }
+      .task-card:hover,
+      .task-card:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .task-card strong {
+        display: block;
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+        color: var(--dark);
+      }
+      .task-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+      .task-card.ok {
+        border-color: #16a34a;
+        background: #f0fdf4;
+      }
+      .task-card.miss {
+        border-color: #ef4444;
+        background: #fef2f2;
+      }
+      .task-card.done {
+        opacity: 0.72;
+        cursor: default;
+      }
+      .task-card .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 8px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        background: #e2e8f0;
+        color: #334155;
+      }
+      .task-card.ok .chip {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .task-card.miss .chip {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .task-card.done .chip {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy,
+      .rule-list {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .rule-list {
+        display: grid;
+        gap: 8px;
+        padding-left: 18px;
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          width: auto;
+          flex: 1 1 140px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝イチ3件セレクト</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝イチ3件セレクト</h1>
+        <p class="lede">
+          朝いちばんに前へ進める3件を選ぶだけの、小さな起業家向けゲームです。
+          扱うのは優先順位の比喩だけで、行政・税務・法務・労務など他領域の判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./customer-templates.html">顧客対応テンプレを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>今日やる3件だけを先に決める</h2>
+          <p class="section-copy">
+            9枚の中から、今日の前進に直結する3件を選びます。3件当てればクリア、2回外すとやり直しです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div id="taskGrid" class="task-grid" aria-live="polite"></div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>正解</span>
+              <strong id="pickedText">0 / 3</strong>
+            </div>
+            <div class="game-stat">
+              <span>ミス</span>
+              <strong id="missText">0 / 2</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">準備中</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次の3件</button>
+            </div>
+            <p id="messageText" class="game-note">開始すると毎回ちがう組み合わせが出ます。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>このゲームで見ている基準</h2>
+        </div>
+        <ul class="rule-list">
+          <li>売上、返信、提案、日程確定のように前進が起きるものを優先します。</li>
+          <li>眺めるだけ、迷うだけ、整えるだけの作業は後回し候補として混ぜています。</li>
+          <li>答えは事業判断の練習用であり、行政手続きや専門判断の代替ではありません。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このゲームが扱うのは、ひとり起業や小規模事業の朝の優先順位だけです。許認可、税務、法務、労務、行政窓口の案内や可否判断は扱いません。そうした領域は公式窓口や専門家の管轄として残します。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const priorityPool = [
+          { title: "見積を返す", detail: "止まっている検討を前に進める。" },
+          { title: "初回返信を送る", detail: "温度が高いうちに会話を始める。" },
+          { title: "提案を1本送る", detail: "今日の前進を自分で作る。" },
+          { title: "日程を確定する", detail: "次の一歩を相手と固定する。" },
+          { title: "既存客に1通送る", detail: "関係を寝かせすぎない。" },
+          { title: "納品確認を返す", detail: "案件を止めず信頼を積む。" }
+        ];
+
+        const deferPool = [
+          { title: "配色をまた迷う", detail: "今すぐ前進は起きにくい。" },
+          { title: "通知を全部読む", detail: "反応の薄い情報で時間が溶ける。" },
+          { title: "ロゴ案を眺める", detail: "気持ちは動くが案件は動きにくい。" },
+          { title: "フォルダ名を整える", detail: "整頓はできるが受注は進まない。" },
+          { title: "文言を1文字ずつ直す", detail: "磨き込みが先行しやすい。" },
+          { title: "ツール比較を続ける", detail: "選ぶだけで午前が終わりやすい。" },
+          { title: "過去メモを読み返す", detail: "安心は出るが進捗は出にくい。" },
+          { title: "画面幅を微調整する", detail: "今この瞬間の優先ではない。" }
+        ];
+
+        const taskGrid = document.getElementById("taskGrid");
+        const pickedText = document.getElementById("pickedText");
+        const missText = document.getElementById("missText");
+        const statusText = document.getElementById("statusText");
+        const messageText = document.getElementById("messageText");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        const state = {
+          mode: "ready",
+          picked: 0,
+          misses: 0,
+          round: 0,
+          cards: []
+        };
+
+        function shuffle(list) {
+          const next = [...list];
+          for (let i = next.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [next[i], next[j]] = [next[j], next[i]];
+          }
+          return next;
+        }
+
+        function buildRound() {
+          const picks = shuffle(priorityPool).slice(0, 3).map((item) => ({ ...item, kind: "priority" }));
+          const decoys = shuffle(deferPool).slice(0, 6).map((item) => ({ ...item, kind: "defer" }));
+          state.cards = shuffle([...picks, ...decoys]).map((item, index) => ({
+            ...item,
+            id: `${state.round}-${index}`,
+            done: false,
+            result: ""
+          }));
+        }
+
+        function startRound() {
+          state.mode = "playing";
+          state.picked = 0;
+          state.misses = 0;
+          state.round += 1;
+          buildRound();
+          messageText.textContent = "今日やる3件を選んでください。";
+          updateHud();
+          render();
+        }
+
+        function render() {
+          taskGrid.innerHTML = "";
+          for (const card of state.cards) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `task-card${card.result ? ` ${card.result}` : ""}${card.done ? " done" : ""}`;
+            button.disabled = card.done || state.mode !== "playing";
+            button.innerHTML = `
+              <span class="chip">${labelFor(card)}</span>
+              <strong>${card.title}</strong>
+              <p>${card.detail}</p>
+            `;
+            button.addEventListener("click", () => pickCard(card.id));
+            taskGrid.appendChild(button);
+          }
+        }
+
+        function labelFor(card) {
+          if (card.result === "ok") return "前進";
+          if (card.result === "miss") return "後回し";
+          return "選ぶ";
+        }
+
+        function pickCard(id) {
+          if (state.mode !== "playing") return;
+          const card = state.cards.find((item) => item.id === id);
+          if (!card || card.done) return;
+
+          card.done = true;
+          if (card.kind === "priority") {
+            card.result = "ok";
+            state.picked += 1;
+            messageText.textContent = "その調子です。前へ進む3件を先に固めます。";
+            if (state.picked >= 3) {
+              state.mode = "won";
+              messageText.textContent = "クリア。朝の3件が決まりました。";
+            }
+          } else {
+            card.result = "miss";
+            state.misses += 1;
+            messageText.textContent = "今は後回し候補です。前進が起きる3件を探します。";
+            if (state.misses >= 2) {
+              state.mode = "lost";
+              revealPriorities();
+              messageText.textContent = "やり直し。前進に直結する3件を先に取るゲームです。";
+            }
+          }
+
+          updateHud();
+          render();
+        }
+
+        function revealPriorities() {
+          for (const card of state.cards) {
+            if (card.kind === "priority") {
+              card.done = true;
+              card.result = "ok";
+            }
+          }
+        }
+
+        function updateHud() {
+          pickedText.textContent = `${state.picked} / 3`;
+          missText.textContent = `${state.misses} / 2`;
+          statusText.textContent =
+            state.mode === "playing"
+              ? "選択中"
+              : state.mode === "won"
+                ? "クリア"
+                : state.mode === "lost"
+                  ? "やり直し"
+                  : "準備中";
+        }
+
+        startBtn.addEventListener("click", startRound);
+        nextBtn.addEventListener("click", startRound);
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            picked: state.picked,
+            misses: state.misses,
+            round: state.round,
+            cards: state.cards.map((card) => ({
+              title: card.title,
+              kind: card.kind,
+              done: card.done,
+              result: card.result
+            }))
+          });
+
+        startRound();
+      })();
+    </script>
+  </body>
+</html>
