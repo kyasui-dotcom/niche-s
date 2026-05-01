@@ -199,3 +199,12 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Added `render_game_to_text` and `advanceTime` hooks for automated validation.
 - The board starts from a fixed 4-move-solvable layout so smoke tests can cover both input handling and clear-state transition.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, and sliding-puzzle concepts on the next run.
+
+## 2026-05-01
+
+- Added `business-procedures/deal-temperature-high-low.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談温度ハイロー" - a very small High-Low style card game where entrepreneurs guess whether the next deal-temperature card is higher or lower.
+- Kept the authority boundary explicit: the page only uses reply / conversation / deal-temperature metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and a simple `advanceTime` hook for automated validation.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, and High-Low card concepts on the next run.
