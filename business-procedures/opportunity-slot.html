@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商機スロット | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="3つのリールを止めて商機をそろえる、起業家向けの小さなスロットゲーム。営業の温度感と集中だけを扱い、行政・税務・法務の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="商機スロット | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="3つのリールを止めて商機をそろえる、起業家向けの小さなスロットゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/opportunity-slot.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/opportunity-slot.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #slotGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .game-controls .button.wide {
+        grid-column: 1 / -1;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 商機スロット</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>商機スロット</h1>
+        <p class="lede">
+          3つのリールを止めて、相談・紹介・再訪のような商機シグナルをそろえる小さなゲームです。
+          行政・税務・法務などの判断には踏み込まない、休憩向けの軽いコンテンツです。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./customer-templates.html">顧客対応テンプレを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>回して止めて、良い並びを拾う</h2>
+          <p class="section-copy">
+            まず Spin。次に3本のリールを順番に止めます。良いシグナルだけで止まればポイント、ノイズが混ざると集中が減ります。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="slotGame" width="720" height="540" aria-label="商機スロット game canvas"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>ポイント</span>
+              <strong id="scoreText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>集中</span>
+              <strong id="focusText">4</strong>
+            </div>
+            <div class="game-stat">
+              <span>ラウンド</span>
+              <strong id="roundText">0 / 6</strong>
+            </div>
+            <div class="game-controls">
+              <button id="spinBtn" class="button primary wide" type="button">Spin</button>
+              <button id="stopLeftBtn" class="button ghost" type="button">左を止める</button>
+              <button id="stopCenterBtn" class="button ghost" type="button">中央を止める</button>
+              <button id="stopRightBtn" class="button ghost" type="button">右を止める</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">
+              操作: `1` `2` `3` で各リール停止。`S` で Spin、`F` でフルスクリーン。
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは営業シグナルの比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、相談・紹介・再訪・返信のような軽い営業シグナルだけを扱います。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("slotGame");
+        const ctx = canvas.getContext("2d");
+        const scoreText = document.getElementById("scoreText");
+        const focusText = document.getElementById("focusText");
+        const roundText = document.getElementById("roundText");
+        const spinBtn = document.getElementById("spinBtn");
+        const stopLeftBtn = document.getElementById("stopLeftBtn");
+        const stopCenterBtn = document.getElementById("stopCenterBtn");
+        const stopRightBtn = document.getElementById("stopRightBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const strips = [
+          ["相談", "保留", "紹介", "再訪", "雑音", "返信"],
+          ["再訪", "返信", "雑音", "相談", "保留", "紹介"],
+          ["紹介", "雑音", "返信", "相談", "再訪", "保留"],
+        ];
+        const goodSet = new Set(["相談", "紹介", "再訪", "返信"]);
+        const state = {
+          mode: "ready",
+          score: 0,
+          focus: 4,
+          round: 0,
+          maxRounds: 6,
+          message: "Spinで開始",
+          reels: strips.map((strip, index) => ({
+            strip,
+            x: 148 + index * 170,
+            offset: index * 1.7,
+            speed: 7 + index * 1.2,
+            spinning: false,
+            locked: false,
+            result: strip[index],
+          })),
+        };
+
+        function reset() {
+          state.mode = "ready";
+          state.score = 0;
+          state.focus = 4;
+          state.round = 0;
+          state.message = "Spinで開始";
+          state.reels.forEach((reel, index) => {
+            reel.offset = index * 1.7;
+            reel.spinning = false;
+            reel.locked = false;
+            reel.result = reel.strip[index];
+          });
+          updateHud();
+          render();
+        }
+
+        function beginRound() {
+          if (state.mode === "spinning") return;
+          if (state.round >= state.maxRounds || state.focus <= 0) {
+            reset();
+            return;
+          }
+          state.mode = "spinning";
+          state.message = "3本とも止める";
+          state.reels.forEach((reel, index) => {
+            reel.spinning = true;
+            reel.locked = false;
+            reel.speed = 7.2 + index * 1.45;
+          });
+          updateHud();
+          render();
+        }
+
+        function stopReel(index) {
+          const reel = state.reels[index];
+          if (!reel || !reel.spinning) return;
+          reel.spinning = false;
+          reel.locked = true;
+          reel.offset = normalizeOffset(reel.offset);
+          reel.result = reel.strip[Math.floor(reel.offset) % reel.strip.length];
+          if (state.reels.every((item) => !item.spinning)) resolveRound();
+          render();
+        }
+
+        function resolveRound() {
+          state.round += 1;
+          const values = state.reels.map((reel) => reel.result);
+          const allGood = values.every((value) => goodSet.has(value));
+          const sameThree = values.every((value) => value === values[0]);
+          const noiseCount = values.filter((value) => !goodSet.has(value)).length;
+
+          if (sameThree && allGood) {
+            state.score += 9;
+            state.message = `${values[0]}が3つそろった`;
+          } else if (allGood) {
+            state.score += 4;
+            state.message = "良い並びで着地";
+          } else {
+            state.focus = Math.max(0, state.focus - Math.max(1, noiseCount));
+            state.message = "ノイズ混入で集中ダウン";
+          }
+
+          if (state.focus <= 0) {
+            state.mode = "over";
+            state.message = "集中切れで終了";
+          } else if (state.round >= state.maxRounds) {
+            state.mode = "clear";
+            state.message = state.score >= 18 ? "商機を十分に拾えた" : "6ラウンド終了";
+          } else {
+            state.mode = "ready";
+          }
+          updateHud();
+          render();
+        }
+
+        function update(dt) {
+          if (state.mode !== "spinning") return;
+          state.reels.forEach((reel) => {
+            if (!reel.spinning) return;
+            reel.offset = normalizeOffset(reel.offset + reel.speed * dt);
+          });
+        }
+
+        function drawFrame() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eff6ff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("opportunity slot", 28, 44);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Stop three reels. Keep noise out.", 28, 72);
+
+          ctx.fillStyle = "#cbd5e1";
+          roundRect(92, 118, 536, 252, 24);
+          ctx.fillStyle = "#0f172a";
+          roundRect(104, 132, 512, 224, 20);
+
+          state.reels.forEach((reel) => drawReel(reel));
+
+          ctx.strokeStyle = "#f8fafc";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(128, 192, 464, 84);
+
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("相談 / 紹介 / 再訪 / 返信 を集める", 148, 406);
+          ctx.fillStyle = "#64748b";
+          ctx.font = "16px sans-serif";
+          ctx.fillText("保留 と 雑音 は集中を削る", 148, 434);
+
+          ctx.fillStyle = "rgba(15, 23, 42, 0.86)";
+          roundRect(148, 454, 420, 46, 14);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText(state.message, 166, 483);
+
+          if (state.mode === "ready" && state.round === 0) drawOverlay("Spinで開始");
+          if (state.mode === "clear") drawOverlay("6ラウンド完了");
+          if (state.mode === "over") drawOverlay("集中切れ");
+        }
+
+        function drawReel(reel) {
+          const centerY = 234;
+          const itemHeight = 54;
+          const visible = 4;
+          const baseIndex = Math.floor(reel.offset);
+          const fractional = reel.offset - baseIndex;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(reel.x, 150, 124, 168);
+          ctx.clip();
+
+          for (let i = -1; i < visible; i += 1) {
+            const stripIndex = (baseIndex + i + reel.strip.length) % reel.strip.length;
+            const y = centerY + (i - 1 - fractional) * itemHeight;
+            const label = reel.strip[stripIndex];
+            const isGood = goodSet.has(label);
+
+            ctx.fillStyle = isGood ? "#d1fae5" : "#fee2e2";
+            roundRect(reel.x + 10, y - 22, 104, 42, 12);
+            ctx.fillStyle = isGood ? "#065f46" : "#991b1b";
+            ctx.font = "700 20px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(label, reel.x + 62, y);
+          }
+
+          ctx.restore();
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function drawOverlay(text) {
+          ctx.fillStyle = "rgba(15, 23, 42, 0.5)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = "800 34px sans-serif";
+          ctx.fillText(text, canvas.width / 2, canvas.height / 2 - 8);
+          ctx.font = "18px sans-serif";
+          ctx.fillText("Spinして、1 2 3で止める", canvas.width / 2, canvas.height / 2 + 28);
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function roundRect(x, y, w, h, r) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + w, y, x + w, y + h, r);
+          ctx.arcTo(x + w, y + h, x, y + h, r);
+          ctx.arcTo(x, y + h, x, y, r);
+          ctx.arcTo(x, y, x + w, y, r);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        function render() {
+          drawFrame();
+        }
+
+        function loop(now) {
+          if (!state.lastTime) state.lastTime = now;
+          const dt = Math.min(0.033, (now - state.lastTime) / 1000);
+          state.lastTime = now;
+          update(dt);
+          render();
+          requestAnimationFrame(loop);
+        }
+
+        function updateHud() {
+          scoreText.textContent = String(state.score);
+          focusText.textContent = String(state.focus);
+          roundText.textContent = `${state.round} / ${state.maxRounds}`;
+        }
+
+        function normalizeOffset(value) {
+          const size = strips[0].length;
+          let result = value % size;
+          if (result < 0) result += size;
+          return result;
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen?.();
+          } else {
+            canvas.requestFullscreen?.().catch(() => {});
+          }
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "slot reels only, origin top-left, x right, y down",
+            mode: state.mode,
+            score: state.score,
+            focus: state.focus,
+            round: state.round,
+            message: state.message,
+            reels: state.reels.map((reel) => ({
+              spinning: reel.spinning,
+              visible: reel.strip[Math.floor(reel.offset) % reel.strip.length],
+              result: reel.result,
+            })),
+          });
+        }
+
+        spinBtn.addEventListener("click", beginRound);
+        stopLeftBtn.addEventListener("click", () => stopReel(0));
+        stopCenterBtn.addEventListener("click", () => stopReel(1));
+        stopRightBtn.addEventListener("click", () => stopReel(2));
+        resetBtn.addEventListener("click", reset);
+
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "s") beginRound();
+          if (key === "1") stopReel(0);
+          if (key === "2") stopReel(1);
+          if (key === "3") stopReel(2);
+          if (key === "f") toggleFullscreen();
+        });
+
+        canvas.addEventListener("pointerdown", (event) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
+          if (x < 280) stopReel(0);
+          else if (x < 445) stopReel(1);
+          else stopReel(2);
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        reset();
+        requestAnimationFrame(loop);
+      })();
+    </script>
+  </body>
+</html>

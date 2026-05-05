@@ -208,3 +208,12 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
 - Added `render_game_to_text` and a simple `advanceTime` hook for automated validation.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, and High-Low card concepts on the next run.
+
+## 2026-05-05
+
+- Added `business-procedures/opportunity-slot.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商機スロット" - a very small slot-style game where entrepreneurs spin and stop three reels to collect good sales signals while avoiding hold/noise symbols.
+- Kept the authority boundary explicit: the page only uses lightweight sales-signal metaphors and states it does not handle permit, tax, legal, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text` and `advanceTime` hooks for automated validation.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, and slot-machine concepts on the next run.
