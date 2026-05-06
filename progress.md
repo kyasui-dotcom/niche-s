@@ -217,3 +217,12 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
 - Added `render_game_to_text` and `advanceTime` hooks for automated validation.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, and slot-machine concepts on the next run.
+
+## 2026-05-06
+
+- Added `business-procedures/deal-connect-four.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談4目コネクト" - a very small Connect Four-style game where entrepreneurs place deal tokens to make a line of four before the opponent.
+- Kept the authority boundary explicit: the page only uses deal-flow and prioritization metaphors and states it does not handle contract, legal, tax, permit, or administrative filing judgments.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text`, `advanceTime`, and `playMove` hooks for automated validation.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, and Connect Four concepts on the next run.
