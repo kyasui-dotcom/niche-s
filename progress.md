@@ -226,3 +226,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
 - Added `render_game_to_text`, `advanceTime`, and `playMove` hooks for automated validation.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, and Connect Four concepts on the next run.
+
+## 2026-05-07
+
+- Added `business-procedures/meeting-reversi.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談リバーシ" - a very small 4x4 Reversi-style game where entrepreneurs flip the flow of a conversation without touching contract, legal, tax, permit, or administrative guidance.
+- Kept the authority boundary explicit in the hero copy and boundary section.
+- Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text`, `advanceTime`, and `playMove` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/meeting-reversi.html`.
+- Verified desktop gameplay with the Playwright web-game client: a human move and AI response both rendered correctly, state JSON updated, and no console/page errors were generated.
+- Verified a 390px-wide mobile screenshot with no console/page errors; the canvas and status cards stack correctly under the intro.
+- Temporary screenshot output should not be committed.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, and Reversi concepts on the next run.
