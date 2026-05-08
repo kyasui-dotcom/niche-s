@@ -78,6 +78,17 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Added discovery from the startup kit card in both business procedures hub copies and sitemap entries in both root and `public` sitemaps.
 - Added `render_game_to_text` and `advanceTime` hooks for automated game validation.
 - Verified local HTTP 200 for `/business-procedures/shelf-sprint-sokoban.html`.
+
+## 2026-05-08
+
+- Added `business-procedures/pitch-tic-tac-toe.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "提案三目ならべ" - a minimal tic-tac-toe game for entrepreneurs using only proposal/reply pacing metaphors.
+- Kept authority boundaries explicit: no permit, legal, tax, labor, or administrative judgment guidance.
+- Updated the mini-game link list in both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
+- Verified local HTTP 200 for `/business-procedures/pitch-tic-tac-toe.html`.
+- Verified with the web-game Playwright client: Start works, player clicks register, AI replies, `render_game_to_text` reports board state with human/ai marks, and no console/page errors were captured.
+- Verified a 390px mobile screenshot with stacked layout and no console/page errors.
+- TODO: keep future daily classic games distinct from high-low, slot, reversi, and tic-tac-toe.
 - Verified with the web game Playwright client: canvas renders, keyboard movement pushes a proposal card onto a goal, `render_game_to_text` reports `matches: 1`, and no console/page errors were generated.
 - Verified a mobile 390px-wide screenshot with no console/page errors; the game stacks under the intro and the canvas remains visible.
 - Temporary server and generated screenshot artifacts were removed.
