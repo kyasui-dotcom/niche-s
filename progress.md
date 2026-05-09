@@ -6,7 +6,12 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Game concept: "商機2048" - a minimal 2048-style merge puzzle for entrepreneurs using only lightweight sales and proposal metaphors.
 - Kept authority boundaries explicit: no permit, tax, legal, labor, or administrative judgment guidance.
 - Updated the mini-game link list in both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
-- TODO: verify gameplay flow, mobile layout, push, and deploy after smoke tests.
+- Verified local HTTP 200 for `/business-procedures/opportunity-2048.html`.
+- Verified with the web-game Playwright client: Start works, four directional moves advance the board, `render_game_to_text` reports `mode: "playing"`, `score: 4`, `moveCount: 4`, and no console/page errors were captured.
+- Verified a 390px mobile screenshot with no console/page errors; the layout stacks correctly and the direction pad remains usable.
+- Pushed commit `c1dec04188c69efd454ef091caf98e5548b788b0` to GitHub branch `backup/20260404-230957`.
+- Deployed from a clean `HEAD` export with `npx wrangler deploy`; HTTP 200 confirmed on `https://niche-s.com/business-procedures/opportunity-2048.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/opportunity-2048.html`.
+- TODO: avoid reusing 2048 / merge-puzzle concepts on the next run.
 
 ## 2026-04-12
 
