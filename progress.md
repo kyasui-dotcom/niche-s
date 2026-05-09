@@ -1,5 +1,13 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-09
+
+- Added `business-procedures/opportunity-2048.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商機2048" - a minimal 2048-style merge puzzle for entrepreneurs using only lightweight sales and proposal metaphors.
+- Kept authority boundaries explicit: no permit, tax, legal, labor, or administrative judgment guidance.
+- Updated the mini-game link list in both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
+- TODO: verify gameplay flow, mobile layout, push, and deploy after smoke tests.
+
 ## 2026-04-12
 
 - Automation memory was missing at the start of this run.
