@@ -23,6 +23,8 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/proposal-janken.html`.
 - Verified with the web-game Playwright client: start flow, five round completion, `render_game_to_text` reaching `mode: "finished"` with `round: 5`, and no console/page errors.
 - Verified a 390px mobile screenshot with no console/page errors; the hero, canvas, score area, choice buttons, and boundary section stack correctly.
+- Pushed commit `16b5571f9fb6fce0a35effc046e6bcc82e5fd3d4` to GitHub branch `backup/20260404-230957`.
+- Deployed from a clean `HEAD` export with `npx wrangler deploy`; HTTP 200 confirmed on `https://niche-s.com/business-procedures/proposal-janken.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/proposal-janken.html`.
 - TODO: avoid reusing janken / rock-paper-scissors concepts on the next run.
 
 ## 2026-04-12
