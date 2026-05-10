@@ -13,6 +13,18 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Deployed from a clean `HEAD` export with `npx wrangler deploy`; HTTP 200 confirmed on `https://niche-s.com/business-procedures/opportunity-2048.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/opportunity-2048.html`.
 - TODO: avoid reusing 2048 / merge-puzzle concepts on the next run.
 
+## 2026-05-10
+
+- Added `business-procedures/proposal-janken.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "提案じゃんけん" - a minimal five-round janken game for entrepreneurs using only proposal-tempo metaphors.
+- Kept authority boundaries explicit: no contract, legal, tax, permit, labor, or administrative judgment guidance.
+- Added discovery from both `startup-launch-kit.html` copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, and a canvas click fallback so the existing Playwright client can drive the game reliably.
+- Verified local HTTP 200 for `/business-procedures/proposal-janken.html`.
+- Verified with the web-game Playwright client: start flow, five round completion, `render_game_to_text` reaching `mode: "finished"` with `round: 5`, and no console/page errors.
+- Verified a 390px mobile screenshot with no console/page errors; the hero, canvas, score area, choice buttons, and boundary section stack correctly.
+- TODO: avoid reusing janken / rock-paper-scissors concepts on the next run.
+
 ## 2026-04-12
 
 - Automation memory was missing at the start of this run.
