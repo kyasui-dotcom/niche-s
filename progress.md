@@ -11,7 +11,8 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/focus-21.html`.
 - Verified with the web-game Playwright client: start flow, one draw, hold, end-state transition to `mode: "finished"`, and no console/page errors.
 - Verified a 390px mobile screenshot with no console/page errors; the hero, canvas, score area, controls, tips, and boundary sections stack correctly.
-- TODO: push commit, deploy, and record final commit/deploy URLs below.
+- Pushed commit `55b72552b7ce9e6f492e719a60cff81c722869c4` to `origin/backup/20260404-230957`.
+- Deployed with `npx wrangler deploy` from a clean `HEAD` worktree; HTTP 200 confirmed on `https://niche-s.com/business-procedures/focus-21.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/focus-21.html`.
 
 ## 2026-05-09
 
