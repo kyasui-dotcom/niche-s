@@ -1,5 +1,18 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-11
+
+- Added `business-procedures/focus-21.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "集中21" - a minimal blackjack-style game for entrepreneurs using only work-allocation metaphors.
+- Kept authority boundaries explicit: no contract, legal, tax, permit, labor, or administrative judgment guidance.
+- Added discovery from both `startup-launch-kit.html` copies, both business procedure hub copies, and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text` and `advanceTime` so the existing web-game Playwright client can drive the page.
+- Added `A=引く / B=止める` in addition to `D/H` so the shared Playwright client can exercise the game without a page-specific harness.
+- Verified local HTTP 200 for `/business-procedures/focus-21.html`.
+- Verified with the web-game Playwright client: start flow, one draw, hold, end-state transition to `mode: "finished"`, and no console/page errors.
+- Verified a 390px mobile screenshot with no console/page errors; the hero, canvas, score area, controls, tips, and boundary sections stack correctly.
+- TODO: push commit, deploy, and record final commit/deploy URLs below.
+
 ## 2026-05-09
 
 - Added `business-procedures/opportunity-2048.html` and mirrored it under `public/business-procedures/`.

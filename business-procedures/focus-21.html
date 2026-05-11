@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>集中21 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="21を超えないように手札を足し、相手より集中スコアを高くする起業家向けの小さなブラックジャック風ゲーム。扱うのは作業配分の比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="集中21 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="21を超えないように手札を足す、起業家向けの小さなブラックジャック風ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/focus-21.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/focus-21.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #focusCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.15rem;
+      }
+      .game-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .game-controls .button:last-child {
+        grid-column: 1 / -1;
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 集中21</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>集中21</h1>
+        <p class="lede">
+          21を超えないように手札を足し、相手より高い集中スコアを狙う小さなブラックジャック風ゲームです。
+          題材は作業配分の比喩だけで、契約、法務、税務、許認可、行政手続きなど他の権威領域の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./proposal-janken.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>引くか止めるかだけで、21に近づける</h2>
+          <p class="section-copy">
+            あなたは青、相手は橙です。数字カードを足して 21 を超えない範囲で高得点を目指します。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="focusCanvas" width="720" height="450" aria-label="集中21の盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row" aria-label="score board">
+              <div class="score-chip">
+                <span>あなた</span>
+                <strong id="playerScoreText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>相手</span>
+                <strong id="dealerScoreText">0</strong>
+              </div>
+            </div>
+            <div class="game-stat">
+              <span>山札から引いた枚数</span>
+              <strong id="drawCountText">0 枚</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="drawBtn" class="button ghost" type="button">引く</button>
+              <button id="holdBtn" class="button ghost" type="button">止める</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+            </div>
+            <p class="game-note">操作: AまたはD=引く / BまたはH=止める / R=やり直し / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>20か21まで届いたら、無理に引かず止めると崩れにくいです。</li>
+          <li>相手は17以上になるまで引きます。</li>
+          <li>扱うのは作業配分の比喩だけなので、実務判断には使いません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは集中配分の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("focusCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const playerScoreText = document.getElementById("playerScoreText");
+        const dealerScoreText = document.getElementById("dealerScoreText");
+        const drawCountText = document.getElementById("drawCountText");
+        const startBtn = document.getElementById("startBtn");
+        const drawBtn = document.getElementById("drawBtn");
+        const holdBtn = document.getElementById("holdBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const CARD_LABELS = ["返信", "提案", "整理", "確認", "共有", "段取り"];
+        const TARGET = 21;
+        const DEALER_MIN = 17;
+        const state = {
+          mode: "ready",
+          message: "開始待ち",
+          playerCards: [],
+          dealerCards: [],
+          revealDealer: false,
+          drawCount: 0,
+        };
+
+        function createCard() {
+          const value = Math.floor(Math.random() * 10) + 1;
+          return {
+            value,
+            label: CARD_LABELS[Math.floor(Math.random() * CARD_LABELS.length)],
+          };
+        }
+
+        function sumCards(cards) {
+          return cards.reduce((total, card) => total + card.value, 0);
+        }
+
+        function reset(mode = "ready") {
+          state.mode = mode;
+          state.message = mode === "playing" ? "引くか止めるかを選んでください" : "開始待ち";
+          state.playerCards = [];
+          state.dealerCards = [];
+          state.revealDealer = false;
+          state.drawCount = 0;
+          if (mode === "playing") {
+            state.playerCards.push(createCard(), createCard());
+            state.dealerCards.push(createCard(), createCard());
+            state.drawCount = 4;
+            if (sumCards(state.playerCards) > TARGET) finishRound();
+          }
+          updateHud();
+          render();
+        }
+
+        function start() {
+          reset("playing");
+        }
+
+        function drawCard() {
+          if (state.mode !== "playing") return false;
+          state.playerCards.push(createCard());
+          state.drawCount += 1;
+          if (sumCards(state.playerCards) > TARGET) {
+            finishRound();
+          } else {
+            state.message = "もう1枚引くか、ここで止めます";
+          }
+          updateHud();
+          render();
+          return true;
+        }
+
+        function hold() {
+          if (state.mode !== "playing") return false;
+          finishRound();
+          return true;
+        }
+
+        function finishRound() {
+          state.revealDealer = true;
+          while (sumCards(state.dealerCards) < DEALER_MIN) {
+            state.dealerCards.push(createCard());
+            state.drawCount += 1;
+          }
+
+          const playerTotal = sumCards(state.playerCards);
+          const dealerTotal = sumCards(state.dealerCards);
+          state.mode = "finished";
+
+          if (playerTotal > TARGET) {
+            state.message = "あなたが21を超えました";
+          } else if (dealerTotal > TARGET) {
+            state.message = "相手が21を超えました";
+          } else if (playerTotal > dealerTotal) {
+            state.message = "あなたの勝ち";
+          } else if (playerTotal < dealerTotal) {
+            state.message = "相手の勝ち";
+          } else {
+            state.message = "引き分け";
+          }
+
+          updateHud();
+          render();
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          playerScoreText.textContent = String(sumCards(state.playerCards));
+          dealerScoreText.textContent = state.revealDealer ? String(sumCards(state.dealerCards)) : "?";
+          drawCountText.textContent = `${state.drawCount} 枚`;
+          const active = state.mode === "playing";
+          drawBtn.disabled = !active;
+          holdBtn.disabled = !active;
+        }
+
+        function drawCardFace(x, y, card, hidden = false, color = "#2563eb") {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = hidden ? "#94a3b8" : "#ffffff";
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(-54, -74, 108, 148, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          if (hidden) {
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 28px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("?", 0, -6);
+            ctx.restore();
+            return;
+          }
+
+          ctx.fillStyle = color;
+          ctx.font = "700 32px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(String(card.value), 0, -12);
+          ctx.font = "600 20px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(card.label, 0, 28);
+          ctx.restore();
+        }
+
+        function drawHand(cards, y, revealAll, accent) {
+          const startX = 170;
+          const gap = 110;
+          cards.forEach((card, index) => {
+            drawCardFace(startX + gap * index, y, card, !revealAll && index === 1, accent);
+          });
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#dbeafe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText("集中21", 28, 42);
+
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("21を超えないように仕事カードを足していく", 28, 72);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 22px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("相手", 28, 128);
+          ctx.fillText("あなた", 28, 302);
+
+          drawHand(state.dealerCards, 168, state.revealDealer, "#f97316");
+          drawHand(state.playerCards, 342, true, "#2563eb");
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "center";
+          ctx.font = "700 28px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.message, canvas.width / 2, 426);
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+            message: state.message,
+            target: TARGET,
+            dealerMin: DEALER_MIN,
+            playerTotal: sumCards(state.playerCards),
+            dealerTotal: state.revealDealer ? sumCards(state.dealerCards) : null,
+            playerCards: state.playerCards,
+            dealerCards: state.dealerCards.map((card, index) => (
+              state.revealDealer || index !== 1 ? card : { hidden: true }
+            )),
+            drawCount: state.drawCount,
+            availableActions: state.mode === "playing" ? ["draw", "hold"] : state.mode === "ready" ? ["start"] : ["reset"],
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+          });
+        }
+
+        startBtn.addEventListener("click", start);
+        drawBtn.addEventListener("click", drawCard);
+        holdBtn.addEventListener("click", hold);
+        resetBtn.addEventListener("click", () => reset("ready"));
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "a" || event.key === "A" || event.key === "d" || event.key === "D") drawCard();
+          if (event.key === "b" || event.key === "B" || event.key === "h" || event.key === "H") hold();
+          if (event.key === "r" || event.key === "R") reset(state.mode === "playing" ? "playing" : "ready");
+          if (event.key === "f" || event.key === "F") toggleFullscreen();
+        });
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => {
+          render();
+          updateHud();
+          return renderGameToText();
+        };
+
+        reset("ready");
+      })();
+    </script>
+  </body>
+</html>
