@@ -291,3 +291,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified a 390px-wide mobile screenshot with no console/page errors; the canvas and status cards stack correctly under the intro.
 - Temporary screenshot output should not be committed.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, and Reversi concepts on the next run.
+
+## 2026-05-12
+
+- Added `business-procedures/proposal-code-break.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "提案コードブレイク" - a very small 4-digit code-breaking game for entrepreneurs where players infer the answer from exact/partial digit hints, without touching contract, legal, tax, permit, or administrative guidance.
+- Kept the authority boundary explicit in the hero copy and boundary section.
+- Added discovery from the business procedures hub chip list, replaced the startup launch kit single mini-game card with this new game plus a secondary link to `focus-21`, and added sitemap entries in both root and `public` sitemaps.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, and `submitGuess` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/proposal-code-break.html`.
+- Verified desktop gameplay with headless Playwright: start flow worked, one guess advanced state to `turnsLeft: 6`, and no console/page errors were generated.
+- Verified a 390px-wide mobile screenshot with no console/page errors; the stacked controls and cards remain readable.
+- Temporary screenshot output should not be committed.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, and code-breaking/Mastermind concepts on the next run.
