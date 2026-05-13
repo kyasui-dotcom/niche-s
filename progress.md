@@ -1,5 +1,14 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-13
+
+- Added `business-procedures/signal-battleship.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商機レーダー海戦" - a very small Battleship-style deduction game where entrepreneurs use row/column hints to uncover a hidden 3-cell signal line.
+- Kept the authority boundary explicit: the page only uses exploration and focus metaphors and states it does not handle contract, legal, tax, permit, labor, or administrative filing judgments.
+- Added discovery from the business procedures hub chip list, replaced the startup launch kit single mini-game card with this new game plus a secondary link to `proposal-code-break`, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, and `clickCell` hooks for automated validation.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, and Battleship concepts on the next run.
+
 ## 2026-05-11
 
 - Added `business-procedures/focus-21.html` and mirrored it under `public/business-procedures/`.
