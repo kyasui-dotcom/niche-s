@@ -1,5 +1,20 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-14
+
+- Added `business-procedures/morning-task-nim.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝会タスクNim" - a very small Nim-style puzzle where entrepreneurs remove tasks from one row at a time to secure the last focus slot.
+- Kept the authority boundary explicit: the page only uses focus and priority metaphors and states it does not handle contract, legal, tax, labor, permit, or administrative filing judgments.
+- Added discovery from the business procedures hub chip list and replaced the startup launch kit single mini-game card with this new game plus a secondary link to `signal-battleship.html`.
+- Added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, and `playMove` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-task-nim.html`.
+- Verified with the web-game Playwright client: start flow, row selection, player move, AI response, end-state transition to `winner: "ai"` on the smoke path, and no console/page errors were generated.
+- Verified a 390px mobile full-page screenshot with no console/page errors; the hero, canvas, status cards, controls, and boundary section stack correctly.
+- Pushed commit `a933c857517e84a64d5948b28c6403f591a759e3` to GitHub branch `backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-task-nim.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-task-nim.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, 2048, blackjack/21, tic-tac-toe, and Nim concepts on the next run.
+
 ## 2026-05-13
 
 - Added `business-procedures/signal-battleship.html` and mirrored it under `public/business-procedures/`.
