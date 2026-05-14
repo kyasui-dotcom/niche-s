@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝会タスクNim | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="朝の優先タスクを少しずつ削って集中時間を守る、起業家向けの小さなNim系ブラウザゲーム。権威判断には踏み込まない気分転換用コンテンツです。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝会タスクNim | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="朝の優先タスクを削って集中時間を残す、起業家向けの小さなNim系ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-task-nim.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-task-nim.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #nimGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 3 / 2;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .move-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        font-size: 1.35rem;
+        color: var(--dark);
+      }
+      .game-controls,
+      .move-grid,
+      .row-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .row-grid .button,
+      .move-grid .button {
+        flex: 1 1 88px;
+      }
+      .game-copy,
+      .game-note,
+      .move-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .move-card h3 {
+        margin: 0 0 10px;
+      }
+      .button.is-selected {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #ffffff;
+      }
+      @media (max-width: 860px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 720px) {
+        .game-controls .button,
+        .row-grid .button,
+        .move-grid .button {
+          width: auto;
+          flex: 1 1 120px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝会タスクNim</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝会タスクNim</h1>
+        <p class="lede">
+          朝の優先タスクを少しずつ削って、最後の集中枠を取り切る小さな Nim 系ゲームです。
+          使うのは集中と優先順位の比喩だけで、法務・税務・許認可・行政判断の案内は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./startup-todo-generator.html">TODO整理ツールを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>3列のタスクから好きな数だけ減らす</h2>
+          <p class="section-copy">
+            自分の番では1列だけ選び、その列から1個以上のタスクを削れます。最後の1手を取った側の勝ちです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="nimGame" width="720" height="480" aria-label="朝会タスクNim game canvas"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>ターン</span>
+              <strong id="turnText">準備中</strong>
+            </div>
+            <div class="game-stat">
+              <span>残タスク</span>
+              <strong id="tasksText">12</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">Start待ち</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <div class="move-card">
+              <h3>1. 列を選ぶ</h3>
+              <div class="row-grid">
+                <button class="button ghost row-button" type="button" data-row="0">営業</button>
+                <button class="button ghost row-button" type="button" data-row="1">提案</button>
+                <button class="button ghost row-button" type="button" data-row="2">運用</button>
+              </div>
+            </div>
+            <div class="move-card">
+              <h3>2. 何個減らすか選ぶ</h3>
+              <div class="move-grid">
+                <button class="button ghost take-button" type="button" data-count="1">1個</button>
+                <button class="button ghost take-button" type="button" data-count="2">2個</button>
+                <button class="button ghost take-button" type="button" data-count="3">3個</button>
+                <button class="button ghost take-button" type="button" data-count="4">4個</button>
+                <button class="button ghost take-button" type="button" data-count="5">5個</button>
+              </div>
+            </div>
+            <p class="game-note">
+              操作: ボタン / ← → で列選択 / A=1個 / B=2個 / Space=3個 / Enterで開始 / Fでフルスクリーン。
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>権威領域の判断は扱わない</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、朝の集中配分と優先順位の比喩だけを扱います。契約、法務、税務、労務、許認可、行政手続きの判断や案内は行いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("nimGame");
+        const ctx = canvas.getContext("2d");
+        const turnText = document.getElementById("turnText");
+        const tasksText = document.getElementById("tasksText");
+        const statusText = document.getElementById("statusText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const rowButtons = Array.from(document.querySelectorAll(".row-button"));
+        const takeButtons = Array.from(document.querySelectorAll(".take-button"));
+
+        const rowLabels = ["営業", "提案", "運用"];
+        const initialPiles = [3, 4, 5];
+        const state = {
+          mode: "ready",
+          piles: [...initialPiles],
+          currentTurn: "player",
+          selectedRow: 0,
+          message: "Startで開始",
+          pendingAiMs: 0,
+          winner: "",
+        };
+
+        function reset() {
+          state.mode = "ready";
+          state.piles = [...initialPiles];
+          state.currentTurn = "player";
+          state.selectedRow = 0;
+          state.message = "Startで開始";
+          state.pendingAiMs = 0;
+          state.winner = "";
+          syncButtons();
+          updateHud();
+          render();
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.currentTurn = "player";
+          state.message = "自分の番です";
+          state.pendingAiMs = 0;
+          state.winner = "";
+          syncButtons();
+          updateHud();
+          render();
+        }
+
+        function totalTasks() {
+          return state.piles.reduce((sum, value) => sum + value, 0);
+        }
+
+        function updateHud() {
+          turnText.textContent =
+            state.mode === "ready"
+              ? "準備中"
+              : state.mode === "finished"
+                ? state.winner === "player"
+                  ? "あなたの勝ち"
+                  : "相手の勝ち"
+                : state.currentTurn === "player"
+                  ? "あなた"
+                  : "相手";
+          tasksText.textContent = String(totalTasks());
+          statusText.textContent = state.message;
+        }
+
+        function syncButtons() {
+          rowButtons.forEach((button, index) => {
+            const selected = index === state.selectedRow;
+            button.classList.toggle("is-selected", selected);
+            button.disabled = state.mode !== "playing" || state.currentTurn !== "player" || state.piles[index] === 0;
+          });
+          takeButtons.forEach((button) => {
+            const count = Number(button.dataset.count);
+            button.disabled =
+              state.mode !== "playing" ||
+              state.currentTurn !== "player" ||
+              count > state.piles[state.selectedRow] ||
+              count < 1;
+          });
+        }
+
+        function setFinished(winner) {
+          state.mode = "finished";
+          state.currentTurn = winner;
+          state.winner = winner;
+          state.pendingAiMs = 0;
+          state.message = winner === "player" ? "最後の集中枠を確保しました" : "相手に最後の集中枠を取られました";
+          syncButtons();
+          updateHud();
+          render();
+        }
+
+        function performMove(rowIndex, count, actor) {
+          if (state.mode !== "playing") return false;
+          if (rowIndex < 0 || rowIndex >= state.piles.length) return false;
+          if (count < 1 || count > state.piles[rowIndex]) return false;
+
+          state.piles[rowIndex] -= count;
+          state.message = actor === "player" ? `${rowLabels[rowIndex]}から${count}個減らした` : `相手が${rowLabels[rowIndex]}から${count}個減らした`;
+
+          if (totalTasks() === 0) {
+            setFinished(actor);
+            return true;
+          }
+
+          state.currentTurn = actor === "player" ? "ai" : "player";
+          if (actor === "player") {
+            state.pendingAiMs = 520;
+            syncButtons();
+            updateHud();
+            render();
+          } else {
+            state.pendingAiMs = 0;
+            syncButtons();
+            updateHud();
+            render();
+          }
+          return true;
+        }
+
+        function chooseAiMove() {
+          const nimSum = state.piles.reduce((acc, value) => acc ^ value, 0);
+          if (nimSum !== 0) {
+            for (let i = 0; i < state.piles.length; i += 1) {
+              const target = state.piles[i] ^ nimSum;
+              if (target < state.piles[i]) {
+                return { rowIndex: i, count: state.piles[i] - target };
+              }
+            }
+          }
+          const rowIndex = state.piles.findIndex((value) => value > 0);
+          return { rowIndex, count: 1 };
+        }
+
+        function update(dt) {
+          if (state.mode !== "playing" || state.currentTurn !== "ai" || state.pendingAiMs <= 0) return;
+          state.pendingAiMs -= dt * 1000;
+          if (state.pendingAiMs > 0) return;
+          const move = chooseAiMove();
+          if (move.rowIndex >= 0) performMove(move.rowIndex, move.count, "ai");
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eef6ff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px sans-serif";
+          ctx.fillText("morning task nim", 24, 44);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Take from one row. Leave nothing behind.", 24, 70);
+
+          const centers = [160, 360, 560];
+          state.piles.forEach((count, rowIndex) => {
+            const selected = rowIndex === state.selectedRow;
+            ctx.fillStyle = selected ? "rgba(37, 99, 235, 0.08)" : "rgba(255,255,255,0.72)";
+            roundRect(ctx, centers[rowIndex] - 88, 110, 176, 280, 18);
+            ctx.fill();
+            ctx.strokeStyle = selected ? "#2563eb" : "#cbd5e1";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 22px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(rowLabels[rowIndex], centers[rowIndex], 145);
+
+            for (let i = 0; i < count; i += 1) {
+              const y = 340 - i * 42;
+              ctx.fillStyle = rowIndex === 0 ? "#16a34a" : rowIndex === 1 ? "#f59e0b" : "#8b5cf6";
+              roundRect(ctx, centers[rowIndex] - 54, y, 108, 28, 10);
+              ctx.fill();
+              ctx.fillStyle = "#ffffff";
+              ctx.font = "700 13px sans-serif";
+              ctx.fillText("TASK", centers[rowIndex], y + 19);
+            }
+
+            if (count === 0) {
+              ctx.fillStyle = "#94a3b8";
+              ctx.font = "600 14px sans-serif";
+              ctx.fillText("clear", centers[rowIndex], 330);
+            }
+          });
+
+          ctx.textAlign = "start";
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            const label =
+              state.mode === "finished"
+                ? state.winner === "player"
+                  ? "Focus secured"
+                  : "Turn lost"
+                : "Morning Task Nim";
+            ctx.fillText(label, canvas.width / 2, canvas.height / 2 - 18);
+            ctx.font = "18px sans-serif";
+            ctx.fillText("Press Start. Choose one row and remove tasks.", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function roundRect(context, x, y, width, height, radius) {
+          context.beginPath();
+          context.moveTo(x + radius, y);
+          context.arcTo(x + width, y, x + width, y + height, radius);
+          context.arcTo(x + width, y + height, x, y + height, radius);
+          context.arcTo(x, y + height, x, y, radius);
+          context.arcTo(x, y, x + width, y, radius);
+          context.closePath();
+        }
+
+        function selectRow(rowIndex) {
+          if (state.mode !== "playing" || state.currentTurn !== "player" || state.piles[rowIndex] === 0) return;
+          state.selectedRow = rowIndex;
+          syncButtons();
+          render();
+        }
+
+        function playMove(rowIndex, count) {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing" || state.currentTurn !== "player") return false;
+          state.selectedRow = rowIndex;
+          syncButtons();
+          return performMove(rowIndex, count, "player");
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", reset);
+        rowButtons.forEach((button) => {
+          button.addEventListener("click", () => selectRow(Number(button.dataset.row)));
+        });
+        takeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            playMove(state.selectedRow, Number(button.dataset.count));
+          });
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else canvas.requestFullscreen().catch(() => {});
+            return;
+          }
+          if (state.mode === "ready" && event.key === "Enter") {
+            startGame();
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            selectRow((state.selectedRow + rowLabels.length - 1) % rowLabels.length);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            selectRow((state.selectedRow + 1) % rowLabels.length);
+            return;
+          }
+          const rowKeyMap = { "1": 0, "2": 1, "3": 2 };
+          if (event.key in rowKeyMap) {
+            selectRow(rowKeyMap[event.key]);
+            return;
+          }
+          const actionCountMap = {
+            a: 1,
+            A: 1,
+            b: 2,
+            B: 2,
+            " ": 3,
+          };
+          if (event.key in actionCountMap) {
+            playMove(state.selectedRow, actionCountMap[event.key]);
+            return;
+          }
+          const count = Number(event.key);
+          if (count >= 1 && count <= 5) {
+            playMove(state.selectedRow, count);
+            return;
+          }
+          if (event.key === "Enter") {
+            playMove(state.selectedRow, 4);
+          }
+        });
+
+        window.advanceTime = (ms) => {
+          const steps = Math.max(1, Math.round(ms / (1000 / 60)));
+          for (let i = 0; i < steps; i += 1) update(1 / 60);
+          render();
+        };
+        window.startGame = startGame;
+        window.playMove = playMove;
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            currentTurn: state.currentTurn,
+            winner: state.winner || null,
+            selectedRow: state.selectedRow,
+            piles: state.piles.map((count, index) => ({ row: rowLabels[index], count })),
+            totalTasks: totalTasks(),
+            message: state.message,
+            pendingAiMs: Math.max(0, Math.round(state.pendingAiMs)),
+          });
+
+        reset();
+      })();
+    </script>
+  </body>
+</html>
