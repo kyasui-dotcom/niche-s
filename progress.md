@@ -328,3 +328,16 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified a 390px-wide mobile screenshot with no console/page errors; the stacked controls and cards remain readable.
 - Temporary screenshot output should not be committed.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, and code-breaking/Mastermind concepts on the next run.
+
+## 2026-05-16
+
+- Added `business-procedures/startup-word-hangman.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "起業ワード当て" - a very small hangman-style word guess game using only lightweight entrepreneur vocabulary like lead / sales / offer / hearing.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
+- Added discovery from both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, and `guessKana` hooks for automated validation.
+- Added keyboard selection support with arrows plus `Enter` / `Space` so the shared web-game Playwright client can drive the page deterministically.
+- Verified local HTTP 200 for `/business-procedures/startup-word-hangman.html`.
+- Verified with the web-game Playwright client: start flow, three correct guesses for the fixed first word `リード`, `mode: "cleared"`, and no console/page errors.
+- Verified a 390px-wide mobile screenshot with cleared state and no console/page errors; the hero, canvas card, status cards, kana grid, tips, and boundary section stack correctly.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, and hangman concepts on the next run.

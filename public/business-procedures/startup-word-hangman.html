@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>起業ワード当て | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="カタカナの起業ワードを少ないミスで当てる、起業家向けの小さなハングマン風ゲーム。扱うのは営業や改善の軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="起業ワード当て | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="少ないミスで起業ワードを当てる、小さなハングマン風ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/startup-word-hangman.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/startup-word-hangman.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #hangmanCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .kana-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .kana-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .kana-button {
+        min-height: 54px;
+        padding: 10px 0;
+      }
+      .kana-button.hit {
+        background: #dcfce7;
+        border-color: #86efac;
+        color: #166534;
+      }
+      .kana-button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .kana-button.miss {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #991b1b;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .kana-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 起業ワード当て</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>起業ワード当て</h1>
+        <p class="lede">
+          起業まわりの軽いカタカナ語を、ミスを抑えながら当てる小さなハングマン風ゲームです。
+          題材は営業・改善・商談の比喩だけで、契約、法務、税務、許認可、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./signal-battleship.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>ヒントを見て、使えそうなカナを選ぶ</h2>
+          <p class="section-copy">
+            5ミス以内にワードを完成させるとクリアです。最初のワードは固定で、再スタートすると次のワードへ進みます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="hangmanCanvas" width="720" height="450" aria-label="起業ワード当ての盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>ヒント</span>
+              <strong id="hintText">短い営業語</strong>
+            </div>
+            <div class="game-stat">
+              <span>残りミス</span>
+              <strong id="livesText">5</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次のワード</button>
+              <button id="resetBtn" class="button ghost" type="button">同じワードでやり直す</button>
+            </div>
+            <div class="kana-card">
+              <div class="kana-grid" id="kanaGrid"></div>
+            </div>
+            <p class="game-note">操作: ボタン / 1-9,0,-,^ キーで左上から順に選択 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>ヒントは実務判断ではなく、単なる連想用です。</li>
+          <li>まずは伸ばし棒や末尾の音を見つけると当てやすくなります。</li>
+          <li>気分転換向けの小さいゲームとして切り上げる前提で作っています。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い起業語の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const words = [
+          { answer: "リード", hint: "短い営業語" },
+          { answer: "セールス", hint: "売上づくりの基本語" },
+          { answer: "オファー", hint: "相手に出す提案" },
+          { answer: "ヒアリング", hint: "相手の話を聞く工程" },
+        ];
+        const kanaPool = ["リ", "ー", "ド", "セ", "ル", "ス", "オ", "フ", "ァ", "ヒ", "ア", "ン"];
+        const keyOrder = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "^"];
+
+        const canvas = document.getElementById("hangmanCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const hintText = document.getElementById("hintText");
+        const livesText = document.getElementById("livesText");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const kanaGrid = document.getElementById("kanaGrid");
+
+        const state = {
+          wordIndex: 0,
+          mode: "ready",
+          answer: words[0].answer,
+          hint: words[0].hint,
+          guessed: [],
+          selectedKanaIndex: 0,
+          misses: 0,
+          maxMisses: 5,
+          message: "開始待ち",
+        };
+
+        function buildButtons() {
+          kanaGrid.innerHTML = "";
+          kanaPool.forEach((kana, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "button ghost kana-button";
+            button.dataset.index = String(index);
+            button.dataset.kana = kana;
+            button.textContent = `${keyOrder[index]}. ${kana}`;
+            button.addEventListener("click", () => guessKana(kana));
+            kanaGrid.appendChild(button);
+          });
+        }
+
+        function currentWord() {
+          return words[state.wordIndex % words.length];
+        }
+
+        function setWord(index, preserveIndex = false) {
+          if (!preserveIndex) state.wordIndex = index;
+          const word = currentWord();
+          state.answer = word.answer;
+          state.hint = word.hint;
+          state.guessed = [];
+          state.selectedKanaIndex = 0;
+          state.misses = 0;
+          state.mode = "ready";
+          state.message = "開始待ち";
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function startGame() {
+          document.activeElement?.blur?.();
+          state.mode = "playing";
+          state.message = "カナを選んでください";
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function maskedAnswer() {
+          return Array.from(state.answer).map((kana) => (state.guessed.includes(kana) ? kana : "□"));
+        }
+
+        function isCleared() {
+          return maskedAnswer().every((kana) => kana !== "□");
+        }
+
+        function guessKana(kana) {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing" || state.guessed.includes(kana)) return false;
+
+          state.guessed.push(kana);
+          if (state.answer.includes(kana)) {
+            state.message = `${kana} が入りました`;
+            if (isCleared()) {
+              state.mode = "cleared";
+              state.message = "ワード完成";
+            }
+          } else {
+            state.misses += 1;
+            state.message = `${kana} は入りません`;
+            if (state.misses >= state.maxMisses) {
+              state.mode = "failed";
+              state.message = "ミス上限です";
+            }
+          }
+
+          updateHud();
+          syncButtons();
+          render();
+          return true;
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          hintText.textContent = state.hint;
+          livesText.textContent = String(state.maxMisses - state.misses);
+        }
+
+        function syncButtons() {
+          const finished = state.mode === "cleared" || state.mode === "failed";
+          const buttons = Array.from(kanaGrid.querySelectorAll(".kana-button"));
+          buttons.forEach((button) => {
+            const kana = button.dataset.kana;
+            button.disabled = finished || state.guessed.includes(kana);
+            button.classList.remove("hit", "miss", "is-selected");
+            if (state.guessed.includes(kana)) {
+              button.classList.add(state.answer.includes(kana) ? "hit" : "miss");
+            }
+            if (Number(button.dataset.index) === state.selectedKanaIndex && !button.disabled) {
+              button.classList.add("is-selected");
+            }
+          });
+        }
+
+        function moveSelection(delta) {
+          const total = kanaPool.length;
+          state.selectedKanaIndex = (state.selectedKanaIndex + delta + total) % total;
+          syncButtons();
+          render();
+        }
+
+        function chooseSelectedKana() {
+          const kana = kanaPool[state.selectedKanaIndex];
+          if (kana) guessKana(kana);
+        }
+
+        function drawProgress() {
+          const progress = state.misses / state.maxMisses;
+          ctx.fillStyle = "#e2e8f0";
+          ctx.fillRect(46, 104, 220, 18);
+          ctx.fillStyle = progress < 0.6 ? "#2563eb" : progress < 1 ? "#f59e0b" : "#ef4444";
+          ctx.fillRect(46, 104, 220 * progress, 18);
+          ctx.strokeStyle = "#cbd5e1";
+          ctx.strokeRect(46, 104, 220, 18);
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#e0f2fe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px sans-serif";
+          ctx.fillText("startup word guess", 36, 48);
+          ctx.font = "18px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Find the kata word before five misses.", 36, 78);
+
+          drawProgress();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.fillText(`hint: ${state.hint}`, 320, 118);
+
+          const mask = maskedAnswer();
+          mask.forEach((kana, index) => {
+            const x = 92 + index * 110;
+            ctx.fillStyle = "#ffffff";
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(x, 170, 84, 84, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 42px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(kana, x + 42, 212);
+          });
+
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 20px sans-serif";
+          ctx.fillText("used", 46, 324);
+          ctx.font = "600 18px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText(state.guessed.length ? state.guessed.join(" / ") : "まだ選択なし", 46, 356);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText(state.message, 46, 408);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          if (state.mode === "failed") {
+            ctx.fillText(`answer: ${state.answer}`, 46, 434);
+          } else if (state.mode === "cleared") {
+            ctx.fillText("次のワードへ進むか、同じワードでやり直せます。", 46, 434);
+          } else {
+            ctx.fillText("ボタンかキーでカナを1つずつ選びます。", 46, 434);
+          }
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        startBtn.addEventListener("click", () => startGame());
+        resetBtn.addEventListener("click", () => setWord(state.wordIndex, true));
+        nextBtn.addEventListener("click", () => setWord(state.wordIndex + 1));
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(-4);
+            return;
+          }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(4);
+            return;
+          }
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            chooseSelectedKana();
+            return;
+          }
+          const keyIndex = keyOrder.indexOf(event.key);
+          if (keyIndex >= 0 && kanaPool[keyIndex]) {
+            state.selectedKanaIndex = keyIndex;
+            guessKana(kanaPool[keyIndex]);
+          }
+        });
+
+        window.startGame = startGame;
+        window.guessKana = guessKana;
+        window.advanceTime = () => {
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+            mode: state.mode,
+            hint: state.hint,
+            answerLength: Array.from(state.answer).length,
+            mask: maskedAnswer().join(""),
+            guessed: [...state.guessed],
+            selectedKana: kanaPool[state.selectedKanaIndex],
+            misses: state.misses,
+            remainingLives: state.maxMisses - state.misses,
+            answer: state.mode === "failed" ? state.answer : null,
+            message: state.message,
+          });
+
+        buildButtons();
+        setWord(0);
+      })();
+    </script>
+  </body>
+</html>
