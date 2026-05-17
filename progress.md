@@ -341,3 +341,17 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified with the web-game Playwright client: start flow, three correct guesses for the fixed first word `リード`, `mode: "cleared"`, and no console/page errors.
 - Verified a 390px-wide mobile screenshot with cleared state and no console/page errors; the hero, canvas card, status cards, kana grid, tips, and boundary section stack correctly.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, and hangman concepts on the next run.
+
+## 2026-05-17
+
+- Added `business-procedures/morning-bingo.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝イチビンゴ" - a very small 3x3 bingo-style game where entrepreneurs make one line in four moves with a free center and two blocked cells.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Added discovery from both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, and `pickCell` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-bingo.html`.
+- Verified with the web-game Playwright client: fixed first-board clear path (`ArrowDown` → `Enter` → `ArrowRight` → `Enter`), `mode: "cleared"`, `winLine: [3,4,5]`, and no console/page errors.
+- Verified a 390px-wide mobile screenshot with cleared state and no console/page errors; the hero, play card, canvas, stats, controls, board grid, tips, and boundary section stack correctly.
+- Pushed commit `26c8b8d` to GitHub branch `backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-bingo.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-bingo.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, and bingo concepts on the next run.
