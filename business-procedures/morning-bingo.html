@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝イチビンゴ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="中央フリーの3x3盤面で4手以内に1列そろえる、起業家向けの小さなビンゴゲーム。扱うのは朝の実務比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝イチビンゴ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="中央フリーの3x3盤面で4手以内に1列そろえる、小さな起業家向けビンゴゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-bingo.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-bingo.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #bingoCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .rule-card,
+      .board-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .board-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .cell-button {
+        min-height: 64px;
+        padding: 8px;
+        line-height: 1.35;
+        white-space: normal;
+      }
+      .cell-button.free {
+        background: #dbeafe;
+        border-color: #93c5fd;
+      }
+      .cell-button.marked {
+        background: #dcfce7;
+        border-color: #86efac;
+        color: #166534;
+      }
+      .cell-button.blocked {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #991b1b;
+      }
+      .cell-button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝イチビンゴ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝イチビンゴ</h1>
+        <p class="lede">
+          中央フリーの3x3盤面で、朝の小さな実務カードを4手以内に1列そろえるだけのミニゲームです。
+          題材は返信、追客、整理、見直しなどの軽い起業比喩に限り、法務、税務、許認可、契約、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./startup-word-hangman.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>4手以内に1ビンゴ作る</h2>
+          <p class="section-copy">
+            中央は最初から確保済みです。赤いマスは今日の保留枠なので選べません。使えるマスを選んで、縦・横・斜めのどれか1列を完成させるとクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="bingoCanvas" width="720" height="560" aria-label="朝イチビンゴの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>残り手数</span>
+              <strong id="movesText">4</strong>
+            </div>
+            <div class="game-stat">
+              <span>狙い</span>
+              <strong id="goalText">1列そろえる</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次の盤面</button>
+              <button id="resetBtn" class="button ghost" type="button">同じ盤面でやり直す</button>
+            </div>
+            <div class="board-card">
+              <div class="board-grid" id="boardGrid"></div>
+            </div>
+            <p class="game-note">操作: マスを押す / 1-9キーで選択 / Enter or Space で確定 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はかなり小さめ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>中央はフリーです。そこを通る列を先に探すと短く終わります。</li>
+          <li>赤い保留マスが2つあるので、通せる列を見つけてから押すと失敗しにくいです。</li>
+          <li>朝の勢いづけ用で、実務の正解や優先順位を断定するものではありません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、行政提出、労務など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const boards = [
+          {
+            cells: [
+              "返信",
+              "追客",
+              "提案メモ",
+              "見積整理",
+              "FREE",
+              "日程確認",
+              "投稿下書き",
+              "数字確認",
+              "改善1件",
+            ],
+            blocked: [0, 8],
+          },
+          {
+            cells: [
+              "朝会準備",
+              "紹介返信",
+              "相談整理",
+              "原稿メモ",
+              "FREE",
+              "見込み確認",
+              "請求確認",
+              "導線見直し",
+              "次回提案",
+            ],
+            blocked: [2, 6],
+          },
+          {
+            cells: [
+              "商談準備",
+              "顧客メモ",
+              "投稿予約",
+              "追客文面",
+              "FREE",
+              "商品整理",
+              "原価確認",
+              "改善実験",
+              "連絡返し",
+            ],
+            blocked: [1, 3],
+          },
+        ];
+        const winningLines = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+        const keyOrder = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+        const canvas = document.getElementById("bingoCanvas");
+        const ctx = canvas.getContext("2d");
+        const boardGrid = document.getElementById("boardGrid");
+        const statusText = document.getElementById("statusText");
+        const movesText = document.getElementById("movesText");
+        const goalText = document.getElementById("goalText");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          boardIndex: 0,
+          mode: "ready",
+          selectedIndex: 0,
+          marks: [4],
+          blocked: [...boards[0].blocked],
+          movesLeft: 4,
+          message: "開始待ち",
+          winLine: null,
+        };
+
+        function currentBoard() {
+          return boards[state.boardIndex % boards.length];
+        }
+
+        function buildButtons() {
+          boardGrid.innerHTML = "";
+          currentBoard().cells.forEach((label, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "button ghost cell-button";
+            button.dataset.index = String(index);
+            button.textContent = `${keyOrder[index]}. ${label}`;
+            button.addEventListener("click", () => pickCell(index));
+            boardGrid.appendChild(button);
+          });
+        }
+
+        function resetBoard(nextIndex, preserveIndex = false) {
+          if (!preserveIndex) {
+            state.boardIndex = nextIndex;
+          }
+          state.mode = "ready";
+          state.selectedIndex = 0;
+          state.marks = [4];
+          state.blocked = [...currentBoard().blocked];
+          state.movesLeft = 4;
+          state.message = "開始待ち";
+          state.winLine = null;
+          buildButtons();
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function startGame() {
+          document.activeElement?.blur?.();
+          state.mode = "playing";
+          state.message = "使えるマスを選んでください";
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function isMarked(index) {
+          return state.marks.includes(index);
+        }
+
+        function isBlocked(index) {
+          return state.blocked.includes(index);
+        }
+
+        function findWinLine() {
+          return winningLines.find((line) => line.every((index) => isMarked(index))) || null;
+        }
+
+        function pickCell(index) {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing") return false;
+          if (isBlocked(index) || isMarked(index)) return false;
+
+          state.marks.push(index);
+          state.movesLeft -= 1;
+          state.winLine = findWinLine();
+
+          if (state.winLine) {
+            state.mode = "cleared";
+            state.message = "1ビンゴ完成";
+          } else if (state.movesLeft <= 0) {
+            state.mode = "failed";
+            state.message = "手数切れです";
+          } else {
+            state.message = "もう1マス選べます";
+          }
+
+          updateHud();
+          syncButtons();
+          render();
+          return true;
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          movesText.textContent = String(state.movesLeft);
+          goalText.textContent = state.winLine ? `達成: ${formatLine(state.winLine)}` : "1列そろえる";
+        }
+
+        function formatLine(line) {
+          if (line[0] === 0 && line[2] === 2) return "上段";
+          if (line[0] === 3 && line[2] === 5) return "中段";
+          if (line[0] === 6 && line[2] === 8) return "下段";
+          if (line[0] === 0 && line[2] === 6) return "左列";
+          if (line[0] === 1 && line[2] === 7) return "中央列";
+          if (line[0] === 2 && line[2] === 8) return "右列";
+          if (line[0] === 0 && line[2] === 8) return "右下がり";
+          return "右上がり";
+        }
+
+        function syncButtons() {
+          const buttons = Array.from(boardGrid.querySelectorAll(".cell-button"));
+          buttons.forEach((button) => {
+            const index = Number(button.dataset.index);
+            const disabled = state.mode === "cleared" || state.mode === "failed" || isBlocked(index) || isMarked(index);
+            button.disabled = disabled;
+            button.classList.remove("free", "marked", "blocked", "is-selected");
+            if (index === 4) {
+              button.classList.add("free");
+            }
+            if (isMarked(index) && index !== 4) {
+              button.classList.add("marked");
+            }
+            if (isBlocked(index)) {
+              button.classList.add("blocked");
+            }
+            if (!disabled && index === state.selectedIndex) {
+              button.classList.add("is-selected");
+            }
+          });
+        }
+
+        function moveSelection(delta) {
+          const total = 9;
+          let next = state.selectedIndex;
+          for (let step = 0; step < total; step += 1) {
+            next = (next + delta + total) % total;
+            if (!isBlocked(next) && !isMarked(next)) {
+              state.selectedIndex = next;
+              break;
+            }
+          }
+          syncButtons();
+          render();
+        }
+
+        function chooseSelectedCell() {
+          pickCell(state.selectedIndex);
+        }
+
+        function drawCell(index, x, y, size) {
+          const board = currentBoard();
+          const label = board.cells[index];
+          const marked = isMarked(index);
+          const blocked = isBlocked(index);
+          const selected = index === state.selectedIndex && !blocked && !marked && state.mode !== "cleared" && state.mode !== "failed";
+          ctx.fillStyle = blocked ? "#fee2e2" : marked ? "#dcfce7" : index === 4 ? "#dbeafe" : "#ffffff";
+          ctx.strokeStyle = selected ? "#2563eb" : "#cbd5e1";
+          ctx.lineWidth = selected ? 4 : 2;
+          ctx.beginPath();
+          ctx.roundRect(x, y, size, size, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 15px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(keyOrder[index], x + size / 2, y + 24);
+
+          ctx.font = "600 20px sans-serif";
+          const lines = label === "FREE" ? ["FREE"] : splitLabel(label);
+          lines.forEach((part, partIndex) => {
+            ctx.fillText(part, x + size / 2, y + 58 + partIndex * 24);
+          });
+          if (blocked) {
+            ctx.font = "700 14px sans-serif";
+            ctx.fillStyle = "#991b1b";
+            ctx.fillText("保留", x + size / 2, y + size - 16);
+          }
+        }
+
+        function splitLabel(label) {
+          if (label.length <= 4) return [label];
+          return [label.slice(0, Math.ceil(label.length / 2)), label.slice(Math.ceil(label.length / 2))];
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#e0f2fe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText("morning bingo", 36, 48);
+          ctx.font = "18px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Make one line in four moves.", 36, 78);
+
+          ctx.fillStyle = "#e2e8f0";
+          ctx.fillRect(36, 102, 240, 18);
+          ctx.fillStyle = state.movesLeft >= 3 ? "#2563eb" : state.movesLeft >= 1 ? "#f59e0b" : "#ef4444";
+          ctx.fillRect(36, 102, 60 * state.movesLeft, 18);
+          ctx.strokeStyle = "#cbd5e1";
+          ctx.strokeRect(36, 102, 240, 18);
+
+          const startX = 165;
+          const startY = 150;
+          const size = 120;
+          const gap = 14;
+          for (let row = 0; row < 3; row += 1) {
+            for (let col = 0; col < 3; col += 1) {
+              const index = row * 3 + col;
+              drawCell(index, startX + col * (size + gap), startY + row * (size + gap), size);
+            }
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText(state.message, 72, 512);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          if (state.winLine) {
+            ctx.fillText(`達成ライン: ${formatLine(state.winLine)}`, 72, 538);
+          } else if (state.mode === "failed") {
+            ctx.fillText("次の盤面へ進むか、同じ盤面でやり直せます。", 72, 538);
+          } else {
+            ctx.fillText("中央は固定済み。空いているマスだけ選べます。", 72, 538);
+          }
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        startBtn.addEventListener("click", () => startGame());
+        nextBtn.addEventListener("click", () => resetBoard(state.boardIndex + 1));
+        resetBtn.addEventListener("click", () => resetBoard(state.boardIndex, true));
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(-3);
+            return;
+          }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(3);
+            return;
+          }
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            chooseSelectedCell();
+            return;
+          }
+          const keyIndex = keyOrder.indexOf(event.key);
+          if (keyIndex >= 0) {
+            state.selectedIndex = keyIndex;
+            if (!isBlocked(keyIndex) && !isMarked(keyIndex)) {
+              pickCell(keyIndex);
+            } else {
+              syncButtons();
+              render();
+            }
+          }
+        });
+
+        window.startGame = startGame;
+        window.pickCell = pickCell;
+        window.advanceTime = () => {
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "canvas 720x560 origin top-left x→right y→down",
+            mode: state.mode,
+            boardIndex: state.boardIndex,
+            labels: currentBoard().cells,
+            marked: [...state.marks],
+            blocked: [...state.blocked],
+            selectedIndex: state.selectedIndex,
+            movesLeft: state.movesLeft,
+            winLine: state.winLine,
+            message: state.message,
+          });
+
+        resetBoard(0);
+      })();
+    </script>
+  </body>
+</html>
