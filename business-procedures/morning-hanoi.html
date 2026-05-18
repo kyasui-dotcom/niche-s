@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の段取りハノイ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="3本の柱で4枚の段取りディスクを移し替える、起業家向けの小さなハノイの塔ゲーム。扱うのは朝の実務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の段取りハノイ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4枚の段取りディスクを移し替える、起業家向けの小さなハノイの塔ゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-hanoi.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-hanoi.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #hanoiCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .tower-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .tower-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .tower-btn {
+        min-height: 72px;
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 8px;
+      }
+      .tower-btn small {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+      .tower-btn.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の段取りハノイ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の段取りハノイ</h1>
+        <p class="lede">
+          3本の柱で4枚の段取りディスクを移し替えるだけの、小さなハノイの塔ゲームです。
+          題材は返信、確認、提案、追客といった軽い起業比喩に限り、法務、税務、許認可、契約、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-bingo.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>小さいディスクだけを上に重ねて移す</h2>
+          <p class="section-copy">
+            左の柱から右の柱へ、4枚のディスクを順番を崩さず移し替えます。大きいディスクを小さいディスクの上には置けません。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="hanoiCanvas" width="720" height="450" aria-label="朝の段取りハノイの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="movesText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>最短目安</span>
+              <strong id="goalText">15 手</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+            </div>
+            <div class="tower-card">
+              <div class="tower-grid">
+                <button class="button tower-btn" type="button" data-tower="0">
+                  1. 朝いち
+                  <small>最初の柱</small>
+                </button>
+                <button class="button tower-btn" type="button" data-tower="1">
+                  2. 整理中
+                  <small>中継の柱</small>
+                </button>
+                <button class="button tower-btn" type="button" data-tower="2">
+                  3. 今日の形
+                  <small>ゴールの柱</small>
+                </button>
+              </div>
+            </div>
+            <p class="game-note">操作: 1-3 で柱を選択 / R=やり直し / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方は最小サイズです</h2>
+        </div>
+        <ol class="tips-list">
+          <li>1回目で持ち上げる柱を選び、2回目で置き先の柱を選ぶだけです。</li>
+          <li>大きいディスクは、小さいディスクの上へは置けません。</li>
+          <li>朝の切り替え用の娯楽で、実務の優先順位や正解を断定するものではありません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、行政提出、労務など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("hanoiCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const movesText = document.getElementById("movesText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const towerButtons = Array.from(document.querySelectorAll("[data-tower]"));
+
+        const DISK_LABELS = ["返信", "確認", "提案", "追客"];
+        const MIN_MOVES = 15;
+        const state = {
+          mode: "ready",
+          message: "開始待ち",
+          towers: [[], [], []],
+          selectedTower: null,
+          moves: 0,
+        };
+
+        function setupGame(mode = "playing") {
+          state.mode = mode;
+          state.message = mode === "ready" ? "開始待ち" : "左から右へ移す";
+          state.towers = [[4, 3, 2, 1], [], []];
+          state.selectedTower = null;
+          state.moves = 0;
+          sync();
+          render();
+        }
+
+        function topDisk(towerIndex) {
+          const tower = state.towers[towerIndex];
+          return tower[tower.length - 1] ?? null;
+        }
+
+        function handleTowerPick(towerIndex) {
+          if (state.mode === "ready") {
+            setupGame("playing");
+          }
+
+          if (state.mode !== "playing") {
+            return;
+          }
+
+          if (state.selectedTower === null) {
+            if (!state.towers[towerIndex].length) {
+              state.message = "空の柱は選べません";
+              sync();
+              render();
+              return;
+            }
+            state.selectedTower = towerIndex;
+            state.message = `${towerLabel(towerIndex)} を持ち上げました`;
+            sync();
+            render();
+            return;
+          }
+
+          if (state.selectedTower === towerIndex) {
+            state.selectedTower = null;
+            state.message = "選択を解除しました";
+            sync();
+            render();
+            return;
+          }
+
+          const from = state.selectedTower;
+          const to = towerIndex;
+          const movingDisk = topDisk(from);
+          const targetDisk = topDisk(to);
+          if (targetDisk !== null && targetDisk < movingDisk) {
+            state.message = "大きいディスクは小さいディスクの上に置けません";
+            state.selectedTower = null;
+            sync();
+            render();
+            return;
+          }
+
+          state.towers[to].push(state.towers[from].pop());
+          state.moves += 1;
+          state.selectedTower = null;
+
+          if (state.towers[2].length === 4) {
+            state.mode = "won";
+            state.message =
+              state.moves === MIN_MOVES
+                ? "最短15手でクリア"
+                : `${state.moves}手でクリア`;
+          } else {
+            state.message = `${towerLabel(from)} → ${towerLabel(to)} に移動`;
+          }
+
+          sync();
+          render();
+        }
+
+        function towerLabel(index) {
+          return ["朝いち", "整理中", "今日の形"][index];
+        }
+
+        function sync() {
+          statusText.textContent = state.message;
+          movesText.textContent = String(state.moves);
+          towerButtons.forEach((button, index) => {
+            button.classList.toggle("is-selected", state.selectedTower === index);
+          });
+        }
+
+        function drawTowerBase() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#e2e8f0";
+          ctx.fillRect(40, 390, 640, 18);
+
+          const centers = [160, 360, 560];
+          centers.forEach((x) => {
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillRect(x - 6, 130, 12, 260);
+          });
+
+          ctx.fillStyle = "#475569";
+          ctx.font = "600 18px sans-serif";
+          ctx.textAlign = "center";
+          centers.forEach((x, index) => {
+            ctx.fillText(towerLabel(index), x, 428);
+          });
+        }
+
+        function drawDisks() {
+          const centers = [160, 360, 560];
+          const colors = ["#93c5fd", "#60a5fa", "#34d399", "#fbbf24"];
+
+          state.towers.forEach((tower, towerIndex) => {
+            tower.forEach((disk, levelIndex) => {
+              const width = 84 + disk * 34;
+              const height = 32;
+              const x = centers[towerIndex] - width / 2;
+              const y = 354 - levelIndex * 36;
+
+              ctx.fillStyle = colors[disk - 1];
+              ctx.strokeStyle = "#0f172a";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.roundRect(x, y, width, height, 10);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = "#0f172a";
+              ctx.font = "600 15px sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText(DISK_LABELS[disk - 1], centers[towerIndex], y + 21);
+            });
+          });
+
+          if (state.selectedTower !== null) {
+            ctx.strokeStyle = "#2563eb";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(centers[state.selectedTower] - 90, 110, 180, 270);
+          }
+        }
+
+        function drawStatus() {
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "left";
+          ctx.font = "700 22px sans-serif";
+          ctx.fillText("朝の段取りハノイ", 34, 42);
+
+          ctx.font = "500 16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("左の柱から右の柱へ。小さいディスクを上に保つ。", 34, 72);
+
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#1d4ed8";
+          ctx.fillText(`手数 ${state.moves}`, 684, 42);
+          ctx.fillStyle = "#475569";
+          ctx.fillText(state.message, 684, 72);
+        }
+
+        function render() {
+          drawTowerBase();
+          drawStatus();
+          drawDisks();
+        }
+
+        startBtn.addEventListener("click", () => setupGame("playing"));
+        resetBtn.addEventListener("click", () => setupGame("playing"));
+        towerButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            handleTowerPick(Number(button.dataset.tower));
+          });
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "r" || event.key === "R") {
+            setupGame("playing");
+            return;
+          }
+
+          if (event.key === "f" || event.key === "F") {
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              document.documentElement.requestFullscreen?.();
+            }
+            return;
+          }
+
+          if (["1", "2", "3"].includes(event.key)) {
+            handleTowerPick(Number(event.key) - 1);
+          }
+        });
+
+        setupGame("ready");
+      })();
+    </script>
+  </body>
+</html>
