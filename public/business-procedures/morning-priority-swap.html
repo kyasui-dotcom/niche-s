@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の優先順スワップ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4枚の実務カードを隣同士で入れ替えて目標順にそろえる、起業家向けの小さな並べ替えゲーム。扱うのは朝の軽い実務比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の優先順スワップ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4枚の実務カードを隣同士で入れ替えて目標順にそろえる、小さな起業家向けパズルゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-priority-swap.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-priority-swap.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #swapCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #f8fafc 0%, #ecfeff 100%);
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .swap-card,
+      .target-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls,
+      .swap-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .swap-controls {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .swap-btn {
+        min-height: 56px;
+        padding: 8px 6px;
+        line-height: 1.35;
+      }
+      .swap-btn small {
+        display: block;
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+      .target-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の優先順スワップ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の優先順スワップ</h1>
+        <p class="lede">
+          4枚の実務カードを隣同士で入れ替えて、目標の並びにそろえるだけの小さなパズルです。
+          題材は返信、提案メモ、導線確認などの軽い起業比喩に限り、法務、税務、許認可、契約、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-hanoi.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>隣どうしを入れ替えて目標順にそろえる</h2>
+          <p class="section-copy">
+            下の3つの入れ替えボタンだけを使って、左から右へ目標の並びを作ります。1問あたり6手以内が目安です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="swapCanvas" width="720" height="460" aria-label="朝の優先順スワップの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="movesText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>目安</span>
+              <strong id="goalText">6 手以内</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次の並び</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+            </div>
+            <div class="swap-card">
+              <div class="swap-controls">
+                <button id="swap0" class="button ghost swap-btn" type="button">
+                  1
+                  <small>左2枚を交換</small>
+                </button>
+                <button id="swap1" class="button ghost swap-btn" type="button">
+                  2
+                  <small>中央2枚を交換</small>
+                </button>
+                <button id="swap2" class="button ghost swap-btn" type="button">
+                  3
+                  <small>右2枚を交換</small>
+                </button>
+              </div>
+            </div>
+            <div class="target-card">
+              <strong>目標の並び</strong>
+              <ol class="target-list" id="targetList"></ol>
+            </div>
+            <p class="game-note">操作: 1-3 で交換 / N=次の並び / R=やり直し / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はかなり小さめです</h2>
+        </div>
+        <ol class="tips-list">
+          <li>使えるのは隣接2枚の交換だけです。遠いカードは少しずつ寄せます。</li>
+          <li>正解は1つでも、朝の実務の正解や優先順位を断定するものではありません。</li>
+          <li>気分転換用の娯楽で、専門判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、行政提出、労務など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const puzzles = [
+          {
+            target: ["返信", "提案メモ", "導線確認", "数字確認"],
+            start: ["数字確認", "返信", "導線確認", "提案メモ"],
+          },
+          {
+            target: ["朝会準備", "見積整理", "紹介返信", "改善1件"],
+            start: ["紹介返信", "改善1件", "朝会準備", "見積整理"],
+          },
+          {
+            target: ["連絡返し", "原稿下書き", "商品見直し", "次回提案"],
+            start: ["商品見直し", "連絡返し", "次回提案", "原稿下書き"],
+          },
+        ];
+
+        const canvas = document.getElementById("swapCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const movesText = document.getElementById("movesText");
+        const targetList = document.getElementById("targetList");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const swapButtons = [
+          document.getElementById("swap0"),
+          document.getElementById("swap1"),
+          document.getElementById("swap2"),
+        ];
+
+        const state = {
+          puzzleIndex: 0,
+          mode: "ready",
+          cards: [...puzzles[0].start],
+          moves: 0,
+          message: "開始待ち",
+        };
+
+        function currentPuzzle() {
+          return puzzles[state.puzzleIndex % puzzles.length];
+        }
+
+        function setPuzzle(index, preserveIndex = false) {
+          if (!preserveIndex) {
+            state.puzzleIndex = index;
+          }
+          state.mode = "ready";
+          state.cards = [...currentPuzzle().start];
+          state.moves = 0;
+          state.message = "開始待ち";
+          renderTarget();
+          sync();
+          render();
+        }
+
+        function renderTarget() {
+          targetList.innerHTML = "";
+          currentPuzzle().target.forEach((label) => {
+            const item = document.createElement("li");
+            item.textContent = label;
+            targetList.appendChild(item);
+          });
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.message = "1手ずつ並べ替えてください";
+          sync();
+          render();
+        }
+
+        function swapAt(index) {
+          if (state.mode === "ready") {
+            startGame();
+          }
+          if (state.mode !== "playing") {
+            return;
+          }
+          const left = state.cards[index];
+          state.cards[index] = state.cards[index + 1];
+          state.cards[index + 1] = left;
+          state.moves += 1;
+
+          if (isSolved()) {
+            state.mode = "cleared";
+            state.message = state.moves <= 6 ? `${state.moves}手でクリア` : `${state.moves}手で完成`;
+          } else {
+            state.message = `${index + 1}番の入れ替えを実行`;
+          }
+
+          sync();
+          render();
+        }
+
+        function isSolved() {
+          return state.cards.every((label, index) => label === currentPuzzle().target[index]);
+        }
+
+        function sync() {
+          statusText.textContent = state.message;
+          movesText.textContent = String(state.moves);
+          swapButtons.forEach((button) => {
+            button.disabled = state.mode === "cleared";
+          });
+        }
+
+        function drawHeader() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText("朝の優先順スワップ", 34, 42);
+          ctx.font = "500 16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("隣同士だけを交換して、下段の目標順に合わせます。", 34, 72);
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#1d4ed8";
+          ctx.fillText(`手数 ${state.moves}`, 686, 42);
+          ctx.fillStyle = "#475569";
+          ctx.fillText(state.message, 686, 72);
+        }
+
+        function drawLane(title, cards, y, accent, filled) {
+          ctx.fillStyle = accent;
+          ctx.font = "700 18px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText(title, 52, y - 18);
+
+          cards.forEach((label, index) => {
+            const x = 50 + index * 158;
+            ctx.fillStyle = filled ? "#ffffff" : "#f8fafc";
+            ctx.strokeStyle = filled ? "#14b8a6" : "#cbd5e1";
+            ctx.lineWidth = filled ? 3 : 2;
+            ctx.beginPath();
+            ctx.roundRect(x, y, 142, 96, 18);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 15px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(String(index + 1), x + 71, y + 24);
+
+            ctx.font = "600 22px sans-serif";
+            const lines = splitLabel(label);
+            lines.forEach((line, lineIndex) => {
+              ctx.fillText(line, x + 71, y + 54 + lineIndex * 24);
+            });
+          });
+        }
+
+        function splitLabel(label) {
+          if (label.length <= 6) {
+            return [label];
+          }
+          const half = Math.ceil(label.length / 2);
+          return [label.slice(0, half), label.slice(half)];
+        }
+
+        function drawHints() {
+          ctx.fillStyle = "#334155";
+          ctx.font = "600 16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("1", 121, 258);
+          ctx.fillText("2", 279, 258);
+          ctx.fillText("3", 437, 258);
+
+          for (let i = 0; i < 3; i += 1) {
+            const x = 121 + i * 158;
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x, 272);
+            ctx.lineTo(x + 80, 272);
+            ctx.stroke();
+          }
+        }
+
+        function render() {
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#eff6ff");
+          gradient.addColorStop(1, "#ecfeff");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          drawHeader();
+          drawLane("いまの並び", state.cards, 110, "#0f172a", false);
+          drawHints();
+          drawLane("目標の並び", currentPuzzle().target, 300, "#0f766e", true);
+        }
+
+        startBtn.addEventListener("click", () => startGame());
+        nextBtn.addEventListener("click", () => setPuzzle(state.puzzleIndex + 1));
+        resetBtn.addEventListener("click", () => setPuzzle(state.puzzleIndex, true));
+        swapButtons.forEach((button, index) => {
+          button.addEventListener("click", () => swapAt(index));
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "r" || event.key === "R") {
+            setPuzzle(state.puzzleIndex, true);
+            return;
+          }
+          if (event.key === "n" || event.key === "N") {
+            setPuzzle(state.puzzleIndex + 1);
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            if (document.fullscreenElement) {
+              document.exitFullscreen().catch(() => {});
+            } else {
+              canvas.requestFullscreen?.().catch(() => {});
+            }
+            return;
+          }
+          if (["1", "2", "3"].includes(event.key)) {
+            swapAt(Number(event.key) - 1);
+          }
+        });
+
+        window.startGame = startGame;
+        window.swapAt = swapAt;
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "canvas 720x460 origin top-left x→right y→down",
+            mode: state.mode,
+            puzzleIndex: state.puzzleIndex,
+            cards: [...state.cards],
+            target: [...currentPuzzle().target],
+            moves: state.moves,
+            message: state.message,
+          });
+
+        setPuzzle(0);
+      })();
+    </script>
+  </body>
+</html>
