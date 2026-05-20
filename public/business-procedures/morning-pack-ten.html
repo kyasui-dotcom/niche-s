@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝のぴったり10パック | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="軽い実務カードを選んで合計10点を作る、起業家向けの小さな数合わせゲーム。題材は朝の軽作業だけに絞り、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝のぴったり10パック | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="朝の軽い実務カードを組み合わせて合計10点を作る、小さな起業家向けパズルゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-pack-ten.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-pack-ten.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .pick-card,
+      .game-page .score-card {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-shell,
+      .pick-grid,
+      .game-panel,
+      .tips-list,
+      .selected-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #ffffff;
+        padding: 16px;
+      }
+      .target-banner {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 100%);
+        padding: 14px 16px;
+      }
+      .target-banner strong {
+        font-size: 1.5rem;
+        color: var(--dark);
+      }
+      .pick-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .pick-card {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        color: var(--dark);
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .pick-card.active {
+        border-color: #2563eb;
+        background: #dbeafe;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+      }
+      .pick-card:disabled {
+        cursor: default;
+        opacity: 0.55;
+      }
+      .pick-card strong,
+      .score-card strong {
+        display: block;
+        font-size: 1.2rem;
+      }
+      .pick-card span,
+      .pick-card small,
+      .score-card span,
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .pick-card span,
+      .pick-card small {
+        display: block;
+      }
+      .pick-card small {
+        margin-top: 6px;
+      }
+      .game-panel {
+        gap: 12px;
+      }
+      .score-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .selected-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .pick-grid {
+          grid-template-columns: 1fr;
+        }
+        .target-banner {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝のぴったり10パック</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝のぴったり10パック</h1>
+        <p class="lede">
+          軽い実務カードを3枚まで選んで、合計10点を作るだけの小さな数合わせパズルです。
+          題材は返信、メモ、見直しなどの朝の軽作業に限り、法務、税務、許認可、契約、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-priority-swap.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>3枚まで選んで合計10点を作る</h2>
+          <p class="section-copy">
+            カードを押して選び、合計点をちょうど10に合わせます。4問とも正解するとクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="target-banner">
+              <div>
+                <span>目標スコア</span>
+                <strong id="targetText">10 点</strong>
+              </div>
+              <div>
+                <span>現在の合計</span>
+                <strong id="sumText">0 点</strong>
+              </div>
+            </div>
+            <div class="pick-grid" id="pickGrid" aria-label="task cards"></div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="score-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-card">
+              <span>問題</span>
+              <strong id="roundText">1 / 4</strong>
+            </div>
+            <div class="score-card">
+              <span>選択枚数</span>
+              <strong id="pickCountText">0 / 3</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="checkBtn" class="button ghost" type="button">判定</button>
+              <button id="resetBtn" class="button ghost" type="button">選び直す</button>
+              <button id="nextBtn" class="button ghost" type="button">次の問題</button>
+            </div>
+            <div class="score-card">
+              <span>選んだカード</span>
+              <ol class="selected-list" id="selectedList">
+                <li>まだ選択なし</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: クリックで選択 / Enter で判定 / N=次の問題 / R=選び直し</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はかなり小さめです</h2>
+        </div>
+        <ol class="tips-list">
+          <li>1問につき選べるのは3枚までです。</li>
+          <li>合計10点になれば正解です。超えたら外して調整します。</li>
+          <li>実際の業務優先度や専門判断を決めるものではなく、気分転換用の娯楽です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、行政提出、労務など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const target = 10;
+        const rounds = [
+          [
+            { label: "返信3件", value: 3 },
+            { label: "見積メモ", value: 4 },
+            { label: "導線見直し", value: 6 },
+            { label: "紹介お礼", value: 2 },
+            { label: "商品1行改善", value: 5 },
+          ],
+          [
+            { label: "朝会準備", value: 2 },
+            { label: "提案下書き", value: 5 },
+            { label: "数字確認", value: 3 },
+            { label: "告知見直し", value: 6 },
+            { label: "紹介返信", value: 4 },
+          ],
+          [
+            { label: "FAQ修正", value: 1 },
+            { label: "導入文更新", value: 4 },
+            { label: "見込み客整理", value: 5 },
+            { label: "日程返答", value: 2 },
+            { label: "事例メモ", value: 8 },
+          ],
+          [
+            { label: "一言追客", value: 3 },
+            { label: "価格メモ", value: 7 },
+            { label: "導線比較", value: 4 },
+            { label: "紹介整理", value: 6 },
+            { label: "投稿下書き", value: 2 },
+          ],
+        ];
+
+        const pickGrid = document.getElementById("pickGrid");
+        const targetText = document.getElementById("targetText");
+        const sumText = document.getElementById("sumText");
+        const statusText = document.getElementById("statusText");
+        const roundText = document.getElementById("roundText");
+        const pickCountText = document.getElementById("pickCountText");
+        const selectedList = document.getElementById("selectedList");
+        const startBtn = document.getElementById("startBtn");
+        const checkBtn = document.getElementById("checkBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        const state = {
+          roundIndex: 0,
+          mode: "ready",
+          selected: new Set(),
+          solved: [false, false, false, false],
+        };
+
+        function currentRound() {
+          return rounds[state.roundIndex];
+        }
+
+        function currentSum() {
+          return [...state.selected].reduce((sum, index) => sum + currentRound()[index].value, 0);
+        }
+
+        function selectedLabels() {
+          return [...state.selected].map((index) => {
+            const card = currentRound()[index];
+            return `${card.label} (${card.value})`;
+          });
+        }
+
+        function syncStatus() {
+          targetText.textContent = `${target} 点`;
+          sumText.textContent = `${currentSum()} 点`;
+          roundText.textContent = `${state.roundIndex + 1} / ${rounds.length}`;
+          pickCountText.textContent = `${state.selected.size} / 3`;
+
+          const labels = selectedLabels();
+          selectedList.innerHTML = labels.length
+            ? labels.map((label) => `<li>${label}</li>`).join("")
+            : "<li>まだ選択なし</li>";
+
+          const locked = state.mode === "cleared-all";
+          const cards = pickGrid.querySelectorAll(".pick-card");
+          cards.forEach((button, index) => {
+            const selected = state.selected.has(index);
+            const limitReached = state.selected.size >= 3 && !selected;
+            button.classList.toggle("active", selected);
+            button.disabled = locked || limitReached;
+            button.setAttribute("aria-pressed", selected ? "true" : "false");
+          });
+        }
+
+        function setStatus(message) {
+          statusText.textContent = message;
+        }
+
+        function renderRound() {
+          pickGrid.innerHTML = "";
+          currentRound().forEach((card, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "pick-card";
+            button.innerHTML = `<strong>${card.value} 点</strong><span>${card.label}</span><small>クリックで選択</small>`;
+            button.addEventListener("click", () => togglePick(index));
+            pickGrid.appendChild(button);
+          });
+          syncStatus();
+        }
+
+        function loadRound(index) {
+          state.roundIndex = index;
+          state.mode = "playing";
+          state.selected = new Set();
+          setStatus(`問題 ${index + 1} に挑戦中`);
+          renderRound();
+        }
+
+        function togglePick(index) {
+          if (state.mode !== "playing") {
+            return;
+          }
+          if (state.selected.has(index)) {
+            state.selected.delete(index);
+          } else if (state.selected.size < 3) {
+            state.selected.add(index);
+          }
+          syncStatus();
+        }
+
+        function checkAnswer() {
+          if (state.mode !== "playing") {
+            return;
+          }
+          const total = currentSum();
+          if (total === target) {
+            state.solved[state.roundIndex] = true;
+            const clearedAll = state.solved.every(Boolean);
+            state.mode = clearedAll ? "cleared-all" : "cleared";
+            setStatus(clearedAll ? "4問クリア" : `正解: 合計 ${target} 点`);
+          } else if (total < target) {
+            setStatus(`あと ${target - total} 点`);
+          } else {
+            setStatus(`${total - target} 点オーバー`);
+          }
+          syncStatus();
+        }
+
+        function resetSelection() {
+          if (state.mode === "ready") {
+            return;
+          }
+          if (state.mode === "cleared-all") {
+            state.mode = "playing";
+          }
+          if (state.mode === "cleared") {
+            state.mode = "playing";
+          }
+          state.selected = new Set();
+          setStatus(`問題 ${state.roundIndex + 1} を選び直し`);
+          syncStatus();
+        }
+
+        function nextRound() {
+          const nextIndex = (state.roundIndex + 1) % rounds.length;
+          loadRound(nextIndex);
+        }
+
+        startBtn.addEventListener("click", () => {
+          state.solved = [false, false, false, false];
+          loadRound(0);
+        });
+        checkBtn.addEventListener("click", checkAnswer);
+        resetBtn.addEventListener("click", resetSelection);
+        nextBtn.addEventListener("click", nextRound);
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            checkAnswer();
+          }
+          if (event.key.toLowerCase() === "n") {
+            nextRound();
+          }
+          if (event.key.toLowerCase() === "r") {
+            resetSelection();
+          }
+        });
+
+        window.render_game_to_text = () =>
+          JSON.stringify(
+            {
+              mode: state.mode,
+              roundIndex: state.roundIndex,
+              selected: [...state.selected],
+              sum: currentSum(),
+              solved: state.solved,
+              status: statusText.textContent,
+            },
+            null,
+            2
+          );
+        window.startGame = () => startBtn.click();
+        window.toggleCard = (index) => togglePick(index);
+        window.checkGame = () => checkAnswer();
+        window.nextRound = () => nextRound();
+        window.advanceTime = async () => {};
+
+        renderRound();
+      })();
+    </script>
+  </body>
+</html>

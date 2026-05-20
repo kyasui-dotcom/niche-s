@@ -1,5 +1,18 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-20
+
+- Added `business-procedures/morning-pack-ten.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝のぴったり10パック" - a very small sum-to-10 selection puzzle using only lightweight entrepreneur task metaphors like replies, memos, and landing-page checks.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `startGame`, `toggleCard`, `checkGame`, `nextRound`, and a lightweight `advanceTime` hook for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-pack-ten.html`.
+- Verified with the web-game Playwright client: start flow reached `mode: "playing"` with no console/page errors.
+- Verified a 390px-wide mobile screenshot plus a 4-round clear path ending in `mode: "cleared-all"` with no console/page errors.
+- Temporary screenshot output should not be committed.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, and sum-to-target number-selection concepts on the next run.
+
 ## 2026-05-14
 
 - Added `business-procedures/morning-task-nim.html` and mirrored it under `public/business-procedures/`.
