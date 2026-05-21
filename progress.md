@@ -1,5 +1,14 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-21
+
+- Added `business-procedures/morning-lights-out.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の整えライトアウト" - a tiny 3x3 Lights Out-style puzzle using only lightweight entrepreneur task labels like replies, memos, checks, and draft cleanup.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative filing judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `startGame`, `pressCell`, `resetGame`, and a lightweight `advanceTime` hook for automated validation.
+- TODO: verify local HTTP 200, 390px mobile layout, and a deterministic clear path before push/deploy.
+
 ## 2026-05-20
 
 - Added `business-procedures/morning-pack-ten.html` and mirrored it under `public/business-procedures/`.

@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の整えライトアウト | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="9マスの軽作業を押して全部そろえる、起業家向けの小さなライトアウト風ミニゲーム。返信、メモ、見直しなどの軽い題材に限り、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の整えライトアウト | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="9マスの軽作業を押して全部そろえる、小さなライトアウト風の起業家向けミニゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-lights-out.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-lights-out.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .status-card,
+      .game-page .cell {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .status-panel,
+      .rule-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+      }
+      .stage-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .stage-head strong {
+        font-size: 1.4rem;
+        color: var(--dark);
+      }
+      .grid-board {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .cell {
+        min-height: 116px;
+        border: 1px solid var(--line);
+        background: #e2e8f0;
+        color: var(--dark);
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      }
+      .cell:hover {
+        transform: translateY(-1px);
+      }
+      .cell.active {
+        background: linear-gradient(135deg, #dbeafe 0%, #cffafe 100%);
+        border-color: #2563eb;
+      }
+      .cell.cursor {
+        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.2);
+      }
+      .cell strong,
+      .status-card strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+      .cell span,
+      .cell small,
+      .status-card span,
+      .game-copy,
+      .rule-list,
+      .game-note {
+        color: var(--muted);
+      }
+      .cell span,
+      .cell small {
+        display: block;
+      }
+      .cell small {
+        margin-top: 6px;
+      }
+      .status-panel {
+        gap: 12px;
+      }
+      .status-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .grid-board {
+          gap: 10px;
+        }
+        .cell {
+          min-height: 98px;
+        }
+        .stage-head {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page" tabindex="-1">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の整えライトアウト</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の整えライトアウト</h1>
+        <p class="lede">
+          9マスの軽作業を押して、盤面を全部「整った」状態にそろえるだけの小さなパズルです。
+          題材は返信、メモ、確認などの軽い朝タスクに限り、法務、税務、許認可、契約、労務、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-pack-ten.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>押したマスと上下左右が切り替わります</h2>
+          <p class="section-copy">
+            3手以内クリアを目安にした最小スコープです。全部のマスを青い「整った」状態にそろえるとクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="stage-head">
+              <div>
+                <span>クリア条件</span>
+                <strong>9マス全部を整える</strong>
+              </div>
+              <div>
+                <span>残り未整理</span>
+                <strong id="remainingText">5 マス</strong>
+              </div>
+            </div>
+            <div class="grid-board" id="gridBoard" aria-label="task grid"></div>
+          </div>
+          <aside class="status-panel" aria-label="game status">
+            <div class="status-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="status-card">
+              <span>手数</span>
+              <strong id="moveText">0 手</strong>
+            </div>
+            <div class="status-card">
+              <span>最短目安</span>
+              <strong>3 手</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">初期配置へ戻す</button>
+            </div>
+            <p class="game-note">操作: クリックで切替 / 矢印で移動 / Enterで押す / 1-9キーでも選択 / Rで初期配置へ戻す</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はこれだけです</h2>
+        </div>
+        <ol class="rule-list">
+          <li>押したマスと上下左右の状態が反転します。</li>
+          <li>灰色は未整理、青色は整った状態です。</li>
+          <li>実務の優先順位や専門判断を決めるものではなく、気分転換用の娯楽です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const size = 3;
+        const labels = [
+          "返信箱",
+          "提案メモ",
+          "導線確認",
+          "紹介お礼",
+          "投稿下書き",
+          "数字メモ",
+          "事例整理",
+          "見積下書き",
+          "FAQ見直し",
+        ];
+        const seedBoard = [1, 0, 1, 0, 0, 0, 0, 1, 0];
+
+        const gridBoard = document.getElementById("gridBoard");
+        const remainingText = document.getElementById("remainingText");
+        const statusText = document.getElementById("statusText");
+        const moveText = document.getElementById("moveText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          board: [...seedBoard],
+          cursor: 0,
+          moves: 0,
+        };
+
+        function toIndex(row, col) {
+          return row * size + col;
+        }
+
+        function neighbors(index) {
+          const row = Math.floor(index / size);
+          const col = index % size;
+          return [
+            [row, col],
+            [row - 1, col],
+            [row + 1, col],
+            [row, col - 1],
+            [row, col + 1],
+          ]
+            .filter(([r, c]) => r >= 0 && r < size && c >= 0 && c < size)
+            .map(([r, c]) => toIndex(r, c));
+        }
+
+        function remainingCount() {
+          return state.board.filter((value) => value === 0).length;
+        }
+
+        function isCleared() {
+          return state.board.every((value) => value === 1);
+        }
+
+        function setStatus(message) {
+          statusText.textContent = message;
+        }
+
+        function syncStatus() {
+          remainingText.textContent = `${remainingCount()} マス`;
+          moveText.textContent = `${state.moves} 手`;
+          const buttons = gridBoard.querySelectorAll(".cell");
+          buttons.forEach((button, index) => {
+            const active = state.board[index] === 1;
+            button.classList.toggle("active", active);
+            button.classList.toggle("cursor", index === state.cursor);
+            button.setAttribute("aria-pressed", active ? "true" : "false");
+            button.querySelector("small").textContent = active ? "整った状態" : "未整理";
+          });
+        }
+
+        function renderBoard() {
+          gridBoard.innerHTML = "";
+          state.board.forEach((value, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `cell${value ? " active" : ""}`;
+            button.innerHTML = `<strong>${index + 1}. ${labels[index]}</strong><span>押すと周囲も切り替え</span><small>${
+              value ? "整った状態" : "未整理"
+            }</small>`;
+            button.addEventListener("click", () => pressCell(index));
+            gridBoard.appendChild(button);
+          });
+          syncStatus();
+        }
+
+        function resetGame() {
+          state.board = [...seedBoard];
+          state.cursor = 0;
+          state.moves = 0;
+          state.mode = "playing";
+          setStatus("開始中");
+          renderBoard();
+          document.body.focus();
+        }
+
+        function pressCell(index) {
+          if (state.mode !== "playing") {
+            return;
+          }
+          neighbors(index).forEach((target) => {
+            state.board[target] = state.board[target] ? 0 : 1;
+          });
+          state.moves += 1;
+          if (isCleared()) {
+            state.mode = "cleared";
+            setStatus(`クリア: ${state.moves} 手`);
+          } else {
+            setStatus(`進行中: ${state.moves} 手`);
+          }
+          syncStatus();
+        }
+
+        startBtn.addEventListener("click", resetGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        function moveCursor(deltaRow, deltaCol) {
+          const row = Math.floor(state.cursor / size);
+          const col = state.cursor % size;
+          const nextRow = Math.max(0, Math.min(size - 1, row + deltaRow));
+          const nextCol = Math.max(0, Math.min(size - 1, col + deltaCol));
+          state.cursor = toIndex(nextRow, nextCol);
+          syncStatus();
+        }
+
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "r") {
+            resetGame();
+            return;
+          }
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveCursor(-1, 0);
+            return;
+          }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveCursor(1, 0);
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveCursor(0, -1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveCursor(0, 1);
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            pressCell(state.cursor);
+            return;
+          }
+          const index = Number.parseInt(event.key, 10);
+          if (!Number.isNaN(index) && index >= 1 && index <= 9) {
+            state.cursor = index - 1;
+            pressCell(index - 1);
+          }
+        });
+
+        window.render_game_to_text = () =>
+          JSON.stringify(
+            {
+              coordinateSystem: "index 0-8 row-major, top-left origin",
+              mode: state.mode,
+              moves: state.moves,
+              remaining: remainingCount(),
+              cursor: state.cursor,
+              board: state.board,
+              status: statusText.textContent,
+            },
+            null,
+            2
+          );
+        window.startGame = () => resetGame();
+        window.pressCell = (index) => pressCell(index);
+        window.resetGame = () => resetGame();
+        window.advanceTime = async () => {};
+
+        renderBoard();
+      })();
+    </script>
+  </body>
+</html>
