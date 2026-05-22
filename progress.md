@@ -377,3 +377,11 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `26c8b8d` to GitHub branch `backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-bingo.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-bingo.html`.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, and bingo concepts on the next run.
+## 2026-05-22
+
+- Added `business-procedures/morning-peg-solitaire.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の一点残しペグ" - a minimal 1-row peg solitaire where entrepreneurs jump over one task to leave one core task.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectCell`, and `clickSlot` hooks for automated validation.
+- TODO: verify local HTTP 200, mobile layout, a full clear path, and then push/deploy.
