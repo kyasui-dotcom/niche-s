@@ -550,6 +550,8 @@
               startShuffle();
             } else if (state.phase === "revealed") {
               nextRound();
+            } else if (state.phase === "failed") {
+              retryRound();
             }
             return;
           }
