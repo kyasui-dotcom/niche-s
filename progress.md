@@ -1,5 +1,18 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-23
+
+- Added `business-procedures/meeting-memo-shuffle.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "商談メモシャッフル" - a minimal shell-game style tracker where entrepreneurs follow one memo under three cups across fixed swaps.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `startShuffle`, `pickCup`, `nextRound`, and `resetRound` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/meeting-memo-shuffle.html`.
+- Verified with the web-game Playwright client: the fixed clear path reaches `phase: "cleared"` with `wins: 3` and no console/page errors.
+- Verified a 390px-wide mobile full-page screenshot; the hero, canvas card, status cards, controls, and boundary section stack correctly.
+- Deployed from a clean temporary export so unrelated `src/index.js` worktree edits were not included; HTTP 200 confirmed on `https://niche-s.com/business-procedures/meeting-memo-shuffle.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/meeting-memo-shuffle.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, and shell-game concepts on the next run.
+
 ## 2026-05-21
 
 - Added `business-procedures/morning-lights-out.html` and mirrored it under `public/business-procedures/`.
