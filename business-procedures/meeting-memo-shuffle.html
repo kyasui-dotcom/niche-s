@@ -265,6 +265,15 @@
           render();
         }
 
+        function retryRound() {
+          resetRound(true);
+          state.phase = "preview";
+          state.message = "中央のメモを確認";
+          updateHud();
+          syncButtons();
+          render();
+        }
+
         function startShuffle() {
           if (state.phase !== "preview" && state.phase !== "revealed") return false;
           if (state.phase === "revealed" && state.roundIndex >= rounds.length) return false;
@@ -511,7 +520,7 @@
         startBtn.addEventListener("click", startGame);
         shuffleBtn.addEventListener("click", startShuffle);
         nextBtn.addEventListener("click", nextRound);
-        resetBtn.addEventListener("click", () => resetRound(true));
+        resetBtn.addEventListener("click", retryRound);
         cupButtons.forEach((button) => {
           button.addEventListener("click", () => {
             pickCup(Number(button.dataset.index));
@@ -560,7 +569,7 @@
         window.startShuffle = startShuffle;
         window.pickCup = pickCup;
         window.nextRound = nextRound;
-        window.resetRound = () => resetRound(true);
+        window.resetRound = retryRound;
         window.advanceTime = (ms) => {
           step(ms);
           render();
