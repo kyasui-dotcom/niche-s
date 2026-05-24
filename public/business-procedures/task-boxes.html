@@ -308,23 +308,20 @@
 
         function queueNumericShortcut(key) {
           const candidate = `${numericShortcutBuffer}${key}`;
-          if (candidate === "11" || candidate === "12") {
+          if (candidate === "10" || candidate === "11" || candidate === "12") {
             const line = lineDefinitions.find((entry) => entry.label === candidate);
-            const conflictingSingleDigit = candidate === "11" ? "1" : "2";
-            const conflictingLine = lineDefinitions.find((entry) => entry.label === conflictingSingleDigit);
             clearNumericShortcutBuffer();
-            if (
-              line &&
-              isLineOpen(line.id) &&
-              (!conflictingLine || !isLineOpen(conflictingLine.id))
-            ) {
+            if (line && isLineOpen(line.id)) {
               selectLine(line.id);
-              return true;
             }
-            return false;
+            return true;
           }
           if (key === "1") {
             numericShortcutBuffer = "1";
+            const line = lineDefinitions.find((entry) => entry.label === "1");
+            if (line && isLineOpen(line.id)) {
+              selectLine(line.id);
+            }
             if (numericShortcutTimer) {
               window.clearTimeout(numericShortcutTimer);
             }
