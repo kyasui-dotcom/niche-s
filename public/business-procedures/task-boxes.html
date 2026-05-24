@@ -155,7 +155,7 @@
             <div class="line-card">
               <div class="line-buttons" id="lineButtons"></div>
             </div>
-            <p class="game-note">操作: ←→で線を移動 / Enterで決定 / 1-9で線を選択 / F=フルスクリーン</p>
+            <p class="game-note">操作: ←→で線を移動 / Enterで決定 / 1-9,0,-,^ で線を選択 / F=フルスクリーン</p>
           </aside>
         </div>
       </section>
@@ -185,6 +185,8 @@
 
     <script>
       (() => {
+        const keyOrder = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "^"];
+
         const lineDefinitions = [
           { id: 0, label: "1", dots: [0, 1], orientation: "h", x1: 180, y1: 110, x2: 360, y2: 110 },
           { id: 1, label: "2", dots: [1, 2], orientation: "h", x1: 360, y1: 110, x2: 540, y2: 110 },
@@ -541,9 +543,9 @@
             confirmSelection();
             return;
           }
-          const numeric = Number(event.key);
-          if (numeric >= 1 && numeric <= 9) {
-            const line = lineDefinitions[numeric - 1];
+          const keyIndex = keyOrder.indexOf(event.key);
+          if (keyIndex >= 0) {
+            const line = lineDefinitions[keyIndex];
             if (line && isLineOpen(line.id)) {
               selectLine(line.id);
             }
