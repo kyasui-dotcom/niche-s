@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>タスクボックス取り | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="線を引いて4つのタスク箱を取り合う、起業家向けの小さな Dots and Boxes 風ゲーム。扱うのは返信やメモ整理などの軽い業務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="タスクボックス取り | 起業家向けミニゲーム" />
+    <meta property="og:description" content="線を引いて4つのタスク箱を取り合う、小さな盤面ゲームです。" />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/task-boxes.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/task-boxes.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #taskBoxesCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .line-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls,
+      .line-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .line-buttons .button {
+        flex: 1 1 28%;
+        min-width: 84px;
+      }
+      .button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .button.is-claimed {
+        background: #dbeafe;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ タスクボックス取り</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>タスクボックス取り</h1>
+        <p class="lede">
+          線を1本ずつ引いて、4つのタスク箱をどちらが多く取れるか競う小さな盤面ゲームです。
+          題材は返信、メモ、見出し、共有といった軽い業務ラベルだけで、契約、法務、税務、許認可、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./meeting-memo-shuffle.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>線を引いて箱を完成させる</h2>
+          <p class="section-copy">2 x 2 の4マスだけです。箱を完成させると1点入り、そのままもう1手続けて打てます。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="taskBoxesCanvas" width="720" height="450" aria-label="タスクボックス取りの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手番</span>
+              <strong id="turnText">あなた</strong>
+            </div>
+            <div class="game-stat">
+              <span>スコア</span>
+              <strong id="scoreText">あなた 0 - 0 相手</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="confirmBtn" class="button ghost" type="button">この線を引く</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <div class="line-card">
+              <div class="line-buttons" id="lineButtons"></div>
+            </div>
+            <p class="game-note">操作: ←→で線を移動 / Enterで決定 / 1-9で線を選択 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>3辺そろった箱を相手に渡すと、連続で取られやすいです。</li>
+          <li>相手は「取れる箱があれば取る」単純ルールです。</li>
+          <li>軽い気分転換用で、実務判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い作業ラベルだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const lineDefinitions = [
+          { id: 0, label: "1", dots: [0, 1], orientation: "h", x1: 180, y1: 110, x2: 360, y2: 110 },
+          { id: 1, label: "2", dots: [1, 2], orientation: "h", x1: 360, y1: 110, x2: 540, y2: 110 },
+          { id: 2, label: "3", dots: [3, 4], orientation: "h", x1: 180, y1: 220, x2: 360, y2: 220 },
+          { id: 3, label: "4", dots: [4, 5], orientation: "h", x1: 360, y1: 220, x2: 540, y2: 220 },
+          { id: 4, label: "5", dots: [6, 7], orientation: "h", x1: 180, y1: 330, x2: 360, y2: 330 },
+          { id: 5, label: "6", dots: [7, 8], orientation: "h", x1: 360, y1: 330, x2: 540, y2: 330 },
+          { id: 6, label: "7", dots: [0, 3], orientation: "v", x1: 180, y1: 110, x2: 180, y2: 220 },
+          { id: 7, label: "8", dots: [1, 4], orientation: "v", x1: 360, y1: 110, x2: 360, y2: 220 },
+          { id: 8, label: "9", dots: [2, 5], orientation: "v", x1: 540, y1: 110, x2: 540, y2: 220 },
+          { id: 9, label: "10", dots: [3, 6], orientation: "v", x1: 180, y1: 220, x2: 180, y2: 330 },
+          { id: 10, label: "11", dots: [4, 7], orientation: "v", x1: 360, y1: 220, x2: 360, y2: 330 },
+          { id: 11, label: "12", dots: [5, 8], orientation: "v", x1: 540, y1: 220, x2: 540, y2: 330 },
+        ];
+
+        const boxDefinitions = [
+          { id: 0, label: "返信", lines: [0, 2, 6, 7], centerX: 270, centerY: 165 },
+          { id: 1, label: "見出し", lines: [1, 3, 7, 8], centerX: 450, centerY: 165 },
+          { id: 2, label: "メモ", lines: [2, 4, 9, 10], centerX: 270, centerY: 275 },
+          { id: 3, label: "共有", lines: [3, 5, 10, 11], centerX: 450, centerY: 275 },
+        ];
+
+        const canvas = document.getElementById("taskBoxesCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const turnText = document.getElementById("turnText");
+        const scoreText = document.getElementById("scoreText");
+        const startBtn = document.getElementById("startBtn");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const lineButtonsRoot = document.getElementById("lineButtons");
+
+        const state = {
+          phase: "ready",
+          turn: "player",
+          status: "開始待ち",
+          selectedLineId: 0,
+          claimedLines: [],
+          boxOwners: Array(boxDefinitions.length).fill(null),
+          score: { player: 0, cpu: 0 },
+          winner: null,
+        };
+
+        const lineButtons = lineDefinitions.map((line) => {
+          const button = document.createElement("button");
+          button.className = "button ghost line-button";
+          button.type = "button";
+          button.dataset.lineId = String(line.id);
+          button.textContent = line.label;
+          button.addEventListener("click", () => {
+            selectLine(line.id);
+          });
+          lineButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function ownedByLine(lineId) {
+          return state.claimedLines.find((entry) => entry.lineId === lineId) || null;
+        }
+
+        function isLineOpen(lineId) {
+          return !ownedByLine(lineId);
+        }
+
+        function boxOwner(boxId) {
+          return state.boxOwners[boxId];
+        }
+
+        function getAvailableLineIds() {
+          return lineDefinitions.filter((line) => isLineOpen(line.id)).map((line) => line.id);
+        }
+
+        function getClosableBoxes(lineId) {
+          return boxDefinitions.filter((box) => {
+            if (boxOwner(box.id)) return false;
+            if (!box.lines.includes(lineId)) return false;
+            return box.lines.every((candidate) => candidate === lineId || !isLineOpen(candidate));
+          });
+        }
+
+        function updateHud() {
+          statusText.textContent = state.status;
+          turnText.textContent = state.turn === "player" ? "あなた" : state.turn === "cpu" ? "相手" : "終了";
+          scoreText.textContent = `あなた ${state.score.player} - ${state.score.cpu} 相手`;
+        }
+
+        function syncButtons() {
+          const playable = state.phase === "playing" && state.turn === "player";
+          lineButtons.forEach((button) => {
+            const lineId = Number(button.dataset.lineId);
+            const owner = ownedByLine(lineId);
+            button.disabled = !playable || Boolean(owner);
+            button.classList.remove("is-selected", "is-claimed");
+            if (state.selectedLineId === lineId && playable && !owner) {
+              button.classList.add("is-selected");
+            }
+            if (owner) {
+              button.classList.add("is-claimed");
+            }
+          });
+          confirmBtn.disabled = !(playable && isLineOpen(state.selectedLineId));
+        }
+
+        function selectLine(lineId) {
+          state.selectedLineId = lineId;
+          syncButtons();
+          render();
+        }
+
+        function nextOpenLine(fromId, delta) {
+          const openIds = getAvailableLineIds();
+          if (!openIds.length) return state.selectedLineId;
+          let cursor = lineDefinitions.findIndex((line) => line.id === fromId);
+          for (let i = 0; i < lineDefinitions.length; i += 1) {
+            cursor = (cursor + delta + lineDefinitions.length) % lineDefinitions.length;
+            if (isLineOpen(lineDefinitions[cursor].id)) {
+              return lineDefinitions[cursor].id;
+            }
+          }
+          return openIds[0];
+        }
+
+        function finishGame() {
+          state.phase = "ended";
+          state.turn = "none";
+          if (state.score.player > state.score.cpu) {
+            state.winner = "player";
+            state.status = "あなたの勝ち";
+          } else if (state.score.player < state.score.cpu) {
+            state.winner = "cpu";
+            state.status = "相手の勝ち";
+          } else {
+            state.winner = "draw";
+            state.status = "引き分け";
+          }
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function claimLine(lineId, owner) {
+          if (!isLineOpen(lineId) || state.phase !== "playing") return false;
+
+          state.claimedLines.push({ lineId, owner });
+          const closedBoxes = getClosableBoxes(lineId);
+          closedBoxes.forEach((box) => {
+            state.boxOwners[box.id] = owner;
+            state.score[owner] += 1;
+          });
+
+          if (getAvailableLineIds().length === 0) {
+            finishGame();
+            return true;
+          }
+
+          if (closedBoxes.length > 0) {
+            state.turn = owner;
+            state.status = owner === "player" ? "箱を取りました。もう1手です" : "相手が箱を取り、続けて打ちます";
+          } else {
+            state.turn = owner === "player" ? "cpu" : "player";
+            state.status = owner === "player" ? "相手の手番です" : "あなたの手番です";
+          }
+
+          if (!isLineOpen(state.selectedLineId)) {
+            state.selectedLineId = nextOpenLine(state.selectedLineId, 1);
+          }
+
+          updateHud();
+          syncButtons();
+          render();
+          return true;
+        }
+
+        function chooseCpuLine() {
+          const available = getAvailableLineIds();
+          const scoring = available.find((lineId) => getClosableBoxes(lineId).length > 0);
+          if (typeof scoring === "number") return scoring;
+          return available[0];
+        }
+
+        function processCpuTurn() {
+          if (state.phase !== "playing" || state.turn !== "cpu") return;
+          const chosen = chooseCpuLine();
+          if (typeof chosen !== "number") {
+            finishGame();
+            return;
+          }
+          claimLine(chosen, "cpu");
+        }
+
+        function advanceSimulation() {
+          let guard = 0;
+          while (state.phase === "playing" && state.turn === "cpu" && guard < 12) {
+            processCpuTurn();
+            guard += 1;
+          }
+        }
+
+        function startGame() {
+          state.phase = "playing";
+          state.turn = "player";
+          state.status = "あなたの手番です";
+          state.selectedLineId = 0;
+          state.claimedLines = [];
+          state.boxOwners = Array(boxDefinitions.length).fill(null);
+          state.score = { player: 0, cpu: 0 };
+          state.winner = null;
+          updateHud();
+          syncButtons();
+          render();
+        }
+
+        function confirmSelection() {
+          if (state.phase === "ready") {
+            startGame();
+            return false;
+          }
+          if (state.phase !== "playing" || state.turn !== "player") return false;
+          const result = claimLine(state.selectedLineId, "player");
+          advanceSimulation();
+          return result;
+        }
+
+        function restartGame() {
+          startGame();
+        }
+
+        function drawBackground() {
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#e0f2fe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawBoxes() {
+          boxDefinitions.forEach((box) => {
+            const owner = boxOwner(box.id);
+            if (owner) {
+              ctx.fillStyle = owner === "player" ? "rgba(59, 130, 246, 0.18)" : "rgba(248, 113, 113, 0.18)";
+              ctx.fillRect(box.centerX - 74, box.centerY - 44, 148, 88);
+            }
+            ctx.fillStyle = "#475569";
+            ctx.font = "600 18px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(box.label, box.centerX, box.centerY);
+          });
+        }
+
+        function drawLines() {
+          lineDefinitions.forEach((line) => {
+            const owner = ownedByLine(line.id);
+            const isSelected = state.phase === "playing" && state.turn === "player" && state.selectedLineId === line.id && !owner;
+            ctx.strokeStyle = owner
+              ? owner.owner === "player"
+                ? "#2563eb"
+                : "#dc2626"
+              : isSelected
+                ? "#0f172a"
+                : "#cbd5e1";
+            ctx.lineWidth = owner || isSelected ? 10 : 6;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(line.x1, line.y1);
+            ctx.lineTo(line.x2, line.y2);
+            ctx.stroke();
+
+            if (!owner) {
+              const midX = (line.x1 + line.x2) / 2;
+              const midY = (line.y1 + line.y2) / 2;
+              ctx.fillStyle = isSelected ? "#0f172a" : "#64748b";
+              ctx.font = "700 14px sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText(line.label, midX, midY - (line.orientation === "h" ? 12 : 0));
+            }
+          });
+        }
+
+        function drawDots() {
+          const dots = [
+            [180, 110], [360, 110], [540, 110],
+            [180, 220], [360, 220], [540, 220],
+            [180, 330], [360, 330], [540, 330],
+          ];
+          dots.forEach(([x, y]) => {
+            ctx.fillStyle = "#0f172a";
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawBackground();
+
+          ctx.textAlign = "left";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px sans-serif";
+          ctx.fillText("task boxes", 40, 50);
+          ctx.font = "18px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Draw a line and finish more boxes than your rival.", 40, 80);
+
+          drawBoxes();
+          drawLines();
+          drawDots();
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.fillText(state.status, 40, 390);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          if (state.phase === "ready") {
+            ctx.fillText("開始すると 2 x 2 の盤面が始まります。", 40, 420);
+          } else if (state.phase === "playing" && state.turn === "player") {
+            ctx.fillText("線を選んで、箱を完成させると連続で打てます。", 40, 420);
+          } else if (state.phase === "playing") {
+            ctx.fillText("相手は取れる箱を優先して動きます。", 40, 420);
+          } else {
+            ctx.fillText("最初からやり直して、別の取り方も試せます。", 40, 420);
+          }
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            if (state.phase === "playing" && state.turn === "player") {
+              selectLine(nextOpenLine(state.selectedLineId, -1));
+            }
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            if (state.phase === "playing" && state.turn === "player") {
+              selectLine(nextOpenLine(state.selectedLineId, 1));
+            }
+            return;
+          }
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            confirmSelection();
+            return;
+          }
+          const numeric = Number(event.key);
+          if (numeric >= 1 && numeric <= 9) {
+            const line = lineDefinitions[numeric - 1];
+            if (line && isLineOpen(line.id)) {
+              selectLine(line.id);
+            }
+          }
+        });
+
+        startBtn.addEventListener("click", startGame);
+        confirmBtn.addEventListener("click", confirmSelection);
+        resetBtn.addEventListener("click", restartGame);
+
+        window.startGame = startGame;
+        window.confirmSelection = confirmSelection;
+        window.restartGame = restartGame;
+        window.selectLine = selectLine;
+        window.claimSelectedLine = confirmSelection;
+        window.advanceTime = () => {
+          advanceSimulation();
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+            phase: state.phase,
+            turn: state.turn,
+            selectedLine: state.selectedLineId + 1,
+            scores: state.score,
+            winner: state.winner,
+            availableLines: getAvailableLineIds().map((lineId) => lineId + 1),
+            claimedLines: state.claimedLines.map((entry) => ({ line: entry.lineId + 1, owner: entry.owner })),
+            boxes: boxDefinitions.map((box) => ({
+              box: box.id + 1,
+              label: box.label,
+              owner: boxOwner(box.id),
+            })),
+            message: state.status,
+          });
+
+        updateHud();
+        syncButtons();
+        render();
+      })();
+    </script>
+  </body>
+</html>
