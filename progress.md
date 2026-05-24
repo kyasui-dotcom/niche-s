@@ -10,7 +10,8 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/task-boxes.html`.
 - Verified with the web-game Playwright client: a deterministic full-board path ends in `phase: "ended"` with `winner: "draw"` and no console/page errors.
 - Verified a 390px-wide mobile full-page screenshot; hero, canvas card, stats, line buttons, and boundary section stack correctly.
-- TODO: commit only the game-related files, push, and deploy from a clean temporary export so unrelated `src/index.js` worktree edits stay out.
+- Pushed commit `5a47b0f` to `origin/backup/20260404-230957`.
+- Deployed from a clean temporary export so unrelated `src/index.js` worktree edits were not included; HTTP 200 confirmed on `https://niche-s.com/business-procedures/task-boxes.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/task-boxes.html`.
 
 ## 2026-05-23
 
