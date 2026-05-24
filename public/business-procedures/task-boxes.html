@@ -155,7 +155,7 @@
             <div class="line-card">
               <div class="line-buttons" id="lineButtons"></div>
             </div>
-            <p class="game-note">操作: ←→で線を移動 / Enterで決定 / 1-9,0,-,^ で線を選択 / F=フルスクリーン</p>
+            <p class="game-note">操作: ←→で線を移動 / Enterで決定 / 1-9,0,-,^ または 11・12 の続け打ちで線を選択 / F=フルスクリーン</p>
           </aside>
         </div>
       </section>
@@ -229,6 +229,8 @@
           score: { player: 0, cpu: 0 },
           winner: null,
         };
+        let numericShortcutBuffer = "";
+        let numericShortcutTimer = null;
 
         const lineButtons = lineDefinitions.map((line) => {
           const button = document.createElement("button");
@@ -294,6 +296,40 @@
           state.selectedLineId = lineId;
           syncButtons();
           render();
+        }
+
+        function clearNumericShortcutBuffer() {
+          numericShortcutBuffer = "";
+          if (numericShortcutTimer) {
+            window.clearTimeout(numericShortcutTimer);
+            numericShortcutTimer = null;
+          }
+        }
+
+        function queueNumericShortcut(key) {
+          const candidate = `${numericShortcutBuffer}${key}`;
+          if (candidate === "11" || candidate === "12") {
+            const line = lineDefinitions.find((entry) => entry.label === candidate);
+            clearNumericShortcutBuffer();
+            if (line && isLineOpen(line.id)) {
+              selectLine(line.id);
+              return true;
+            }
+            return false;
+          }
+          if (key === "1") {
+            numericShortcutBuffer = "1";
+            if (numericShortcutTimer) {
+              window.clearTimeout(numericShortcutTimer);
+            }
+            numericShortcutTimer = window.setTimeout(() => {
+              numericShortcutBuffer = "";
+              numericShortcutTimer = null;
+            }, 500);
+            return false;
+          }
+          clearNumericShortcutBuffer();
+          return false;
         }
 
         function nextOpenLine(fromId, delta) {
@@ -544,6 +580,9 @@
             return;
           }
           const keyIndex = keyOrder.indexOf(event.key);
+          if (queueNumericShortcut(event.key)) {
+            return;
+          }
           if (keyIndex >= 0) {
             const line = lineDefinitions[keyIndex];
             if (line && isLineOpen(line.id)) {
