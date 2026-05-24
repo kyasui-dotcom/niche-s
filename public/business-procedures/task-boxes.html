@@ -320,8 +320,6 @@
             const line = lineDefinitions.find((entry) => entry.label === "1");
             if (line && isLineOpen(line.id)) {
               selectLine(line.id);
-              clearNumericShortcutBuffer();
-              return false;
             }
             numericShortcutBuffer = "1";
             if (numericShortcutTimer) {
