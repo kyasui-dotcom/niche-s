@@ -310,8 +310,14 @@
           const candidate = `${numericShortcutBuffer}${key}`;
           if (candidate === "11" || candidate === "12") {
             const line = lineDefinitions.find((entry) => entry.label === candidate);
+            const conflictingSingleDigit = candidate === "11" ? "1" : "2";
+            const conflictingLine = lineDefinitions.find((entry) => entry.label === conflictingSingleDigit);
             clearNumericShortcutBuffer();
-            if (line && isLineOpen(line.id)) {
+            if (
+              line &&
+              isLineOpen(line.id) &&
+              (!conflictingLine || !isLineOpen(conflictingLine.id))
+            ) {
               selectLine(line.id);
               return true;
             }
