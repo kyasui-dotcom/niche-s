@@ -13,6 +13,17 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `5a47b0f` to `origin/backup/20260404-230957`.
 - Deployed from a clean temporary export so unrelated `src/index.js` worktree edits were not included; HTTP 200 confirmed on `https://niche-s.com/business-procedures/task-boxes.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/task-boxes.html`.
 
+## 2026-05-25
+
+- Added `business-procedures/route-domino-chain.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "導線ドミノつなぎ" - a minimal domino-matching chain using only lightweight entrepreneur flow labels such as 相談, 返信, 見積, 送付, 紹介, and 再訪.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Added discovery from both business procedure hub copies, replaced the startup launch kit mini-game card in both copies, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `selectTile`, `placeSelected`, and `resetGame` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/route-domino-chain.html`.
+- Verified with the web-game Playwright client: a deterministic `B/←/→` path ended in `phase: "cleared"` with no remaining tiles and no console/page errors.
+- Verified a 390px-wide mobile full-page screenshot; hero, canvas card, stats, tile buttons, place buttons, and boundary section stack correctly.
+
 ## 2026-05-23
 
 - Added `business-procedures/meeting-memo-shuffle.html` and mirrored it under `public/business-procedures/`.
