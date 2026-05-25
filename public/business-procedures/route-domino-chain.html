@@ -255,6 +255,11 @@
           render();
         }
 
+        function restartGame() {
+          resetGame();
+          startGame();
+        }
+
         function getTileById(tileId) {
           return state.hand.find((tile) => tile.id === tileId) || null;
         }
@@ -476,7 +481,7 @@
         }
 
         startBtn.addEventListener("click", startGame);
-        resetBtn.addEventListener("click", resetGame);
+        resetBtn.addEventListener("click", restartGame);
         leftBtn.addEventListener("click", () => placeSelected("left"));
         rightBtn.addEventListener("click", () => placeSelected("right"));
 
@@ -488,7 +493,7 @@
           }
           if (event.key === "r" || event.key === "R") {
             event.preventDefault();
-            resetGame();
+            restartGame();
             return;
           }
           if (event.key === "Enter") {
@@ -531,6 +536,7 @@
         window.selectTile = selectTile;
         window.placeSelected = placeSelected;
         window.resetGame = resetGame;
+        window.restartGame = restartGame;
 
         resetGame();
       })();
