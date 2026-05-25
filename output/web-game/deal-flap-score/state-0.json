@@ -1,0 +1,1 @@
+{"coordinateSystem":"origin top-left, x right, y down","mode":"playing","score":0,"lives":2,"message":"商談ウィンドウを通過","bird":{"x":190,"y":399,"vy":522.15,"r":18},"pipes":[{"x":467,"gapY":300,"gapHeight":200,"width":92,"passed":false},{"x":777,"gapY":250,"gapHeight":200,"width":92,"passed":false},{"x":1047,"gapY":320,"gapHeight":200,"width":92,"passed":false}]}

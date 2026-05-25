@@ -1,0 +1,1 @@
+{"coordinateSystem":"origin top-left, x right, y down","mode":"ready","score":0,"lives":2,"message":"下に落下","bird":{"x":190,"y":240,"vy":0,"r":18},"pipes":[{"x":620,"gapY":300,"gapHeight":200,"width":92,"passed":false},{"x":930,"gapY":250,"gapHeight":200,"width":92,"passed":false}]}

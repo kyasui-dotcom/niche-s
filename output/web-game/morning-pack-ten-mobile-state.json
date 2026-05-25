@@ -1,0 +1,69 @@
+[
+  {
+    "mode": "cleared",
+    "roundIndex": 0,
+    "selected": [
+      0,
+      3,
+      4
+    ],
+    "sum": 10,
+    "solved": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "status": "正解: 合計 10 点"
+  },
+  {
+    "mode": "cleared",
+    "roundIndex": 1,
+    "selected": [
+      0,
+      1,
+      2
+    ],
+    "sum": 10,
+    "solved": [
+      true,
+      true,
+      false,
+      false
+    ],
+    "status": "正解: 合計 10 点"
+  },
+  {
+    "mode": "cleared",
+    "roundIndex": 2,
+    "selected": [
+      0,
+      1,
+      2
+    ],
+    "sum": 10,
+    "solved": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "status": "正解: 合計 10 点"
+  },
+  {
+    "mode": "cleared-all",
+    "roundIndex": 3,
+    "selected": [
+      0,
+      1
+    ],
+    "sum": 10,
+    "solved": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "status": "4問クリア"
+  }
+]

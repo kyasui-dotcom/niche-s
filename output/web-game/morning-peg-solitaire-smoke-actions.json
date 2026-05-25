@@ -1,0 +1,6 @@
+{
+  "steps": [
+    { "buttons": ["left_mouse_button"], "frames": 2, "mouse_x": 316, "mouse_y": 314 },
+    { "buttons": ["left_mouse_button"], "frames": 2, "mouse_x": 316, "mouse_y": 138 }
+  ]
+}

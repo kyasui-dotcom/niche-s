@@ -1,0 +1,19 @@
+{
+  "coordinateSystem": "index 0-8 row-major, top-left origin",
+  "mode": "playing",
+  "moves": 0,
+  "remaining": 6,
+  "cursor": 0,
+  "board": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "status": "開始中"
+}

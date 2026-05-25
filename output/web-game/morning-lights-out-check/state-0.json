@@ -1,0 +1,19 @@
+{
+  "coordinateSystem": "index 0-8 row-major, top-left origin",
+  "mode": "cleared",
+  "moves": 3,
+  "remaining": 0,
+  "cursor": 5,
+  "board": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "status": "クリア: 3 手"
+}

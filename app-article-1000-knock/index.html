@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>アプリ・記事作成1000本ノック | Niche-s</title>
+    <meta
+      name="description"
+      content="500個のアプリ案と500本の記事案を、テーマ・難易度・収益化の観点で絞り込める企画一覧ページ。Niche-sで次に作るネタを量産するための1000本ノック。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="アプリ・記事作成1000本ノック | Niche-s" />
+    <meta
+      property="og:description"
+      content="500アプリ案と500記事案を、テーマ・難易度・収益化で絞り込める企画一覧。"
+    />
+    <meta property="og:url" content="https://niche-s.com/app-article-1000-knock/" />
+    <meta property="og:image" content="https://niche-s.com/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="アプリ・記事作成1000本ノック | Niche-s" />
+    <meta
+      name="twitter:description"
+      content="Niche-sで次に作るアプリ案と記事案を1000本まとめて見られる企画ページ。"
+    />
+    <link rel="canonical" href="https://niche-s.com/app-article-1000-knock/" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "name": "アプリ・記事作成1000本ノック",
+            "url": "https://niche-s.com/app-article-1000-knock/",
+            "inLanguage": "ja",
+            "description": "500個のアプリ案と500本の記事案を、テーマ別に絞り込める企画一覧ページ"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Niche-s",
+                "item": "https://niche-s.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "アプリ・記事作成1000本ノック",
+                "item": "https://niche-s.com/app-article-1000-knock/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <style>
+      .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .breadcrumb a {
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .control-grid,
+      .idea-grid,
+      .mix-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .control-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        align-items: end;
+      }
+      .idea-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .mix-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      .control-panel,
+      .idea-card,
+      .mix-card {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        background: #fbfdff;
+      }
+      .control-panel label {
+        display: grid;
+        gap: 8px;
+        font-weight: 700;
+      }
+      .control-panel input,
+      .control-panel select {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        padding: 0 14px;
+        font: inherit;
+        color: var(--text);
+        background: #fff;
+      }
+      .chip-row,
+      .idea-meta,
+      .pager {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .chip,
+      .idea-meta span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+      .chip.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .idea-card h3,
+      .mix-card h3 {
+        margin: 10px 0 8px;
+      }
+      .idea-card p,
+      .mix-card p {
+        margin: 0 0 12px;
+        color: var(--muted);
+      }
+      .idea-card strong {
+        color: var(--dark);
+      }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .toolbar p {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .empty-state {
+        text-align: center;
+        color: var(--muted);
+      }
+      @media (max-width: 720px) {
+        .toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .pager {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="https://niche-s.com/">Niche-s</a>
+        <span>/</span>
+        <span>アプリ・記事作成1000本ノック</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Niche-s / Idea Engine</p>
+        <h1>アプリ・記事作成1000本ノック</h1>
+        <p class="lede">
+          量産するときに詰まるのは、手を動かす前の<strong>題材選び</strong>です。
+          このページでは、<strong>500個のアプリ案</strong>と<strong>500本の記事案</strong>を、テーマ、難易度、
+          収益化の相性で絞り込めるようにしています。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#controls">1000本を絞り込む</a>
+          <a class="button ghost" href="../business-procedures/startup-launch-kit.html">開業強化セットを見る</a>
+          <a class="button ghost" href="../index.html">母艦トップへ戻る</a>
+        </div>
+        <ul class="hero-points">
+          <li>500アプリ案と500記事案を1ページで管理</li>
+          <li>テーマ、難易度、収益化で絞り込み可能</li>
+          <li>次の20本だけ見て、そのまま作り始められる構成</li>
+        </ul>
+      </section>
+
+      <section class="card stats">
+        <div class="section-head compact">
+          <p class="section-label">Snapshot</p>
+          <h2>この企画ページでできること</h2>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card">
+            <strong>1000本</strong>
+            <span>企画ストック</span>
+          </article>
+          <article class="stat-card">
+            <strong>500 / 500</strong>
+            <span>アプリ案 / 記事案</span>
+          </article>
+          <article class="stat-card">
+            <strong>20テーマ</strong>
+            <span>量産に向いた縦テーマ</span>
+          </article>
+        </div>
+        <div class="snapshot-links">
+          <a href="../business-procedures/">開業・許認可の記事ハブを見る</a>
+          <a href="../client-ops/">小さな営業・顧客対応テンプレ集を見る</a>
+          <a href="../business-procedures/startup-tools-directory.html">開業ツール一覧を見る</a>
+          <a href="../uiux-improvement-1000-knock/">UI/UX改善1000本ノックを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">How to use</p>
+          <h2>1000本ノックの回し方</h2>
+        </div>
+        <div class="mix-grid">
+          <article class="mix-card">
+            <h3>1. まずテーマを絞る</h3>
+            <p>開業、集客、引っ越し、物販、季節イベントなど、今の母艦と相性が強い縦テーマから選びます。</p>
+          </article>
+          <article class="mix-card">
+            <h3>2. アプリか記事かを決める</h3>
+            <p>短期で出すなら記事、即時性や送客を狙うならミニアプリ、回遊を作るなら両方で並走させます。</p>
+          </article>
+          <article class="mix-card">
+            <h3>3. 次の20本だけ見る</h3>
+            <p>全部を見る必要はありません。今週作る候補を20本だけ見て、反応が出た縦に寄せます。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="controls" class="card">
+        <div class="section-head">
+          <p class="section-label">Filters</p>
+          <h2>1000本を絞り込む</h2>
+        </div>
+        <div class="chip-row" id="kind-chips">
+          <button class="button chip active" type="button" data-kind="all">全部</button>
+          <button class="button chip" type="button" data-kind="app">アプリ案 500</button>
+          <button class="button chip" type="button" data-kind="article">記事案 500</button>
+        </div>
+        <div class="control-grid" style="margin-top: 18px;">
+          <div class="control-panel">
+            <label>
+              テーマ
+              <select id="theme-filter"></select>
+            </label>
+          </div>
+          <div class="control-panel">
+            <label>
+              難易度
+              <select id="difficulty-filter">
+                <option value="all">全部</option>
+                <option value="low">低め</option>
+                <option value="medium">中くらい</option>
+                <option value="high">高め</option>
+              </select>
+            </label>
+          </div>
+          <div class="control-panel">
+            <label>
+              収益化
+              <select id="monetization-filter">
+                <option value="all">全部</option>
+                <option value="lead">相談化・リード獲得</option>
+                <option value="affiliate">アフィリエイト・送客</option>
+                <option value="subscription">月額・継続課金</option>
+                <option value="template">テンプレ販売・記事回遊</option>
+              </select>
+            </label>
+          </div>
+          <div class="control-panel">
+            <label>
+              キーワード検索
+              <input id="search-input" type="text" placeholder="例: 開業 / X / 引っ越し / 診断" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <p id="result-summary">1000本の企画があります。</p>
+          <div class="pager">
+            <button id="shuffle-button" class="button ghost" type="button">次の20本をシャッフル</button>
+            <button id="prev-button" class="button ghost" type="button">前の20本</button>
+            <button id="next-button" class="button primary" type="button">次の20本</button>
+          </div>
+        </div>
+        <div id="idea-grid" class="idea-grid"></div>
+        <div id="empty-state" class="empty-state" hidden>
+          条件に合う企画がありません。テーマか難易度を少し広げてください。
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const themes = [
+        { key: "startup", label: "開業準備", audience: "個人事業主", channel: "SEO + 内部回遊", monetization: "lead" },
+        { key: "permits", label: "許認可・届出", audience: "開業前後", channel: "SEO", monetization: "lead" },
+        { key: "clientops", label: "顧客対応", audience: "小規模事業", channel: "SEO + テンプレ", monetization: "template" },
+        { key: "xops", label: "X運用", audience: "フリーランス", channel: "SEO + 指名", monetization: "subscription" },
+        { key: "ichigo", label: "関係維持", audience: "営業・紹介", channel: "SEO + SaaS送客", monetization: "subscription" },
+        { key: "moving", label: "引っ越し準備", audience: "生活実務", channel: "SEO", monetization: "affiliate" },
+        { key: "reuse", label: "物販・買取", audience: "中古売買", channel: "SEO", monetization: "affiliate" },
+        { key: "gift", label: "季節ギフト", audience: "個人客", channel: "SEO + SNS", monetization: "affiliate" },
+        { key: "travel", label: "近場旅行", audience: "家族・友人", channel: "SEO + SNS", monetization: "affiliate" },
+        { key: "appliance", label: "家電比較", audience: "生活改善", channel: "SEO", monetization: "affiliate" },
+        { key: "pricing", label: "値付け・見積", audience: "受注前", channel: "SEO + ツール", monetization: "lead" },
+        { key: "cashflow", label: "資金繰り", audience: "小規模事業", channel: "SEO + ツール", monetization: "lead" },
+        { key: "invoice", label: "請求・入金", audience: "フリーランス", channel: "SEO + テンプレ", monetization: "template" },
+        { key: "referral", label: "紹介営業", audience: "小規模事業", channel: "SEO + テンプレ", monetization: "template" },
+        { key: "localbiz", label: "地域店舗集客", audience: "店舗運営", channel: "SEO + ローカル", monetization: "lead" },
+        { key: "foodbiz", label: "飲食店開業", audience: "店舗開業", channel: "SEO", monetization: "lead" },
+        { key: "sidebiz", label: "副業スタート", audience: "副業層", channel: "SEO + SNS", monetization: "lead" },
+        { key: "b2b", label: "BtoB営業導線", audience: "法人向け営業", channel: "SEO + 記事", monetization: "lead" },
+        { key: "templates", label: "テンプレ販売", audience: "ひとり事業", channel: "SEO + デジタル商品", monetization: "template" },
+        { key: "checklists", label: "チェックリスト系", audience: "幅広い実務層", channel: "SEO + 内部回遊", monetization: "lead" }
+      ];
+
+      const appPatterns = [
+        { label: "診断アプリ", difficulty: "low", build: (theme, angle) => `${theme.label} ${angle.label} 診断アプリ` },
+        { label: "チェックリストアプリ", difficulty: "low", build: (theme, angle) => `${theme.label} ${angle.label} チェックリストアプリ` },
+        { label: "比較アプリ", difficulty: "medium", build: (theme, angle) => `${theme.label} ${angle.label} 比較アプリ` },
+        { label: "スケジューラー", difficulty: "medium", build: (theme, angle) => `${theme.label} ${angle.label} スケジューラー` },
+        { label: "テンプレ生成アプリ", difficulty: "high", build: (theme, angle) => `${theme.label} ${angle.label} テンプレ生成アプリ` }
+      ];
+
+      const appAngles = [
+        { label: "最初の一歩", summary: "最初に何から始めるかを数分で決める。", pain: "着手順が分からない" },
+        { label: "抜け漏れ防止", summary: "やることの抜け漏れを減らす。", pain: "途中で漏れやすい" },
+        { label: "費用見積", summary: "予算とコストの目安をすぐ出す。", pain: "お金の見通しが立たない" },
+        { label: "優先順位整理", summary: "今週やることを絞る。", pain: "やることが多すぎる" },
+        { label: "継続フォロー", summary: "次に誰へ何を送るかを決める。", pain: "継続運用が止まる" }
+      ];
+
+      const articleFormats = [
+        { label: "完全ガイド", difficulty: "medium" },
+        { label: "チェックリスト", difficulty: "low" },
+        { label: "比較記事", difficulty: "medium" },
+        { label: "ケース別まとめ", difficulty: "medium" },
+        { label: "テンプレ集", difficulty: "high" }
+      ];
+
+      const articleAngles = [
+        { label: "初心者向け", query: "初心者", summary: "最初に迷うポイントを潰す。" },
+        { label: "失敗防止", query: "失敗しない", summary: "先に落とし穴を避ける。" },
+        { label: "費用・相場", query: "費用 相場", summary: "予算と相場の感覚をつかむ。" },
+        { label: "手順整理", query: "やり方 手順", summary: "順番と必要な準備をまとめる。" },
+        { label: "選び方", query: "比較 選び方", summary: "複数案の違いを判断できるようにする。" }
+      ];
+
+      function monetizeLabel(value) {
+        return value === "lead"
+          ? "相談化・リード獲得"
+          : value === "affiliate"
+            ? "アフィリエイト・送客"
+            : value === "subscription"
+              ? "月額・継続課金"
+              : "テンプレ販売・記事回遊";
+      }
+
+      const ideas = [];
+
+      themes.forEach((theme) => {
+        appPatterns.forEach((pattern) => {
+          appAngles.forEach((angle) => {
+            ideas.push({
+              kind: "app",
+              theme: theme.key,
+              themeLabel: theme.label,
+              title: pattern.build(theme, angle),
+              difficulty: pattern.difficulty,
+              monetization: theme.monetization,
+              audience: theme.audience,
+              channel: theme.channel,
+              summary: `${theme.audience}向けに、${angle.pain}を解消するための${pattern.label}。${angle.summary}`,
+              angle: angle.label,
+              deliverable: `MVP: ${angle.label}に絞ったフォーム + 結果表示 + 関連導線`
+            });
+          });
+        });
+      });
+
+      themes.forEach((theme) => {
+        articleFormats.forEach((format) => {
+          articleAngles.forEach((angle) => {
+            ideas.push({
+              kind: "article",
+              theme: theme.key,
+              themeLabel: theme.label,
+              title: `${theme.label}の${angle.label}${format.label}`,
+              difficulty: format.difficulty,
+              monetization: theme.monetization,
+              audience: theme.audience,
+              channel: theme.channel,
+              summary: `${theme.label}で検索する人向けに、${angle.summary} ${format.label}として作る記事案。`,
+              angle: angle.label,
+              deliverable: `狙う検索意図: ${theme.label} ${angle.query}`
+            });
+          });
+        });
+      });
+
+      const kindChips = document.querySelectorAll("[data-kind]");
+      const themeFilter = document.getElementById("theme-filter");
+      const difficultyFilter = document.getElementById("difficulty-filter");
+      const monetizationFilter = document.getElementById("monetization-filter");
+      const searchInput = document.getElementById("search-input");
+      const summary = document.getElementById("result-summary");
+      const ideaGrid = document.getElementById("idea-grid");
+      const emptyState = document.getElementById("empty-state");
+      const prevButton = document.getElementById("prev-button");
+      const nextButton = document.getElementById("next-button");
+      const shuffleButton = document.getElementById("shuffle-button");
+
+      let currentKind = "all";
+      let currentPage = 0;
+      const pageSize = 20;
+
+      themeFilter.innerHTML = '<option value="all">全部</option>' + themes.map((theme) => `<option value="${theme.key}">${theme.label}</option>`).join("");
+
+      function filteredIdeas() {
+        const theme = themeFilter.value;
+        const difficulty = difficultyFilter.value;
+        const monetization = monetizationFilter.value;
+        const query = searchInput.value.trim().toLowerCase();
+
+        return ideas.filter((idea) => {
+          if (currentKind !== "all" && idea.kind !== currentKind) return false;
+          if (theme !== "all" && idea.theme !== theme) return false;
+          if (difficulty !== "all" && idea.difficulty !== difficulty) return false;
+          if (monetization !== "all" && idea.monetization !== monetization) return false;
+          if (!query) return true;
+          const haystack = `${idea.title} ${idea.summary} ${idea.themeLabel} ${idea.audience} ${idea.deliverable}`.toLowerCase();
+          return haystack.includes(query);
+        });
+      }
+
+      function render() {
+        const rows = filteredIdeas();
+        const maxPage = Math.max(0, Math.ceil(rows.length / pageSize) - 1);
+        currentPage = Math.min(currentPage, maxPage);
+        const pageRows = rows.slice(currentPage * pageSize, currentPage * pageSize + pageSize);
+
+        summary.textContent = `${rows.length}本ヒット / ${currentPage * pageSize + 1}${rows.length ? `〜${Math.min(rows.length, currentPage * pageSize + pageSize)}` : ""}件目を表示中`;
+
+        ideaGrid.innerHTML = pageRows
+          .map(
+            (idea) => `
+              <article class="idea-card">
+                <div class="project-tag ${idea.kind === "article" ? "tinted" : ""}">${idea.kind === "app" ? "アプリ案" : "記事案"}</div>
+                <h3>${idea.title}</h3>
+                <p>${idea.summary}</p>
+                <div class="idea-meta">
+                  <span>${idea.themeLabel}</span>
+                  <span>${idea.difficulty === "low" ? "難易度: 低め" : idea.difficulty === "medium" ? "難易度: 中くらい" : "難易度: 高め"}</span>
+                  <span>${monetizeLabel(idea.monetization)}</span>
+                </div>
+                <p><strong>向いている相手:</strong> ${idea.audience}</p>
+                <p><strong>流し先:</strong> ${idea.channel}</p>
+                <p><strong>MVP / 狙い:</strong> ${idea.deliverable}</p>
+              </article>
+            `
+          )
+          .join("");
+
+        emptyState.hidden = rows.length !== 0;
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled = currentPage >= maxPage;
+      }
+
+      kindChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          currentKind = chip.dataset.kind;
+          currentPage = 0;
+          kindChips.forEach((item) => item.classList.toggle("active", item === chip));
+          render();
+        });
+      });
+
+      [themeFilter, difficultyFilter, monetizationFilter].forEach((el) => {
+        el.addEventListener("change", () => {
+          currentPage = 0;
+          render();
+        });
+      });
+
+      searchInput.addEventListener("input", () => {
+        currentPage = 0;
+        render();
+      });
+
+      prevButton.addEventListener("click", () => {
+        currentPage = Math.max(0, currentPage - 1);
+        render();
+      });
+
+      nextButton.addEventListener("click", () => {
+        currentPage += 1;
+        render();
+      });
+
+      shuffleButton.addEventListener("click", () => {
+        const rows = filteredIdeas();
+        if (!rows.length) return;
+        const maxPage = Math.max(0, Math.ceil(rows.length / pageSize) - 1);
+        currentPage = Math.floor(Math.random() * (maxPage + 1));
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

@@ -37,10 +37,19 @@ export default {
       }));
     }
 
-    return withSecurityHeaders(await env.ASSETS.fetch(request));
+    const assetResponse = await env.ASSETS.fetch(request);
+    return withSecurityHeaders(withAnalyticsTag(assetResponse));
   }
 };
 
+const GA_MEASUREMENT_ID = 'G-VFCY3JSFQD';
+const GA_TAG_SNIPPET = `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${GA_MEASUREMENT_ID}');
+</script>`;
 const BLOCKED_ASSET_PREFIXES = ['/src/', '/.git/', '/.wrangler/', '/.deploy-assets/', '/node_modules/'];
 const BLOCKED_ASSET_FILES = new Set(['/wrangler.toml', '/README.md', '/HANDOFF.md', '/.gitignore']);
 const QUARANTINED_PATH_PREFIXES = [
@@ -57,12 +66,27 @@ function isQuarantinedPath(pathname) {
   return QUARANTINED_PATHS.has(pathname) || QUARANTINED_PATH_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
+function withAnalyticsTag(response) {
+  const contentType = response.headers.get('content-type') || '';
+  if (response.status !== 200 || !contentType.includes('text/html')) {
+    return response;
+  }
+
+  return new HTMLRewriter()
+    .on('head', {
+      element(element) {
+        element.append(GA_TAG_SNIPPET, { html: true });
+      }
+    })
+    .transform(response);
+}
+
 function withSecurityHeaders(response) {
   const secured = new Response(response.body, response);
   secured.headers.set('x-content-type-options', 'nosniff');
   secured.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
   secured.headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=(), payment=()');
-  secured.headers.set('content-security-policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://openapi.rakuten.co.jp; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+  secured.headers.set('content-security-policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   return secured;
 }
 

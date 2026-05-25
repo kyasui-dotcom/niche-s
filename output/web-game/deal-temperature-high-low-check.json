@@ -1,0 +1,34 @@
+{
+  "stateAfterGuess": {
+    "mode": "playing",
+    "round": 1,
+    "maxRounds": 5,
+    "score": 0,
+    "streak": 0,
+    "guessOpen": true,
+    "lastOutcome": "wrong",
+    "current": {
+      "value": 9,
+      "label": "商談目前"
+    },
+    "next": {
+      "value": 8,
+      "label": "ほぼ商談化"
+    }
+  },
+  "stateAfterNext": {
+    "mode": "playing",
+    "round": 1,
+    "maxRounds": 5,
+    "score": 0,
+    "streak": 0,
+    "guessOpen": false,
+    "lastOutcome": "",
+    "current": {
+      "value": 8,
+      "label": "ほぼ商談化"
+    },
+    "next": null
+  },
+  "errors": []
+}

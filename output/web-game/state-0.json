@@ -1,0 +1,1 @@
+{"coordinateSystem":"row-major 4x4 board, origin at top-left, rows grow downward, cols grow rightward","mode":"playing","score":8,"moveCount":4,"maxTile":4,"canMove":true,"board":[[0,0,0,0],[2,0,0,0],[0,0,0,4],[0,2,0,4]],"message":"同じ数字を重ねて育成中"}

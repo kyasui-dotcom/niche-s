@@ -1,0 +1,13 @@
+{
+  "mode": "playing",
+  "roundIndex": 0,
+  "selected": [],
+  "sum": 0,
+  "solved": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "status": "問題 1 に挑戦中"
+}
