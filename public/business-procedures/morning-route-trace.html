@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の導線なぞり | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="相談、返信、見積、共有、再訪の軽い導線だけを一筆でなぞる、起業家向けの小さなパズルゲーム。法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の導線なぞり | 起業家向けミニゲーム" />
+    <meta property="og:description" content="軽い起業導線ラベルだけを一筆でたどる、小さな経路パズルです。" />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-route-trace.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-route-trace.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #traceCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .node-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls,
+      .node-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .node-buttons .button {
+        flex: 1 1 45%;
+      }
+      .button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .button:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の導線なぞり</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の導線なぞり</h1>
+        <p class="lede">
+          相談、返信、見積、共有、再訪といった軽い起業導線ラベルだけを、一筆で全部たどる小さなパズルです。
+          契約、法務、税務、許認可、行政手続きの判断には踏み込まず、短い切り替え時間だけに絞っています。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./route-domino-chain.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>同じ線を二度使わず、全部つなぐ</h2>
+          <p class="section-copy">開始地点から隣の丸へ進み、全7本の線を一度ずつ使い切ればクリアです。使えるのは軽い導線ラベルだけです。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="traceCanvas" width="720" height="450" aria-label="朝の導線なぞりの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>現在地</span>
+              <strong id="currentNodeText">未開始</strong>
+            </div>
+            <div class="game-stat">
+              <span>進捗</span>
+              <strong id="progressText">0 / 7 本</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直し</button>
+            </div>
+            <div class="node-card">
+              <p class="section-label">Move</p>
+              <div class="node-buttons" id="nodeButtons"></div>
+            </div>
+            <p class="game-note">操作: 開始後に 1-5 で行き先を選択 / A・Bで候補移動 / Enterで決定 / Rでやり直し / Fでフルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>開始地点は「相談」です。端の少ない丸を早めに通すと詰まりにくいです。</li>
+          <li>使える線がなくなった時点で終了です。</li>
+          <li>扱うのは軽い導線ラベルだけで、実務判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い起業導線だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const nodes = [
+          { id: 0, label: "相談", x: 128, y: 126 },
+          { id: 1, label: "返信", x: 292, y: 84 },
+          { id: 2, label: "見積", x: 292, y: 248 },
+          { id: 3, label: "共有", x: 476, y: 126 },
+          { id: 4, label: "再訪", x: 560, y: 248 },
+        ];
+        const edges = [
+          [0, 1],
+          [0, 2],
+          [0, 4],
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [2, 4],
+        ];
+
+        const canvas = document.getElementById("traceCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const currentNodeText = document.getElementById("currentNodeText");
+        const progressText = document.getElementById("progressText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const nodeButtonsRoot = document.getElementById("nodeButtons");
+
+        const state = {
+          phase: "ready",
+          currentNodeId: null,
+          usedEdgeKeys: [],
+          availableTargets: [],
+          selectedTargetId: null,
+          status: "開始待ち",
+        };
+
+        const nodeButtons = nodes.map((node) => {
+          const button = document.createElement("button");
+          button.className = "button ghost node-button";
+          button.type = "button";
+          button.dataset.nodeId = String(node.id);
+          button.addEventListener("click", () => moveToNode(node.id));
+          nodeButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function edgeKey(a, b) {
+          return a < b ? `${a}-${b}` : `${b}-${a}`;
+        }
+
+        function getNode(nodeId) {
+          return nodes.find((node) => node.id === nodeId) || null;
+        }
+
+        function getUnusedNeighbors(nodeId) {
+          return edges
+            .filter(([a, b]) => a === nodeId || b === nodeId)
+            .map(([a, b]) => (a === nodeId ? b : a))
+            .filter((neighborId) => !state.usedEdgeKeys.includes(edgeKey(nodeId, neighborId)));
+        }
+
+        function syncTargets() {
+          state.availableTargets = state.currentNodeId === null ? [] : getUnusedNeighbors(state.currentNodeId);
+          if (!state.availableTargets.includes(state.selectedTargetId)) {
+            state.selectedTargetId = state.availableTargets[0] ?? null;
+          }
+        }
+
+        function updatePhaseAfterMove() {
+          if (state.usedEdgeKeys.length === edges.length) {
+            state.phase = "cleared";
+            state.status = "全ての線をたどりました";
+            syncTargets();
+            return;
+          }
+          const nextTargets = getUnusedNeighbors(state.currentNodeId);
+          if (nextTargets.length === 0) {
+            state.phase = "stuck";
+            state.status = "進める線がなくなりました";
+            syncTargets();
+            return;
+          }
+          state.phase = "playing";
+          state.status = "次の丸へ進んでください";
+          syncTargets();
+        }
+
+        function resetGame() {
+          state.phase = "ready";
+          state.currentNodeId = null;
+          state.usedEdgeKeys = [];
+          state.availableTargets = [];
+          state.selectedTargetId = null;
+          state.status = "開始待ち";
+          updateHud();
+          render();
+        }
+
+        function startGame() {
+          if (state.phase === "playing") return;
+          state.phase = "playing";
+          state.currentNodeId = 0;
+          state.usedEdgeKeys = [];
+          state.status = "行き先を選んでください";
+          syncTargets();
+          updateHud();
+          render();
+        }
+
+        function restartGame() {
+          resetGame();
+          startGame();
+        }
+
+        function moveToNode(targetId) {
+          if (state.phase !== "playing") return false;
+          if (state.currentNodeId === null) return false;
+          if (!state.availableTargets.includes(targetId)) {
+            state.status = "その丸へは進めません";
+            updateHud();
+            render();
+            return false;
+          }
+          const key = edgeKey(state.currentNodeId, targetId);
+          state.usedEdgeKeys = [...state.usedEdgeKeys, key];
+          state.currentNodeId = targetId;
+          updatePhaseAfterMove();
+          updateHud();
+          render();
+          return true;
+        }
+
+        function cycleTarget(direction) {
+          if (state.phase !== "playing" || state.availableTargets.length === 0) return;
+          const ids = [...state.availableTargets].sort((a, b) => a - b);
+          if (state.selectedTargetId === null) {
+            state.selectedTargetId = ids[0];
+          } else {
+            const currentIndex = ids.indexOf(state.selectedTargetId);
+            const nextIndex = currentIndex === -1
+              ? 0
+              : (currentIndex + direction + ids.length) % ids.length;
+            state.selectedTargetId = ids[nextIndex];
+          }
+          updateHud();
+          render();
+        }
+
+        function confirmSelected() {
+          if (state.selectedTargetId === null) return false;
+          return moveToNode(state.selectedTargetId);
+        }
+
+        function updateHud() {
+          const currentNode = getNode(state.currentNodeId);
+          statusText.textContent = state.status;
+          currentNodeText.textContent = currentNode ? currentNode.label : "未開始";
+          progressText.textContent = `${state.usedEdgeKeys.length} / ${edges.length} 本`;
+
+          for (const button of nodeButtons) {
+            const nodeId = Number(button.dataset.nodeId);
+            const node = getNode(nodeId);
+            const enabled = state.phase === "playing" && state.availableTargets.includes(nodeId);
+            button.disabled = !enabled;
+            button.textContent = `${nodeId + 1}. ${node.label}`;
+            button.classList.toggle("is-selected", state.selectedTargetId === nodeId);
+          }
+        }
+
+        function drawBackground() {
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#eef6ff");
+          gradient.addColorStop(1, "#ffffff");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("朝の導線なぞり", 28, 42);
+          ctx.fillStyle = "#475569";
+          ctx.font = "16px sans-serif";
+          ctx.fillText("同じ線を二度使わず、全てなぞる", 28, 68);
+        }
+
+        function drawEdge(a, b, used) {
+          const start = getNode(a);
+          const end = getNode(b);
+          ctx.save();
+          ctx.strokeStyle = used ? "#2563eb" : "#cbd5e1";
+          ctx.lineWidth = used ? 8 : 5;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(start.x, start.y);
+          ctx.lineTo(end.x, end.y);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function drawNode(node) {
+          const isCurrent = state.currentNodeId === node.id;
+          const isSelectable = state.availableTargets.includes(node.id);
+          ctx.save();
+          ctx.fillStyle = isCurrent ? "#2563eb" : isSelectable ? "#dbeafe" : "#ffffff";
+          ctx.strokeStyle = isCurrent ? "#1d4ed8" : "#94a3b8";
+          ctx.lineWidth = isCurrent ? 4 : 2;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 34, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = isCurrent ? "#ffffff" : "#0f172a";
+          ctx.font = "700 15px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(node.label, node.x, node.y + 5);
+          ctx.restore();
+        }
+
+        function render() {
+          drawBackground();
+
+          edges.forEach(([a, b]) => {
+            drawEdge(a, b, state.usedEdgeKeys.includes(edgeKey(a, b)));
+          });
+
+          nodes.forEach((node) => drawNode(node));
+
+          ctx.fillStyle = "#334155";
+          ctx.font = "15px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText("開始: 相談", 40, 342);
+          ctx.fillText(`残り: ${edges.length - state.usedEdgeKeys.length} 本`, 40, 366);
+
+          if (state.phase === "cleared") {
+            ctx.fillStyle = "#16a34a";
+            ctx.font = "700 22px sans-serif";
+            ctx.fillText("全ての導線をなぞりました", 40, 408);
+          }
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "canvas origin top-left, nodes connected by straight edges",
+            phase: state.phase,
+            status: state.status,
+            currentNodeId: state.currentNodeId,
+            currentNodeLabel: getNode(state.currentNodeId)?.label ?? null,
+            usedEdges: state.usedEdgeKeys,
+            remainingEdges: edges.length - state.usedEdgeKeys.length,
+            availableTargets: state.availableTargets.map((nodeId) => ({
+              id: nodeId,
+              label: getNode(nodeId).label,
+            })),
+          });
+        }
+
+        function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen?.();
+          } else {
+            document.exitFullscreen?.();
+          }
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", restartGame);
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            restartGame();
+            return;
+          }
+          if (event.key === "a" || event.key === "A") {
+            event.preventDefault();
+            cycleTarget(-1);
+            return;
+          }
+          if (event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            cycleTarget(1);
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            confirmSelected();
+            return;
+          }
+          const index = Number(event.key) - 1;
+          if (index >= 0 && index < nodes.length) {
+            event.preventDefault();
+            moveToNode(index);
+          }
+        });
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => render();
+        window.startGame = startGame;
+        window.moveToNode = moveToNode;
+        window.confirmSelected = confirmSelected;
+        window.resetGame = resetGame;
+        window.restartGame = restartGame;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
