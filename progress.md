@@ -31,6 +31,11 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
 - Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
 - Added `render_game_to_text`, `advanceTime`, `startGame`, `moveToNode`, `confirmSelected`, and `resetGame` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-route-trace.html`.
+- Verified with the web-game Playwright client: a deterministic `Enter/Enter/Enter/B/Enter/B/Enter/Enter/Enter` path ended in `phase: "cleared"` with `remainingEdges: 0` and no console/page errors.
+- Verified a 390px-wide mobile full-page screenshot; hero, canvas card, stats, controls, node buttons, tips, and boundary section stack correctly.
+- Pushed commit `3ef3263` to `origin/backup/20260404-230957` and deployed with `npx wrangler deploy`.
+- Live checks: `https://niche-s.com/business-procedures/morning-route-trace.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-route-trace.html` both returned HTTP 200.
 
 ## 2026-05-23
 
