@@ -322,10 +322,10 @@
           }
           const blank = blankIndex();
           const targetMap = {
-            ArrowUp: blank + 3,
-            ArrowDown: blank - 3,
-            ArrowLeft: blank + 1,
-            ArrowRight: blank - 1,
+            ArrowUp: blank - 3,
+            ArrowDown: blank + 3,
+            ArrowLeft: blank - 1,
+            ArrowRight: blank + 1,
           };
           const position = targetMap[key];
           if (neighbors[blank].includes(position)) {
