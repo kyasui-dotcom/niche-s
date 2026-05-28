@@ -292,6 +292,7 @@
         function moveToken(index) {
           if (state.phase === "ready") {
             startGame();
+            return false;
           }
           if (state.phase !== "playing") return false;
           const movable = getMovableIndexes();
