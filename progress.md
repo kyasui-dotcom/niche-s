@@ -1,5 +1,16 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-28
+
+- Added `business-procedures/morning-flow-jump.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の導線ジャンプ" - a minimal 5-slot jump puzzle where four lightweight entrepreneur labels swap sides around one blank slot.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveToken`, and `selectSlot` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-flow-jump.html`.
+- Verified with the web-game Playwright client: a deterministic click path ends in `phase: "cleared"` with the goal board aligned and no console/page errors.
+- Verified the canvas screenshot output visually; the solved board is legible and the light-label boundary stays intact.
+
 ## 2026-05-24
 
 - Added `business-procedures/task-boxes.html` and mirrored it under `public/business-procedures/`.

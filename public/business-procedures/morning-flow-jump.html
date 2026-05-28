@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の導線ジャンプ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="相談、返信、送付、再訪の軽い導線ラベルだけを入れ替える、起業家向けの小さなジャンプパズル。法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の導線ジャンプ | 起業家向けミニゲーム" />
+    <meta property="og:description" content="4枚の軽い起業ラベルを左右で入れ替える、小さなジャンプパズルです。" />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-flow-jump.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-flow-jump.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #jumpCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .slot-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls,
+      .slot-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .slot-buttons .button {
+        flex: 1 1 45%;
+      }
+      .button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .button:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      .game-note,
+      .game-copy,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の導線ジャンプ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の導線ジャンプ</h1>
+        <p class="lede">
+          相談、返信、送付、再訪の軽い導線ラベルだけを、左右で入れ替える小さなジャンプパズルです。
+          法務、税務、許認可、契約、行政提出などの判断には踏み込まず、数十秒の気分転換だけに絞っています。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-slide-puzzle.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>空きマスへ進めて、左右を入れ替える</h2>
+          <p class="section-copy">
+            5マス固定です。空きマスへ1つ進むか、1枚を飛び越えてジャンプできます。4枚の位置を左右で入れ替えたらクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="jumpCanvas" width="720" height="450" aria-label="朝の導線ジャンプの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="movesText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択中</span>
+              <strong id="selectedText">なし</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直し</button>
+            </div>
+            <div class="slot-card">
+              <p class="section-label">Move</p>
+              <div class="slot-buttons" id="slotButtons"></div>
+            </div>
+            <p class="game-note">操作: A/B または ←→ で移動候補を選択 / Enterで進める / ボタンで直接進める / Rでやり直し / Fでフルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>最初は中央の空きマスに隣の札を寄せると動きやすくなります。</li>
+          <li>動かせるのは空きマスから1つ先か、1枚をまたいだ2つ先だけです。</li>
+          <li>扱うのは軽い導線ラベルだけで、実務判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const pieces = {
+          consult: { label: "相談", color: "#dbeafe", text: "#1d4ed8" },
+          reply: { label: "返信", color: "#e0f2fe", text: "#0f766e" },
+          send: { label: "送付", color: "#ede9fe", text: "#6d28d9" },
+          revisit: { label: "再訪", color: "#fee2e2", text: "#b91c1c" },
+        };
+        const startBoard = ["consult", "reply", null, "send", "revisit"];
+        const goalBoard = ["send", "revisit", null, "consult", "reply"];
+
+        const canvas = document.getElementById("jumpCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const movesText = document.getElementById("movesText");
+        const selectedText = document.getElementById("selectedText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const slotButtonsRoot = document.getElementById("slotButtons");
+
+        const state = {
+          phase: "ready",
+          board: [...startBoard],
+          moves: 0,
+          selectedIndex: null,
+          status: "開始待ち",
+        };
+
+        const slotButtons = startBoard.map((_, index) => {
+          const button = document.createElement("button");
+          button.className = "button ghost slot-button";
+          button.type = "button";
+          button.dataset.index = String(index);
+          button.addEventListener("click", () => moveToken(index));
+          slotButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function boardMatches(target) {
+          return state.board.every((value, index) => value === target[index]);
+        }
+
+        function getBlankIndex(board = state.board) {
+          return board.indexOf(null);
+        }
+
+        function getMovableIndexes(board = state.board) {
+          const blankIndex = getBlankIndex(board);
+          return board
+            .map((value, index) => {
+              if (!value) return null;
+              const distance = Math.abs(index - blankIndex);
+              if (distance === 1) return index;
+              if (distance === 2) {
+                const middleIndex = (index + blankIndex) / 2;
+                if (board[middleIndex]) return index;
+              }
+              return null;
+            })
+            .filter((value) => value !== null);
+        }
+
+        function selectedLabel() {
+          if (state.selectedIndex === null) return "なし";
+          const key = state.board[state.selectedIndex];
+          if (!key) return "なし";
+          return `${state.selectedIndex + 1}: ${pieces[key].label}`;
+        }
+
+        function setSelection(index) {
+          const movable = getMovableIndexes();
+          state.selectedIndex = movable.includes(index) ? index : movable[0] ?? null;
+        }
+
+        function cycleSelection(direction) {
+          if (state.phase !== "playing") return;
+          const movable = getMovableIndexes();
+          if (!movable.length) {
+            state.selectedIndex = null;
+            updateUi();
+            return;
+          }
+          const currentIndex = movable.indexOf(state.selectedIndex);
+          const nextIndex = currentIndex === -1 ? 0 : (currentIndex + direction + movable.length) % movable.length;
+          state.selectedIndex = movable[nextIndex];
+          updateUi();
+        }
+
+        function startGame() {
+          state.phase = "playing";
+          state.board = [...startBoard];
+          state.moves = 0;
+          state.status = "動かす札を選んでください";
+          setSelection(state.selectedIndex ?? getMovableIndexes()[0] ?? null);
+          updateUi();
+        }
+
+        function resetGame() {
+          state.phase = "ready";
+          state.board = [...startBoard];
+          state.moves = 0;
+          state.selectedIndex = null;
+          state.status = "開始待ち";
+          updateUi();
+        }
+
+        function moveToken(index) {
+          if (state.phase === "ready") {
+            startGame();
+          }
+          if (state.phase !== "playing") return false;
+          const movable = getMovableIndexes();
+          if (!movable.includes(index)) {
+            setSelection(index);
+            updateUi();
+            return false;
+          }
+          const blankIndex = getBlankIndex();
+          state.board[blankIndex] = state.board[index];
+          state.board[index] = null;
+          state.moves += 1;
+          if (boardMatches(goalBoard)) {
+            state.phase = "cleared";
+            state.selectedIndex = null;
+            state.status = "左右の入れ替えが完了しました";
+          } else {
+            state.status = "次の札を進めてください";
+            setSelection(getMovableIndexes()[0] ?? null);
+          }
+          updateUi();
+          return true;
+        }
+
+        function getSlotMetrics() {
+          const slotWidth = 108;
+          const slotHeight = 180;
+          const gap = 18;
+          const totalWidth = slotWidth * 5 + gap * 4;
+          const startX = (canvas.width - totalWidth) / 2;
+          const y = 135;
+          return { slotWidth, slotHeight, gap, totalWidth, startX, y };
+        }
+
+        function drawBoard() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#f8fbff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const { slotWidth, slotHeight, gap, totalWidth, startX, y } = getSlotMetrics();
+
+          ctx.fillStyle = "#1e293b";
+          ctx.font = "700 30px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("左と右を入れ替える", canvas.width / 2, 64);
+
+          for (let index = 0; index < state.board.length; index += 1) {
+            const x = startX + index * (slotWidth + gap);
+            const pieceKey = state.board[index];
+            const isBlank = pieceKey === null;
+            const isSelected = index === state.selectedIndex;
+
+            ctx.fillStyle = isBlank ? "#eff6ff" : "#ffffff";
+            ctx.strokeStyle = isSelected ? "#2563eb" : "#cbd5e1";
+            ctx.lineWidth = isSelected ? 4 : 2;
+            roundRect(ctx, x, y, slotWidth, slotHeight, 22);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#64748b";
+            ctx.font = "600 18px sans-serif";
+            ctx.fillText(String(index + 1), x + slotWidth / 2, y + 30);
+
+            if (pieceKey) {
+              const piece = pieces[pieceKey];
+              ctx.fillStyle = piece.color;
+              roundRect(ctx, x + 14, y + 56, slotWidth - 28, 76, 18);
+              ctx.fill();
+
+              ctx.fillStyle = piece.text;
+              ctx.font = "700 24px sans-serif";
+              ctx.fillText(piece.label, x + slotWidth / 2, y + 102);
+            } else {
+              ctx.fillStyle = "#94a3b8";
+              ctx.font = "700 22px sans-serif";
+              ctx.fillText("空き", x + slotWidth / 2, y + 102);
+            }
+          }
+
+          ctx.fillStyle = "#64748b";
+          ctx.font = "600 18px sans-serif";
+          ctx.fillText("開始形", startX + slotWidth, 360);
+          ctx.fillText("目標形", startX + totalWidth - slotWidth, 360);
+        }
+
+        function roundRect(context, x, y, width, height, radius) {
+          context.beginPath();
+          context.moveTo(x + radius, y);
+          context.lineTo(x + width - radius, y);
+          context.quadraticCurveTo(x + width, y, x + width, y + radius);
+          context.lineTo(x + width, y + height - radius);
+          context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          context.lineTo(x + radius, y + height);
+          context.quadraticCurveTo(x, y + height, x, y + height - radius);
+          context.lineTo(x, y + radius);
+          context.quadraticCurveTo(x, y, x + radius, y);
+          context.closePath();
+        }
+
+        function updateUi() {
+          statusText.textContent = state.status;
+          movesText.textContent = String(state.moves);
+          selectedText.textContent = selectedLabel();
+
+          const movable = getMovableIndexes();
+          slotButtons.forEach((button, index) => {
+            const pieceKey = state.board[index];
+            const isMovable = state.phase === "playing" && movable.includes(index);
+            button.textContent = pieceKey ? `${index + 1}: ${pieces[pieceKey].label}` : `${index + 1}: 空き`;
+            button.disabled = !isMovable;
+            button.classList.toggle("is-selected", index === state.selectedIndex);
+          });
+
+          drawBoard();
+        }
+
+        function renderGameToText() {
+          const payload = {
+            phase: state.phase,
+            moves: state.moves,
+            status: state.status,
+            selectedIndex: state.selectedIndex,
+            board: state.board.map((pieceKey) => (pieceKey ? pieces[pieceKey].label : "空き")),
+            movableIndexes: getMovableIndexes(),
+            goal: goalBoard.map((pieceKey) => (pieceKey ? pieces[pieceKey].label : "空き")),
+            coordinates: "slot index 0-4 from left to right",
+          };
+          return JSON.stringify(payload);
+        }
+
+        function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen?.();
+            return;
+          }
+          document.exitFullscreen?.();
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+            return;
+          }
+          if (event.key === "Escape" && document.fullscreenElement) {
+            document.exitFullscreen?.();
+            return;
+          }
+          if (state.phase === "ready" && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            startGame();
+            return;
+          }
+          if (state.phase !== "playing") return;
+          if (event.key === "ArrowLeft" || event.key === "a" || event.key === "A") {
+            event.preventDefault();
+            cycleSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight" || event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            cycleSelection(1);
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (state.selectedIndex !== null) {
+              moveToken(state.selectedIndex);
+            }
+          }
+        });
+
+        canvas.addEventListener("click", (event) => {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (event.clientX - rect.left) * scaleX;
+          const y = (event.clientY - rect.top) * scaleY;
+          const { slotWidth, slotHeight, gap, startX, y: slotY } = getSlotMetrics();
+          if (y < slotY || y > slotY + slotHeight) return;
+          for (let index = 0; index < state.board.length; index += 1) {
+            const slotX = startX + index * (slotWidth + gap);
+            if (x >= slotX && x <= slotX + slotWidth) {
+              moveToken(index);
+              return;
+            }
+          }
+        });
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = async () => Promise.resolve();
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveToken = moveToken;
+        window.selectSlot = setSelection;
+
+        updateUi();
+      })();
+    </script>
+  </body>
+</html>
