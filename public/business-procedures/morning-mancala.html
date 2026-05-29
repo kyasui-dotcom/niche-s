@@ -418,8 +418,8 @@
 
         function playSelectedPit() {
           if (state.phase === "ready") {
-            startGame();
-            return render_game_to_text();
+            setStartedStatus();
+            render();
           }
           if (state.phase !== "playing" || state.turn !== "player") return render_game_to_text();
           const moved = playPitForSide(state.selectedPit, "player");
