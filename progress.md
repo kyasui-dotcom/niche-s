@@ -1,5 +1,17 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-05-29
+
+- Added `business-procedures/morning-mancala.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝のマンカラ配り" - a minimal 3-pit-per-side Mancala variant using only lightweight entrepreneur labels such as 返信, 見積, 共有, 再訪, メモ, and 確認.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Added discovery from both business procedure hub copies and sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectPit`, and `playSelectedPit` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-mancala.html`.
+- Verified with Playwright for Python: start flow, deterministic key path to end-state, `phase: "ended"`, and no console/page errors.
+- Verified a 390px-wide mobile full-page screenshot; hero, board, control buttons, tips, and boundary section stack correctly.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-mancala.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-mancala.html`.
+
 ## 2026-05-28
 
 - Added `business-procedures/morning-flow-jump.html` and mirrored it under `public/business-procedures/`.

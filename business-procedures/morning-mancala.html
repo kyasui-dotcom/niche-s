@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝のマンカラ配り | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="返信、見積、共有などの軽い起業ラベルを配って得点する、小さなマンカラ風ゲーム。法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝のマンカラ配り | 起業家向けミニゲーム" />
+    <meta property="og:description" content="軽い起業ラベルを配って得点する、小さなマンカラ風ゲームです。" />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-mancala.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-mancala.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #mancalaCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #faf8ff 0%, #edf4ff 100%);
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .pit-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls,
+      .pit-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .pit-buttons .button {
+        flex: 1 1 30%;
+      }
+      .button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝のマンカラ配り</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝のマンカラ配り</h1>
+        <p class="lede">
+          返信、見積、共有といった軽い起業ラベルだけを配って点数を競う、小さなマンカラ風ゲームです。
+          法務、税務、許認可、契約、労務、行政提出など他領域の判断には踏み込まず、短い気分転換だけに絞っています。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-flow-jump.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>自分の穴を1つ選んで配る</h2>
+          <p class="section-copy">
+            あなた側は下の3つです。石を1つずつ右回りに配り、自分の得点穴で止まるともう1手。自分の空穴で止まると向かい側を回収できます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="mancalaCanvas" width="720" height="450" aria-label="朝のマンカラ配りの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手番</span>
+              <strong id="turnText">あなた</strong>
+            </div>
+            <div class="game-stat">
+              <span>点差</span>
+              <strong id="scoreText">あなた 0 - 0 相手</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="playBtn" class="button ghost" type="button">この穴から配る</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直し</button>
+            </div>
+            <div class="pit-card">
+              <p class="section-label">Move</p>
+              <div class="pit-buttons" id="pitButtons"></div>
+            </div>
+            <p class="game-note">操作: ←→ で穴を移動 / Enter で配る / 1-3 で穴を選ぶ / R でやり直し / F でフルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>自分の得点穴で止まる配り方は、そのまま連続手番になります。</li>
+          <li>自分の空穴で止まると、向かい側の石もまとめて取れます。</li>
+          <li>扱うのは軽い起業ラベルだけで、実務判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の助言はしません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const ring = [
+          { id: "p0", side: "player", pit: 0, label: "返信", color: "#dbeafe", text: "#1d4ed8", center: [208, 320] },
+          { id: "p1", side: "player", pit: 1, label: "見積", color: "#dcfce7", text: "#166534", center: [360, 320] },
+          { id: "p2", side: "player", pit: 2, label: "共有", color: "#ede9fe", text: "#6d28d9", center: [512, 320] },
+          { id: "store-player", side: "player", pit: "store", label: "前進", color: "#fef3c7", text: "#b45309", center: [620, 225] },
+          { id: "a2", side: "ai", pit: 2, label: "再訪", color: "#fee2e2", text: "#b91c1c", center: [512, 130] },
+          { id: "a1", side: "ai", pit: 1, label: "メモ", color: "#e0f2fe", text: "#0f766e", center: [360, 130] },
+          { id: "a0", side: "ai", pit: 0, label: "確認", color: "#fce7f3", text: "#be185d", center: [208, 130] },
+          { id: "store-ai", side: "ai", pit: "store", label: "前進", color: "#e5e7eb", text: "#374151", center: [100, 225] },
+        ];
+        const playerPitIds = ["p0", "p1", "p2"];
+        const aiPitIds = ["a0", "a1", "a2"];
+        const oppositePitMap = { p0: "a0", p1: "a1", p2: "a2", a0: "p0", a1: "p1", a2: "p2" };
+        const pitButtonsRoot = document.getElementById("pitButtons");
+        const statusText = document.getElementById("statusText");
+        const turnText = document.getElementById("turnText");
+        const scoreText = document.getElementById("scoreText");
+        const startBtn = document.getElementById("startBtn");
+        const playBtn = document.getElementById("playBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const canvas = document.getElementById("mancalaCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const state = {
+          phase: "ready",
+          turn: "player",
+          pits: {},
+          selectedPit: 0,
+          status: "開始待ち",
+        };
+
+        const pitButtons = playerPitIds.map((_, index) => {
+          const button = document.createElement("button");
+          button.className = "button ghost pit-button";
+          button.type = "button";
+          button.dataset.index = String(index);
+          button.addEventListener("click", () => {
+            selectPit(index);
+            playSelectedPit();
+          });
+          pitButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function createInitialPits() {
+          return {
+            p0: 3,
+            p1: 3,
+            p2: 3,
+            "store-player": 0,
+            a0: 3,
+            a1: 3,
+            a2: 3,
+            "store-ai": 0,
+          };
+        }
+
+        function resetState() {
+          state.phase = "ready";
+          state.turn = "player";
+          state.pits = createInitialPits();
+          state.selectedPit = 0;
+          state.status = "開始待ち";
+        }
+
+        function isPlayerPit(index) {
+          return index >= 0 && index <= 2;
+        }
+
+        function getRingIndexById(id) {
+          return ring.findIndex((slot) => slot.id === id);
+        }
+
+        function getSelectablePits() {
+          return playerPitIds
+            .map((id, index) => ({ id, index }))
+            .filter((entry) => state.pits[entry.id] > 0)
+            .map((entry) => entry.index);
+        }
+
+        function selectPit(index) {
+          const selectable = getSelectablePits();
+          state.selectedPit = selectable.includes(index) ? index : selectable[0] ?? 0;
+          render();
+        }
+
+        function cycleSelection(step) {
+          const selectable = getSelectablePits();
+          if (!selectable.length) return;
+          const current = selectable.indexOf(state.selectedPit);
+          const nextIndex = current === -1 ? 0 : (current + step + selectable.length) % selectable.length;
+          state.selectedPit = selectable[nextIndex];
+          render();
+        }
+
+        function setStartedStatus() {
+          state.phase = "playing";
+          state.turn = "player";
+          state.status = "あなたの手番です";
+        }
+
+        function startGame() {
+          resetState();
+          setStartedStatus();
+          render();
+          return render_game_to_text();
+        }
+
+        function resetGame() {
+          resetState();
+          render();
+          return render_game_to_text();
+        }
+
+        function distributeFrom(id, side) {
+          const sourceIndex = getRingIndexById(id);
+          let stones = state.pits[id];
+          state.pits[id] = 0;
+          let index = sourceIndex;
+          while (stones > 0) {
+            index = (index + 1) % ring.length;
+            const slot = ring[index];
+            if (side === "player" && slot.id === "store-ai") continue;
+            if (side === "ai" && slot.id === "store-player") continue;
+            state.pits[slot.id] += 1;
+            stones -= 1;
+          }
+          return ring[index];
+        }
+
+        function collectRemainingIfEnded() {
+          const playerEmpty = playerPitIds.every((id) => state.pits[id] === 0);
+          const aiEmpty = aiPitIds.every((id) => state.pits[id] === 0);
+          if (!playerEmpty && !aiEmpty) return false;
+
+          playerPitIds.forEach((id) => {
+            state.pits["store-player"] += state.pits[id];
+            state.pits[id] = 0;
+          });
+          aiPitIds.forEach((id) => {
+            state.pits["store-ai"] += state.pits[id];
+            state.pits[id] = 0;
+          });
+
+          state.phase = "ended";
+          if (state.pits["store-player"] > state.pits["store-ai"]) {
+            state.status = "クリア: あなたの勝ち";
+          } else if (state.pits["store-player"] < state.pits["store-ai"]) {
+            state.status = "終了: 相手の勝ち";
+          } else {
+            state.status = "終了: 引き分け";
+          }
+          return true;
+        }
+
+        function applyCapture(lastSlot, side) {
+          if (lastSlot.pit === "store") return false;
+          if (lastSlot.side !== side) return false;
+          if (state.pits[lastSlot.id] !== 1) return false;
+          const oppositeId = oppositePitMap[lastSlot.id];
+          if (!oppositeId || state.pits[oppositeId] === 0) return false;
+          const storeId = side === "player" ? "store-player" : "store-ai";
+          state.pits[storeId] += state.pits[lastSlot.id] + state.pits[oppositeId];
+          state.pits[lastSlot.id] = 0;
+          state.pits[oppositeId] = 0;
+          return true;
+        }
+
+        function finishTurn(side, lastSlot) {
+          if (collectRemainingIfEnded()) return;
+          if (lastSlot.id === (side === "player" ? "store-player" : "store-ai")) {
+            state.turn = side;
+            state.status = side === "player" ? "もう1手どうぞ" : "相手が連続で配ります";
+            return;
+          }
+          state.turn = side === "player" ? "ai" : "player";
+          state.status = state.turn === "player" ? "あなたの手番です" : "相手が考えています";
+        }
+
+        function playPitForSide(index, side) {
+          const ids = side === "player" ? playerPitIds : aiPitIds;
+          const id = ids[index];
+          if (!id || state.pits[id] === 0 || state.phase !== "playing") return false;
+          const lastSlot = distributeFrom(id, side);
+          applyCapture(lastSlot, side);
+          finishTurn(side, lastSlot);
+          return true;
+        }
+
+        function chooseAiPit() {
+          const available = aiPitIds.map((id, index) => ({ id, index, stones: state.pits[id] })).filter((entry) => entry.stones > 0);
+          if (!available.length) return null;
+
+          let best = null;
+          for (const option of available) {
+            const preview = structuredClone(state.pits);
+            let stones = preview[option.id];
+            preview[option.id] = 0;
+            let cursor = getRingIndexById(option.id);
+            let lastId = option.id;
+            while (stones > 0) {
+              cursor = (cursor + 1) % ring.length;
+              const slot = ring[cursor];
+              if (slot.id === "store-player") continue;
+              preview[slot.id] += 1;
+              stones -= 1;
+              lastId = slot.id;
+            }
+
+            let score = 0;
+            if (lastId === "store-ai") score += 10;
+            if (lastId.startsWith("a") && preview[lastId] === 1) {
+              const oppositeId = oppositePitMap[lastId];
+              if (preview[oppositeId] > 0) score += preview[oppositeId] + 2;
+            }
+            score += option.stones * 0.1;
+
+            if (!best || score > best.score || (score === best.score && option.index > best.index)) {
+              best = { index: option.index, score };
+            }
+          }
+          return best ? best.index : available[0].index;
+        }
+
+        function maybeRunAiTurn() {
+          let guard = 0;
+          while (state.phase === "playing" && state.turn === "ai" && guard < 8) {
+            const aiIndex = chooseAiPit();
+            if (aiIndex === null) break;
+            playPitForSide(aiIndex, "ai");
+            guard += 1;
+          }
+        }
+
+        function playSelectedPit() {
+          if (state.phase === "ready") {
+            startGame();
+            return render_game_to_text();
+          }
+          if (state.phase !== "playing" || state.turn !== "player") return render_game_to_text();
+          const moved = playPitForSide(state.selectedPit, "player");
+          if (!moved) {
+            selectPit(state.selectedPit);
+            return render_game_to_text();
+          }
+          if (state.phase === "playing") {
+            const selectable = getSelectablePits();
+            if (selectable.length) state.selectedPit = selectable[0];
+          }
+          maybeRunAiTurn();
+          render();
+          return render_game_to_text();
+        }
+
+        function advanceTime() {
+          if (state.phase === "playing" && state.turn === "ai") {
+            maybeRunAiTurn();
+            render();
+          }
+          return render_game_to_text();
+        }
+
+        function drawBoard() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#f8fbff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#dbeafe";
+          ctx.fillRect(72, 96, 576, 258);
+          ctx.strokeStyle = "#bfdbfe";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(72, 96, 576, 258);
+
+          ctx.fillStyle = "#eff6ff";
+          ctx.fillRect(84, 116, 92, 220);
+          ctx.fillRect(544, 116, 92, 220);
+
+          ring.forEach((slot) => {
+            const [x, y] = slot.center;
+            const isStore = slot.pit === "store";
+            ctx.beginPath();
+            if (isStore) {
+              roundRect(ctx, x - 46, y - 104, 92, 208, 26);
+            } else {
+              ctx.ellipse(x, y, 58, 46, 0, 0, Math.PI * 2);
+            }
+            ctx.fillStyle = slot.color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.stroke();
+
+            ctx.fillStyle = slot.text;
+            ctx.font = "bold 24px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(String(state.pits[slot.id]), x, y + 8);
+
+            ctx.fillStyle = "#475569";
+            ctx.font = "14px sans-serif";
+            ctx.fillText(slot.label, x, isStore ? y - 118 : y - 64);
+          });
+
+          const selectedId = playerPitIds[state.selectedPit];
+          if (state.phase === "playing" && state.turn === "player" && state.pits[selectedId] > 0) {
+            const selectedSlot = ring.find((slot) => slot.id === selectedId);
+            ctx.beginPath();
+            ctx.ellipse(selectedSlot.center[0], selectedSlot.center[1], 68, 56, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = "#2563eb";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+          }
+        }
+
+        function roundRect(context, x, y, width, height, radius) {
+          context.moveTo(x + radius, y);
+          context.lineTo(x + width - radius, y);
+          context.quadraticCurveTo(x + width, y, x + width, y + radius);
+          context.lineTo(x + width, y + height - radius);
+          context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          context.lineTo(x + radius, y + height);
+          context.quadraticCurveTo(x, y + height, x, y + height - radius);
+          context.lineTo(x, y + radius);
+          context.quadraticCurveTo(x, y, x + radius, y);
+          context.closePath();
+        }
+
+        function renderButtons() {
+          pitButtons.forEach((button, index) => {
+            const id = playerPitIds[index];
+            button.textContent = `${index + 1}: ${ring.find((slot) => slot.id === id).label} (${state.pits[id]})`;
+            button.classList.toggle("is-selected", state.selectedPit === index && state.phase === "playing" && state.turn === "player");
+            button.disabled = state.phase !== "playing" || state.turn !== "player" || state.pits[id] === 0;
+          });
+        }
+
+        function render() {
+          statusText.textContent = state.status;
+          turnText.textContent = state.turn === "player" ? "あなた" : "相手";
+          scoreText.textContent = `あなた ${state.pits["store-player"]} - ${state.pits["store-ai"]} 相手`;
+          playBtn.disabled = state.phase === "ended";
+          renderButtons();
+          drawBoard();
+        }
+
+        function render_game_to_text() {
+          return JSON.stringify({
+            phase: state.phase,
+            turn: state.turn,
+            status: state.status,
+            selectedPit: state.selectedPit,
+            playerStore: state.pits["store-player"],
+            aiStore: state.pits["store-ai"],
+            playerPits: playerPitIds.map((id) => state.pits[id]),
+            aiPits: aiPitIds.map((id) => state.pits[id]),
+          });
+        }
+
+        function onKeyDown(event) {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            cycleSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            cycleSelection(1);
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            playSelectedPit();
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              document.documentElement.requestFullscreen().catch(() => {});
+            }
+            return;
+          }
+          if (event.key === "1" || event.key === "2" || event.key === "3") {
+            event.preventDefault();
+            selectPit(Number(event.key) - 1);
+          }
+        }
+
+        startBtn.addEventListener("click", startGame);
+        playBtn.addEventListener("click", playSelectedPit);
+        resetBtn.addEventListener("click", resetGame);
+        window.addEventListener("keydown", onKeyDown);
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.selectPit = selectPit;
+        window.playSelectedPit = playSelectedPit;
+        window.advanceTime = advanceTime;
+        window.render_game_to_text = render_game_to_text;
+
+        resetState();
+        render();
+      })();
+    </script>
+  </body>
+</html>
