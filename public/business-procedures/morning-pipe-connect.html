@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の導線パイプつなぎ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="相談から再訪までの軽い導線ラベルをつなぐ、起業家向けの最小パイプ接続パズル。法務・税務・許認可などの権威領域には踏み込まない息抜き用ゲームです。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の導線パイプつなぎ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="軽い営業導線ラベルだけを扱う、最小サイズのパイプ接続パズル。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-pipe-connect.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-pipe-connect.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #pipeGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        font-size: 1.35rem;
+        color: var(--dark);
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      .legend-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        background: #ffffff;
+      }
+      .legend-card strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          width: auto;
+          flex: 1 1 150px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の導線パイプつなぎ</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の導線パイプつなぎ</h1>
+        <p class="lede">
+          相談から再訪までの軽い導線ラベルだけをつなぐ、最小サイズのパイプ接続パズルです。
+          許認可、税務、法務、労務、契約、行政手続きの判断は扱わず、頭を切り替えるための息抜きに絞っています。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-mancala.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>クリックで回して、入口から出口までつなぐ</h2>
+          <p class="section-copy">
+            4 x 4 の盤面を回して、START から GOAL まで一本でつなげます。タイルを押すたびに 90 度回転します。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="pipeGame" width="720" height="720" aria-label="朝の導線パイプつなぎのゲーム盤"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>つながり</span>
+              <strong id="statusText">未接続</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="movesText">0手</strong>
+            </div>
+            <div class="game-stat">
+              <span>経過</span>
+              <strong id="timeText">0.0秒</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">
+              操作: タイルをクリックまたはタップ。完成後も盤面確認はできます。
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Labels</p>
+          <h2>使う言葉は軽い導線だけ</h2>
+        </div>
+        <div class="legend-grid">
+          <article class="legend-card">
+            <strong>START</strong>
+            <p class="game-copy">相談の入口を起点にします。</p>
+          </article>
+          <article class="legend-card">
+            <strong>途中ラベル</strong>
+            <p class="game-copy">返信、見積、送付、共有、再訪などの軽い実務だけを使います。</p>
+          </article>
+          <article class="legend-card">
+            <strong>GOAL</strong>
+            <p class="game-copy">一本でつながればクリアです。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>権威領域には踏み込まない</h2>
+        </div>
+        <p class="game-copy">
+          このゲームが扱うのは、軽い導線整理の比喩だけです。法務、税務、許認可、労務、契約、行政手続きの判断や助言は含みません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("pipeGame");
+        const ctx = canvas.getContext("2d");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const statusText = document.getElementById("statusText");
+        const movesText = document.getElementById("movesText");
+        const timeText = document.getElementById("timeText");
+        const size = 4;
+        const labels = [
+          "相談", "返信", "見積", "送付",
+          "共有", "再訪", "確認", "整理",
+          "提案", "記録", "紹介", "改善",
+          "GOAL", "集中", "整頓", "共有"
+        ];
+        const blueprint = [
+          { type: "straight", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "corner", solved: 2 },
+          { type: "corner", solved: 1 },
+          { type: "straight", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "corner", solved: 3 },
+          { type: "corner", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "corner", solved: 2 },
+          { type: "corner", solved: 1 },
+          { type: "straight", solved: 0 },
+          { type: "straight", solved: 0 },
+          { type: "corner", solved: 3 }
+        ];
+        const scramble = [1, 1, 0, 1, 2, 1, 0, 3, 2, 1, 1, 0, 0, 1, 0, 2];
+        const state = {
+          phase: "ready",
+          moves: 0,
+          elapsedMs: 0,
+          lastTick: 0,
+          tiles: []
+        };
+
+        function buildTiles() {
+          state.tiles = blueprint.map((tile, index) => ({
+            ...tile,
+            label: labels[index],
+            rotation: (tile.solved + scramble[index]) % 4
+          }));
+        }
+
+        function resetGame() {
+          state.phase = "ready";
+          state.moves = 0;
+          state.elapsedMs = 0;
+          state.lastTick = 0;
+          buildTiles();
+          updateHud();
+          render();
+        }
+
+        function startGame() {
+          if (state.phase === "playing") return;
+          if (state.phase === "cleared") {
+            resetGame();
+          }
+          state.phase = "playing";
+          state.lastTick = performance.now();
+          requestAnimationFrame(loop);
+          updateHud();
+          render();
+        }
+
+        function normalizeRotation(tile) {
+          return tile.type === "straight" ? tile.rotation % 2 : tile.rotation % 4;
+        }
+
+        function getOpenings(tile) {
+          if (tile.type === "straight") {
+            return normalizeRotation(tile) === 0 ? ["left", "right"] : ["up", "down"];
+          }
+          const cornerMap = [
+            ["up", "right"],
+            ["right", "down"],
+            ["down", "left"],
+            ["left", "up"]
+          ];
+          return cornerMap[normalizeRotation(tile)];
+        }
+
+        function rotateTile(index) {
+          if (state.phase === "ready") startGame();
+          if (state.phase !== "playing") return false;
+          const tile = state.tiles[index];
+          if (!tile) return false;
+          tile.rotation = (tile.rotation + 1) % 4;
+          state.moves += 1;
+          if (isSolved()) {
+            state.phase = "cleared";
+          }
+          updateHud();
+          render();
+          return true;
+        }
+
+        function isSolved() {
+          const seen = tracePath();
+          return seen.goalConnected && seen.connectedCount === size * size;
+        }
+
+        function tracePath() {
+          const queue = [{ row: 0, col: 0, cameFrom: "left" }];
+          const visited = new Set();
+          let goalConnected = false;
+
+          while (queue.length) {
+            const current = queue.shift();
+            const key = `${current.row},${current.col}`;
+            if (visited.has(key)) continue;
+            const tile = state.tiles[current.row * size + current.col];
+            const openings = getOpenings(tile);
+            if (!openings.includes(current.cameFrom)) continue;
+            visited.add(key);
+
+            if (current.row === size - 1 && current.col === 0 && openings.includes("down")) {
+              goalConnected = true;
+            }
+
+            for (const direction of openings) {
+              const next = move(current.row, current.col, direction);
+              if (!next) continue;
+              const nextTile = state.tiles[next.row * size + next.col];
+              if (!getOpenings(nextTile).includes(opposite(direction))) continue;
+              queue.push({ row: next.row, col: next.col, cameFrom: opposite(direction) });
+            }
+          }
+
+          return { visited, connectedCount: visited.size, goalConnected };
+        }
+
+        function move(row, col, direction) {
+          if (direction === "up" && row > 0) return { row: row - 1, col };
+          if (direction === "right" && col < size - 1) return { row, col: col + 1 };
+          if (direction === "down" && row < size - 1) return { row: row + 1, col };
+          if (direction === "left" && col > 0) return { row, col: col - 1 };
+          return null;
+        }
+
+        function opposite(direction) {
+          return {
+            up: "down",
+            right: "left",
+            down: "up",
+            left: "right"
+          }[direction];
+        }
+
+        function updateHud() {
+          const trace = tracePath();
+          statusText.textContent = state.phase === "cleared" ? "接続完了" : `${trace.connectedCount}/16`;
+          movesText.textContent = `${state.moves}手`;
+          timeText.textContent = `${(state.elapsedMs / 1000).toFixed(1)}秒`;
+        }
+
+        function drawPortals() {
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("START", 26, 68);
+          ctx.fillText("GOAL", 28, canvas.height - 28);
+
+          ctx.strokeStyle = "#2563eb";
+          ctx.lineWidth = 10;
+          ctx.beginPath();
+          ctx.moveTo(16, 120);
+          ctx.lineTo(54, 120);
+          ctx.stroke();
+
+          ctx.strokeStyle = "#16a34a";
+          ctx.beginPath();
+          ctx.moveTo(54, canvas.height - 120);
+          ctx.lineTo(16, canvas.height - 120);
+          ctx.stroke();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eef6ff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          drawPortals();
+
+          const trace = tracePath();
+          const boardX = 60;
+          const boardY = 60;
+          const cell = 150;
+
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              const index = row * size + col;
+              const tile = state.tiles[index];
+              const key = `${row},${col}`;
+              const connected = trace.visited.has(key);
+              const x = boardX + col * cell;
+              const y = boardY + row * cell;
+              const centerX = x + cell / 2;
+              const centerY = y + cell / 2;
+              const openings = getOpenings(tile);
+
+              ctx.fillStyle = connected ? "#eff6ff" : "#ffffff";
+              ctx.strokeStyle = connected ? "#60a5fa" : "#dbe4f0";
+              ctx.lineWidth = 2;
+              roundRect(ctx, x, y, cell - 12, cell - 12, 22);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.strokeStyle = connected ? "#2563eb" : "#94a3b8";
+              ctx.lineWidth = 16;
+              ctx.lineCap = "round";
+              ctx.beginPath();
+              for (const opening of openings) {
+                ctx.moveTo(centerX, centerY);
+                if (opening === "up") ctx.lineTo(centerX, y + 18);
+                if (opening === "right") ctx.lineTo(x + cell - 30, centerY);
+                if (opening === "down") ctx.lineTo(centerX, y + cell - 30);
+                if (opening === "left") ctx.lineTo(x + 18, centerY);
+              }
+              ctx.stroke();
+
+              ctx.fillStyle = connected ? "#1d4ed8" : "#0f172a";
+              ctx.beginPath();
+              ctx.arc(centerX, centerY, 16, 0, Math.PI * 2);
+              ctx.fill();
+
+              ctx.fillStyle = "#ffffff";
+              ctx.font = "700 13px sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText(tile.label, centerX, y + cell - 46);
+            }
+          }
+          ctx.textAlign = "start";
+
+          if (state.phase !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            const heading = state.phase === "cleared" ? "Connection complete" : "Pipe connect";
+            ctx.fillText(heading, canvas.width / 2, canvas.height / 2 - 18);
+            ctx.font = "18px sans-serif";
+            ctx.fillText(
+              state.phase === "cleared" ? "Reset でもう一度。" : "Start してタイルを回してください。",
+              canvas.width / 2,
+              canvas.height / 2 + 20
+            );
+            ctx.textAlign = "start";
+          }
+        }
+
+        function loop(now) {
+          if (state.phase !== "playing") return;
+          const dt = Math.min(100, now - state.lastTick);
+          state.lastTick = now;
+          state.elapsedMs += dt;
+          updateHud();
+          render();
+          if (state.phase === "playing") requestAnimationFrame(loop);
+        }
+
+        function getTileIndexFromPoint(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const x = ((clientX - rect.left) / rect.width) * canvas.width;
+          const y = ((clientY - rect.top) / rect.height) * canvas.height;
+          const boardX = 60;
+          const boardY = 60;
+          const cell = 150;
+          const col = Math.floor((x - boardX) / cell);
+          const row = Math.floor((y - boardY) / cell);
+          if (row < 0 || row >= size || col < 0 || col >= size) return -1;
+          return row * size + col;
+        }
+
+        function roundRect(context, x, y, w, h, r) {
+          context.beginPath();
+          context.moveTo(x + r, y);
+          context.arcTo(x + w, y, x + w, y + h, r);
+          context.arcTo(x + w, y + h, x, y + h, r);
+          context.arcTo(x, y + h, x, y, r);
+          context.arcTo(x, y, x + w, y, r);
+          context.closePath();
+        }
+
+        canvas.addEventListener("click", (event) => {
+          const index = getTileIndexFromPoint(event.clientX, event.clientY);
+          if (index >= 0) rotateTile(index);
+        });
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.rotateTile = rotateTile;
+        window.advanceTime = (ms) => {
+          if (state.phase !== "playing") return;
+          state.elapsedMs += Math.max(0, ms);
+          updateHud();
+          render();
+        };
+        window.render_game_to_text = () => {
+          const trace = tracePath();
+          return JSON.stringify({
+            coordinateSystem: "row-major 4x4 grid",
+            phase: state.phase,
+            moves: state.moves,
+            elapsedSeconds: Number((state.elapsedMs / 1000).toFixed(1)),
+            connectedCount: trace.connectedCount,
+            goalConnected: trace.goalConnected,
+            rotations: state.tiles.map((tile) => normalizeRotation(tile))
+          });
+        };
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
