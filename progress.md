@@ -1,5 +1,15 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-01
+
+- Added `business-procedures/morning-cluster-clear.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝のまとめ消し" - a minimal SameGame-style cluster-clearing puzzle using only lightweight entrepreneur labels such as 返信, 見積, 共有, and 再訪.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Updated both startup launch kit copies to feature the new mini-game and linked it from both business procedure hub copies.
+- Added sitemap entries in both root and `public` sitemap files.
+- Verified local HTTP 200 for `/business-procedures/morning-cluster-clear.html`.
+- Verified with the web-game Playwright client: a deterministic `Enter x4` path ended in `phase: "cleared"` with `score: 64`, `remaining: 0`, and no script errors surfaced by the client.
+
 ## 2026-05-29
 
 - Added `business-procedures/morning-mancala.html` and mirrored it under `public/business-procedures/`.
