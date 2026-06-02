@@ -236,7 +236,6 @@
           { key: "share", text: "共有", fill: "#ede9fe", stroke: "#a78bfa", ink: "#6d28d9" },
           { key: "revisit", text: "再訪", fill: "#fee2e2", stroke: "#f87171", ink: "#b91c1c" },
         ];
-        const secret = ["reply", "quote", "share", "revisit"];
         const slotValueNodes = Array.from({ length: 4 }, (_, index) => document.getElementById(`slotValue${index}`));
         const slotCardNodes = Array.from(document.querySelectorAll("[data-slot-card]"));
         const guessList = document.getElementById("guessList");
@@ -251,6 +250,7 @@
 
         const state = {
           phase: "ready",
+          secret: [],
           guess: ["reply", "reply", "reply", "reply"],
           activeSlot: 0,
           triesLeft: 6,
@@ -259,8 +259,18 @@
           status: "開始待ち",
         };
 
+        function buildSecretSequence() {
+          const next = labels.map((label) => label.key);
+          for (let index = next.length - 1; index > 0; index -= 1) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+          }
+          return next;
+        }
+
         function resetState() {
           state.phase = "ready";
+          state.secret = buildSecretSequence();
           state.guess = ["reply", "reply", "reply", "reply"];
           state.activeSlot = 0;
           state.triesLeft = 6;
@@ -285,11 +295,11 @@
           let exact = 0;
           const secretPool = [];
           const guessPool = [];
-          for (let index = 0; index < secret.length; index += 1) {
-            if (secret[index] === guess[index]) {
+          for (let index = 0; index < state.secret.length; index += 1) {
+            if (state.secret[index] === guess[index]) {
               exact += 1;
             } else {
-              secretPool.push(secret[index]);
+              secretPool.push(state.secret[index]);
               guessPool.push(guess[index]);
             }
           }
@@ -502,7 +512,6 @@
             triesLeft: state.triesLeft,
             hint: state.hint,
             history: state.history,
-            secret,
           });
         window.advanceTime = () => {
           render();
