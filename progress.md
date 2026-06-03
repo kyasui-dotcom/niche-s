@@ -1,5 +1,17 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-03
+
+- Added `business-procedures/morning-label-sudoku.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝のラベル数独" - a minimal 4x4 Sudoku-style puzzle using only lightweight entrepreneur labels such as 返信, 見積, 共有, and 再訪.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Updated both startup launch kit copies to feature the new mini-game, linked it from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `cycleCell`, `clearSelectedCell`, and `setCellValue` hooks for automated validation.
+- Fixed a keyboard-focus bug so `Enter` and arrow keys continue to control the grid after clicking start or side-panel buttons.
+- Verified local HTTP 200 for `/business-procedures/morning-label-sudoku.html`.
+- Verified with Playwright that keyboard input advances selection (`activeCell` moved to `{ row: 0, col: 1 }`) and that the solved board reaches `phase: "cleared"` with `remaining: 0` and `conflicts: []`.
+- Verified the deployed custom-domain and workers.dev URLs both return HTTP 200 after `wrangler deploy`.
+
 ## 2026-06-02
 
 - Added `business-procedures/morning-sequence-guess.html` and mirrored it under `public/business-procedures/`.
