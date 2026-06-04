@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>提案ドラフツ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="6x6 盤で提案駒を動かす、起業家向けの小さなドラフツゲーム。扱うのは提案と返信の比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="提案ドラフツ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="6x6 盤で提案駒を動かす、起業家向けの小さなドラフツゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/proposal-draughts.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/proposal-draughts.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #draughtsBoard {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 1 / 1;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.15rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 提案ドラフツ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>提案ドラフツ</h1>
+        <p class="lede">
+          6x6 の盤で提案駒を前に進める、短時間向けの小さなドラフツです。
+          題材は提案と返信の応酬ですが、扱うのは軽い会話テンポの比喩だけで、法務・税務・許認可・行政手続きなど他の権威領域には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./pitch-tic-tac-toe.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>青い提案駒で相手を飛び越え、盤面を先に押し切る</h2>
+          <p class="section-copy">
+            濃いマスだけを使って斜めに進みます。相手の駒を飛び越えられるときは、その手が優先です。最奥まで届くと成約駒になり、後ろにも動けます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="draughtsBoard" width="720" height="720" aria-label="提案ドラフツのゲーム盤"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>手番</span>
+              <strong id="turnText">あなた</strong>
+            </div>
+            <div class="score-row" aria-label="piece counts">
+              <div class="score-chip">
+                <span>あなたの駒</span>
+                <strong id="playerPiecesText">6</strong>
+              </div>
+              <div class="score-chip">
+                <span>相手の駒</span>
+                <strong id="aiPiecesText">6</strong>
+              </div>
+            </div>
+            <div class="score-row" aria-label="score board">
+              <div class="score-chip">
+                <span>あなたの勝ち</span>
+                <strong id="playerWinsText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>相手の勝ち</span>
+                <strong id="aiWinsText">0</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">対局開始</button>
+              <button id="resetBtn" class="button ghost" type="button">盤面リセット</button>
+            </div>
+            <p class="game-note">操作: 駒を選んで移動先をクリック / タップ。Rでリセット、Fでフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>飛び越えがある局面では、その駒から見た次の着地点まで先に確認すると迷いにくいです。</li>
+          <li>中央寄りの駒を残すと、左右どちらにも受けやすくなります。</li>
+          <li>成約駒になると後ろへも戻れるので、1枚でも盤面をかなり押し返せます。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは提案と返信の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは、提案を出して返信を受ける流れを軽く見立てた娯楽用コンテンツです。契約、法務、税務、許認可、行政提出の判断や案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("draughtsBoard");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const turnText = document.getElementById("turnText");
+        const playerPiecesText = document.getElementById("playerPiecesText");
+        const aiPiecesText = document.getElementById("aiPiecesText");
+        const playerWinsText = document.getElementById("playerWinsText");
+        const aiWinsText = document.getElementById("aiWinsText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const SIZE = 6;
+        const CELL = canvas.width / SIZE;
+        const COLORS = {
+          light: "#f8fafc",
+          dark: "#cbd5e1",
+          player: "#2563eb",
+          ai: "#f97316",
+          king: "#0f172a",
+          hint: "rgba(37, 99, 235, 0.16)",
+          captureHint: "rgba(249, 115, 22, 0.22)",
+          select: "#16a34a",
+        };
+
+        const state = {
+          board: [],
+          mode: "ready",
+          current: "human",
+          selected: -1,
+          legalMoves: [],
+          winner: null,
+          message: "開始待ち",
+          moveCount: 0,
+          stats: {
+            human: 0,
+            ai: 0,
+          },
+        };
+
+        function indexToPoint(index) {
+          return {
+            row: Math.floor(index / SIZE),
+            col: index % SIZE,
+          };
+        }
+
+        function pointToIndex(row, col) {
+          return row * SIZE + col;
+        }
+
+        function inBounds(row, col) {
+          return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
+        }
+
+        function isDarkSquare(row, col) {
+          return (row + col) % 2 === 1;
+        }
+
+        function makePiece(side, king = false) {
+          return { side, king };
+        }
+
+        function createInitialBoard() {
+          const board = Array(SIZE * SIZE).fill(null);
+          for (let row = 0; row < 2; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              if (isDarkSquare(row, col)) {
+                board[pointToIndex(row, col)] = makePiece("ai");
+              }
+            }
+          }
+          for (let row = SIZE - 2; row < SIZE; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              if (isDarkSquare(row, col)) {
+                board[pointToIndex(row, col)] = makePiece("human");
+              }
+            }
+          }
+          return board;
+        }
+
+        function getDirections(piece) {
+          if (piece.king) {
+            return [
+              [-1, -1],
+              [-1, 1],
+              [1, -1],
+              [1, 1],
+            ];
+          }
+          return piece.side === "human"
+            ? [
+                [-1, -1],
+                [-1, 1],
+              ]
+            : [
+                [1, -1],
+                [1, 1],
+              ];
+        }
+
+        function getMovesFor(index, board = state.board, side = null) {
+          const piece = board[index];
+          if (!piece) return [];
+          if (side && piece.side !== side) return [];
+          const { row, col } = indexToPoint(index);
+          const moves = [];
+
+          for (const [dy, dx] of getDirections(piece)) {
+            const stepRow = row + dy;
+            const stepCol = col + dx;
+            if (!inBounds(stepRow, stepCol)) continue;
+            const stepIndex = pointToIndex(stepRow, stepCol);
+            const occupant = board[stepIndex];
+
+            if (!occupant && isDarkSquare(stepRow, stepCol)) {
+              moves.push({
+                from: index,
+                to: stepIndex,
+                capture: null,
+                promote: piece.side === "human" ? stepRow === 0 : stepRow === SIZE - 1,
+              });
+              continue;
+            }
+
+            if (!occupant || occupant.side === piece.side) continue;
+
+            const jumpRow = row + dy * 2;
+            const jumpCol = col + dx * 2;
+            if (!inBounds(jumpRow, jumpCol) || !isDarkSquare(jumpRow, jumpCol)) continue;
+            const jumpIndex = pointToIndex(jumpRow, jumpCol);
+            if (board[jumpIndex]) continue;
+            moves.push({
+              from: index,
+              to: jumpIndex,
+              capture: stepIndex,
+              promote: piece.side === "human" ? jumpRow === 0 : jumpRow === SIZE - 1,
+            });
+          }
+
+          return moves;
+        }
+
+        function getAllMoves(side, board = state.board) {
+          const moves = [];
+          for (let index = 0; index < board.length; index += 1) {
+            const piece = board[index];
+            if (!piece || piece.side !== side) continue;
+            moves.push(...getMovesFor(index, board, side));
+          }
+          const captures = moves.filter((move) => move.capture !== null);
+          return captures.length ? captures : moves;
+        }
+
+        function getFilteredMoves(index, side = state.current, board = state.board) {
+          const allMoves = getAllMoves(side, board);
+          return allMoves.filter((move) => move.from === index);
+        }
+
+        function applyMove(move, board = state.board) {
+          const next = board.map((piece) => (piece ? { ...piece } : null));
+          const piece = next[move.from];
+          next[move.from] = null;
+          if (move.capture !== null) {
+            next[move.capture] = null;
+          }
+          next[move.to] = piece;
+          if (piece && move.promote) {
+            piece.king = true;
+          }
+          return next;
+        }
+
+        function countPieces(side, board = state.board) {
+          return board.filter((piece) => piece && piece.side === side).length;
+        }
+
+        function setMessage(text) {
+          state.message = text;
+          statusText.textContent = text;
+        }
+
+        function updateHud() {
+          turnText.textContent = state.current === "human" ? "あなた" : "相手";
+          playerPiecesText.textContent = String(countPieces("human"));
+          aiPiecesText.textContent = String(countPieces("ai"));
+          playerWinsText.textContent = String(state.stats.human);
+          aiWinsText.textContent = String(state.stats.ai);
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          }
+        }
+
+        function finishGame(winner, reason) {
+          state.mode = "finished";
+          state.winner = winner;
+          state.selected = -1;
+          state.legalMoves = [];
+          if (winner === "human") {
+            state.stats.human += 1;
+            setMessage(`あなたの勝ち: ${reason}`);
+          } else if (winner === "ai") {
+            state.stats.ai += 1;
+            setMessage(`相手の勝ち: ${reason}`);
+          } else {
+            setMessage(reason);
+          }
+          updateHud();
+          render();
+        }
+
+        function checkGameOver(sideJustMoved) {
+          const opponent = sideJustMoved === "human" ? "ai" : "human";
+          const opponentCount = countPieces(opponent);
+          if (opponentCount === 0) {
+            finishGame(sideJustMoved, "相手の駒がなくなりました");
+            return true;
+          }
+          const opponentMoves = getAllMoves(opponent);
+          if (opponentMoves.length === 0) {
+            finishGame(sideJustMoved, "相手が動けません");
+            return true;
+          }
+          if (state.moveCount >= 120) {
+            finishGame(null, "引き分け: 長考局面になったため終了");
+            return true;
+          }
+          return false;
+        }
+
+        function startGame() {
+          state.board = createInitialBoard();
+          state.mode = "playing";
+          state.current = "human";
+          state.selected = -1;
+          state.legalMoves = [];
+          state.winner = null;
+          state.moveCount = 0;
+          setMessage("あなたの手番");
+          updateHud();
+          render();
+        }
+
+        function resetGame() {
+          state.board = createInitialBoard();
+          state.mode = "ready";
+          state.current = "human";
+          state.selected = -1;
+          state.legalMoves = [];
+          state.winner = null;
+          state.moveCount = 0;
+          setMessage("開始待ち");
+          updateHud();
+          render();
+        }
+
+        function continueOrPassTurn(move, side) {
+          state.board = applyMove(move);
+          state.moveCount += 1;
+          const movedPiece = state.board[move.to];
+
+          if (move.capture !== null) {
+            const followMoves = getMovesFor(move.to, state.board, side).filter((candidate) => candidate.capture !== null);
+            if (followMoves.length) {
+              state.selected = move.to;
+              state.legalMoves = followMoves;
+              state.current = side;
+              setMessage(side === "human" ? "続けて取りに行けます" : "相手が連続で取りに来ます");
+              updateHud();
+              render();
+              return true;
+            }
+          }
+
+          state.selected = -1;
+          state.legalMoves = [];
+          state.current = side === "human" ? "ai" : "human";
+          setMessage(state.current === "human" ? "あなたの手番" : "相手が考えています");
+          updateHud();
+          render();
+          return movedPiece;
+        }
+
+        function scoreMove(move) {
+          const { row, col } = indexToPoint(move.to);
+          let score = 0;
+          if (move.capture !== null) score += 10;
+          if (move.promote) score += 8;
+          score += 3 - Math.abs(2.5 - col);
+          score += row;
+          return score;
+        }
+
+        function chooseAiMove(moves) {
+          return [...moves].sort((a, b) => scoreMove(b) - scoreMove(a))[0] || null;
+        }
+
+        function runAiTurn() {
+          if (state.mode !== "playing" || state.current !== "ai") return;
+          let moves = state.selected >= 0 && state.legalMoves.length ? state.legalMoves : getAllMoves("ai");
+          if (!moves.length) {
+            finishGame("human", "相手が動けません");
+            return;
+          }
+
+          while (state.mode === "playing" && state.current === "ai") {
+            const move = chooseAiMove(moves);
+            if (!move) break;
+            const chained = continueOrPassTurn(move, "ai");
+            if (state.mode !== "playing") return;
+            if (checkGameOver("ai")) return;
+            if (state.current !== "ai") break;
+            moves = state.legalMoves;
+            if (!chained) break;
+          }
+
+          if (state.mode === "playing" && state.current === "human") {
+            setMessage("あなたの手番");
+            updateHud();
+            render();
+          }
+        }
+
+        function handleHumanMove(move) {
+          continueOrPassTurn(move, "human");
+          if (checkGameOver("human")) return;
+          if (state.current === "ai") {
+            runAiTurn();
+          }
+        }
+
+        function selectIndex(index) {
+          if (state.mode !== "playing" || state.current !== "human") return false;
+          const piece = state.board[index];
+
+          if (piece && piece.side === "human") {
+            const moves = getFilteredMoves(index, "human");
+            if (!moves.length) return false;
+            state.selected = index;
+            state.legalMoves = moves;
+            setMessage(moves.some((move) => move.capture !== null) ? "取り手あり: 移動先を選んでください" : "移動先を選んでください");
+            updateHud();
+            render();
+            return true;
+          }
+
+          if (state.selected >= 0) {
+            const move = state.legalMoves.find((candidate) => candidate.to === index);
+            if (move) {
+              handleHumanMove(move);
+              return true;
+            }
+          }
+
+          return false;
+        }
+
+        function drawBoard() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let row = 0; row < SIZE; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              ctx.fillStyle = isDarkSquare(row, col) ? COLORS.dark : COLORS.light;
+              ctx.fillRect(col * CELL, row * CELL, CELL, CELL);
+            }
+          }
+
+          if (state.selected >= 0) {
+            const { row, col } = indexToPoint(state.selected);
+            ctx.strokeStyle = COLORS.select;
+            ctx.lineWidth = 8;
+            ctx.strokeRect(col * CELL + 6, row * CELL + 6, CELL - 12, CELL - 12);
+          }
+
+          for (const move of state.legalMoves) {
+            const { row, col } = indexToPoint(move.to);
+            ctx.fillStyle = move.capture !== null ? COLORS.captureHint : COLORS.hint;
+            ctx.beginPath();
+            ctx.arc(col * CELL + CELL / 2, row * CELL + CELL / 2, CELL * 0.18, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          for (let index = 0; index < state.board.length; index += 1) {
+            const piece = state.board[index];
+            if (!piece) continue;
+            const { row, col } = indexToPoint(index);
+            const x = col * CELL + CELL / 2;
+            const y = row * CELL + CELL / 2;
+
+            ctx.fillStyle = piece.side === "human" ? COLORS.player : COLORS.ai;
+            ctx.beginPath();
+            ctx.arc(x, y, CELL * 0.34, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(x, y, CELL * 0.28, 0, Math.PI * 2);
+            ctx.stroke();
+
+            if (piece.king) {
+              ctx.fillStyle = COLORS.king;
+              ctx.font = "bold 38px sans-serif";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText("成", x, y + 2);
+            }
+          }
+        }
+
+        function render() {
+          drawBoard();
+        }
+
+        function clickFromCanvasEvent(event) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (event.clientX - rect.left) * scaleX;
+          const y = (event.clientY - rect.top) * scaleY;
+          const col = Math.max(0, Math.min(SIZE - 1, Math.floor(x / CELL)));
+          const row = Math.max(0, Math.min(SIZE - 1, Math.floor(y / CELL)));
+          return selectIndex(pointToIndex(row, col));
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+            current: state.current,
+            winner: state.winner,
+            selected: state.selected,
+            playerPieces: countPieces("human"),
+            aiPieces: countPieces("ai"),
+            legalMoves: state.legalMoves.map((move) => ({
+              from: move.from,
+              to: move.to,
+              capture: move.capture,
+            })),
+            board: state.board.map((piece) =>
+              piece ? `${piece.side[0]}${piece.king ? "k" : "n"}` : "__"
+            ),
+          });
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+        canvas.addEventListener("click", clickFromCanvasEvent);
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            if (!document.fullscreenElement) {
+              canvas.requestFullscreen?.();
+            } else {
+              document.exitFullscreen?.();
+            }
+          }
+        });
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => renderGameToText();
+        window.startGame = () => {
+          startGame();
+          return renderGameToText();
+        };
+        window.resetGame = () => {
+          resetGame();
+          return renderGameToText();
+        };
+        window.clickCell = (row, col) => {
+          if (!inBounds(row, col)) return renderGameToText();
+          selectIndex(pointToIndex(row, col));
+          return renderGameToText();
+        };
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

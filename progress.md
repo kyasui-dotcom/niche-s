@@ -493,3 +493,13 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `0e74fbb` to GitHub branch `backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-peg-solitaire.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-peg-solitaire.html`.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, and peg-solitaire concepts on the next run.
+
+## 2026-06-04
+
+- Added `business-procedures/proposal-draughts.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "提案ドラフツ" - a minimal 6x6 draughts/checkers-style game where entrepreneurs move proposal pieces against reply pieces.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Replaced the startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Verified local HTTP 200 for `/business-procedures/proposal-draughts.html`.
+- Verified in the in-app browser: the page loads, Start works, a valid player move is accepted, the AI replies, the turn returns to the player, and no console warnings or errors were captured.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, and draughts/checkers concepts on the next run.
