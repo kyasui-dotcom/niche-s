@@ -1,5 +1,16 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-05
+
+- Added `business-procedures/morning-shut-the-box.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の数字たたみ" - a minimal Shut the Box style game where entrepreneurs close number tiles that match the dice total.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Replaced the startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `toggleTile`, `confirmSelection`, and `rollAgain` hooks for automated validation.
+- Fixed a keyboard-default bug so `Enter`, `R`, number keys, and `F` do not trigger focused-button default actions instead of game actions.
+- Verified local HTTP 200 for `/business-procedures/morning-shut-the-box.html`.
+- Verified with headless Playwright that start, tile selection, confirm, and reroll update state as expected with no console or page errors.
+
 ## 2026-06-03
 
 - Added `business-procedures/morning-label-sudoku.html` and mirrored it under `public/business-procedures/`.

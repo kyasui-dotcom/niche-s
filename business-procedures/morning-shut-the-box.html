@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の数字たたみ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="サイコロ合計に合わせて数字タイルをたたんでいく、起業家向けの小さな Shut the Box 風ゲーム。扱うのは返信、見積、共有などの軽い業務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の数字たたみ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="サイコロの合計に合わせて数字をたたむ、小さな Shut the Box 風ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-shut-the-box.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-shut-the-box.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #boxCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .tile-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .dice-row,
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .game-controls,
+      .tile-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .tile-buttons .button {
+        flex: 1 1 calc(33.333% - 10px);
+        min-width: 72px;
+      }
+      .button.is-selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+      }
+      .button.is-closed {
+        background: #dbeafe;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の数字たたみ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の数字たたみ</h1>
+        <p class="lede">
+          サイコロ合計に合わせて数字タイルをたたみ、9枚すべて閉じられるか試す小さな Shut the Box 風ゲームです。
+          題材は返信、見積、共有、確認といった軽い業務ラベルだけで、契約、法務、税務、許認可、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-label-sudoku.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>合計に合う数字だけを閉じる</h2>
+          <p class="section-copy">
+            出目の合計と同じになるように、開いている数字を1枚以上選んで確定します。選び方がなくなったら終了です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="boxCanvas" width="720" height="450" aria-label="朝の数字たたみの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="dice-row">
+              <div class="score-chip">
+                <span>左の出目</span>
+                <strong id="dieLeftText">-</strong>
+              </div>
+              <div class="score-chip">
+                <span>右の出目</span>
+                <strong id="dieRightText">-</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>目標</span>
+                <strong id="targetText">-</strong>
+              </div>
+              <div class="score-chip">
+                <span>選択合計</span>
+                <strong id="sumText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>残り合計</span>
+                <strong id="remainingText">45</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="confirmBtn" class="button ghost" type="button">この組み合わせで閉じる</button>
+              <button id="rollBtn" class="button ghost" type="button">振り直す</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <div class="tile-card">
+              <div class="tile-buttons" id="tileButtons"></div>
+            </div>
+            <p class="game-note">操作: 1-9で数字選択 / Enterで確定 / Rで振り直し / Nで開始 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>大きい数字を早めに閉じると、後半の組み合わせが詰まりにくいです。</li>
+          <li>1枚で合うときも、複数枚で残りを整える選択肢があります。</li>
+          <li>軽い気分転換用なので、実務判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは数字の組み合わせだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const TILE_LABELS = ["返信", "見積", "共有", "確認", "段取り", "下書き", "整理", "再訪", "送付"];
+        const FIXED_ROLLS = [
+          [4, 5],
+          [3, 4],
+          [2, 6],
+          [1, 2],
+          [3, 3],
+          [2, 2],
+          [1, 1],
+        ];
+
+        const canvas = document.getElementById("boxCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const dieLeftText = document.getElementById("dieLeftText");
+        const dieRightText = document.getElementById("dieRightText");
+        const targetText = document.getElementById("targetText");
+        const sumText = document.getElementById("sumText");
+        const remainingText = document.getElementById("remainingText");
+        const startBtn = document.getElementById("startBtn");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const rollBtn = document.getElementById("rollBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const tileButtonsRoot = document.getElementById("tileButtons");
+
+        const state = {
+          mode: "ready",
+          status: "開始待ち",
+          openTiles: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+          selectedTiles: [],
+          currentRoll: null,
+          rollIndex: 0,
+          canRoll: false,
+          lastClosed: [],
+        };
+
+        const tileButtons = Array.from({ length: 9 }, (_, index) => {
+          const value = index + 1;
+          const button = document.createElement("button");
+          button.className = "button ghost";
+          button.type = "button";
+          button.dataset.value = String(value);
+          button.textContent = String(value);
+          button.addEventListener("click", () => toggleTile(value));
+          tileButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function getSelectedSum() {
+          return state.selectedTiles.reduce((total, value) => total + value, 0);
+        }
+
+        function getRemainingTotal() {
+          return state.openTiles.reduce((total, value) => total + value, 0);
+        }
+
+        function getTarget() {
+          return state.currentRoll ? state.currentRoll[0] + state.currentRoll[1] : null;
+        }
+
+        function hasCombination(target, available, start = 0) {
+          if (target === 0) return true;
+          for (let index = start; index < available.length; index += 1) {
+            const value = available[index];
+            if (value > target) continue;
+            if (hasCombination(target - value, available, index + 1)) return true;
+          }
+          return false;
+        }
+
+        function setStatus(message) {
+          state.status = message;
+          updateHud();
+        }
+
+        function updateHud() {
+          statusText.textContent = state.status;
+          dieLeftText.textContent = state.currentRoll ? String(state.currentRoll[0]) : "-";
+          dieRightText.textContent = state.currentRoll ? String(state.currentRoll[1]) : "-";
+          targetText.textContent = state.currentRoll ? String(getTarget()) : "-";
+          sumText.textContent = String(getSelectedSum());
+          remainingText.textContent = String(getRemainingTotal());
+
+          const playing = state.mode === "playing";
+          confirmBtn.disabled = !playing || !state.currentRoll || getSelectedSum() !== getTarget();
+          rollBtn.disabled = !(playing && state.canRoll);
+
+          tileButtons.forEach((button) => {
+            const value = Number(button.dataset.value);
+            const isOpen = state.openTiles.includes(value);
+            const isSelected = state.selectedTiles.includes(value);
+            button.disabled = !playing || !isOpen || state.canRoll;
+            button.classList.toggle("is-selected", isSelected);
+            button.classList.toggle("is-closed", !isOpen);
+          });
+        }
+
+        function nextRoll() {
+          const roll = FIXED_ROLLS[state.rollIndex % FIXED_ROLLS.length];
+          state.rollIndex += 1;
+          state.currentRoll = [...roll];
+          state.selectedTiles = [];
+          state.canRoll = false;
+
+          if (!hasCombination(getTarget(), [...state.openTiles].sort((a, b) => a - b))) {
+            state.mode = "ended";
+            setStatus("組み合わせがなくなりました");
+          } else {
+            setStatus("合計に合う数字を選んでください");
+          }
+          render();
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.status = "ゲーム開始";
+          state.openTiles = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+          state.selectedTiles = [];
+          state.currentRoll = null;
+          state.rollIndex = 0;
+          state.canRoll = false;
+          state.lastClosed = [];
+          nextRoll();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.status = "開始待ち";
+          state.openTiles = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+          state.selectedTiles = [];
+          state.currentRoll = null;
+          state.rollIndex = 0;
+          state.canRoll = false;
+          state.lastClosed = [];
+          updateHud();
+          render();
+        }
+
+        function toggleTile(value) {
+          if (state.mode !== "playing" || state.canRoll || !state.openTiles.includes(value)) return false;
+          if (state.selectedTiles.includes(value)) {
+            state.selectedTiles = state.selectedTiles.filter((entry) => entry !== value);
+          } else {
+            state.selectedTiles = [...state.selectedTiles, value].sort((a, b) => a - b);
+          }
+          const currentSum = getSelectedSum();
+          const target = getTarget();
+          if (currentSum > target) {
+            setStatus("合計が大きすぎます");
+          } else if (currentSum === target) {
+            setStatus("確定できます");
+          } else {
+            setStatus("まだ合計が足りません");
+          }
+          render();
+          return true;
+        }
+
+        function confirmSelection() {
+          if (state.mode !== "playing" || !state.currentRoll) return false;
+          if (getSelectedSum() !== getTarget()) {
+            setStatus("出目の合計と一致させてください");
+            render();
+            return false;
+          }
+          state.lastClosed = [...state.selectedTiles];
+          state.openTiles = state.openTiles.filter((value) => !state.selectedTiles.includes(value));
+          state.selectedTiles = [];
+
+          if (state.openTiles.length === 0) {
+            state.mode = "cleared";
+            state.currentRoll = null;
+            state.canRoll = false;
+            setStatus("すべて閉じました");
+            render();
+            return true;
+          }
+
+          state.canRoll = true;
+          setStatus("振り直して続けます");
+          render();
+          return true;
+        }
+
+        function rollAgain() {
+          if (state.mode !== "playing" || !state.canRoll) return false;
+          nextRoll();
+          return true;
+        }
+
+        function drawDie(x, y, value, color) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(-48, -48, 96, 96, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          const pipMap = {
+            1: [[0, 0]],
+            2: [[-18, -18], [18, 18]],
+            3: [[-18, -18], [0, 0], [18, 18]],
+            4: [[-18, -18], [18, -18], [-18, 18], [18, 18]],
+            5: [[-18, -18], [18, -18], [0, 0], [-18, 18], [18, 18]],
+            6: [[-18, -22], [18, -22], [-18, 0], [18, 0], [-18, 22], [18, 22]],
+          };
+          ctx.fillStyle = color;
+          (pipMap[value] || []).forEach(([px, py]) => {
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          ctx.restore();
+        }
+
+        function drawTile(x, y, value, isOpen, isSelected, label) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = isOpen ? (isSelected ? "#dbeafe" : "#ffffff") : "#cbd5e1";
+          ctx.strokeStyle = isOpen ? (isSelected ? "#2563eb" : "#94a3b8") : "#94a3b8";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(-48, -56, 96, 112, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = isOpen ? "#0f172a" : "#475569";
+          ctx.textAlign = "center";
+          ctx.font = "700 34px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(String(value), 0, -8);
+          ctx.font = "600 16px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(label, 0, 26);
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#e0f2fe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "left";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("朝の数字たたみ", 28, 42);
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("出目の合計に合わせて数字を閉じる", 28, 72);
+
+          if (state.currentRoll) {
+            drawDie(170, 148, state.currentRoll[0], "#2563eb");
+            drawDie(290, 148, state.currentRoll[1], "#f97316");
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 24px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText(`目標 ${getTarget()}`, 380, 156);
+          } else {
+            ctx.fillStyle = "#64748b";
+            ctx.font = "600 20px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText("開始するとサイコロが出ます", 150, 156);
+          }
+
+          const startX = 98;
+          const gap = 66;
+          state.openTiles.concat(state.lastClosed.filter((value) => !state.openTiles.includes(value)));
+          for (let index = 0; index < 9; index += 1) {
+            const value = index + 1;
+            drawTile(
+              startX + gap * index,
+              286,
+              value,
+              state.openTiles.includes(value),
+              state.selectedTiles.includes(value),
+              TILE_LABELS[index]
+            );
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "center";
+          ctx.font = "700 26px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.status, canvas.width / 2, 414);
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        startBtn.addEventListener("click", startGame);
+        confirmBtn.addEventListener("click", confirmSelection);
+        rollBtn.addEventListener("click", rollAgain);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key >= "1" && event.key <= "9") {
+            event.preventDefault();
+            toggleTile(Number(event.key));
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else if (state.canRoll) {
+              rollAgain();
+            } else {
+              confirmSelection();
+            }
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              resetGame();
+            } else if (state.canRoll) {
+              rollAgain();
+            } else {
+              resetGame();
+            }
+          }
+          if (event.key === "n" || event.key === "N") {
+            event.preventDefault();
+            startGame();
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.toggleTile = toggleTile;
+        window.confirmSelection = confirmSelection;
+        window.rollAgain = rollAgain;
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+            status: state.status,
+            currentRoll: state.currentRoll,
+            target: getTarget(),
+            openTiles: state.openTiles,
+            selectedTiles: state.selectedTiles,
+            selectedSum: getSelectedSum(),
+            canRoll: state.canRoll,
+            remainingTotal: getRemainingTotal(),
+            availableActions:
+              state.mode === "ready"
+                ? ["start"]
+                : state.mode === "cleared" || state.mode === "ended"
+                  ? ["reset"]
+                  : state.canRoll
+                    ? ["roll"]
+                    : ["toggle-1-9", "confirm"],
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+          });
+        }
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
