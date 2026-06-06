@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の役づくりダイス | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="5つのサイコロを2回まで振り直して役をつくる、起業家向けの小さなダイスポーカー風ゲーム。扱うのは返信、見積、共有などの軽い業務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の役づくりダイス | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="5つのサイコロを2回まで振り直し、朝の軽い業務ラベルで役をつくる小さなダイスポーカー風ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-dice-five.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-dice-five.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #diceCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .hold-card,
+      .role-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .game-controls,
+      .hold-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .hold-buttons .button {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 120px;
+      }
+      .button.is-held {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+        background: #dbeafe;
+      }
+      .role-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の役づくりダイス</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の役づくりダイス</h1>
+        <p class="lede">
+          5つのサイコロを2回まで振り直し、朝の軽い業務ラベルで役をそろえる小さなダイスポーカー風ゲームです。
+          題材は返信、見積、共有、確認といった軽い仕事の比喩だけで、契約、法務、税務、許認可、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-shut-the-box.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>保持したい目を残して役をつくる</h2>
+          <p class="section-copy">
+            まず振って、残したいサイコロを保持し、2回まで振り直せます。3ラウンドで合計点を伸ばしてください。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="diceCanvas" width="720" height="450" aria-label="朝の役づくりダイスの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>ラウンド</span>
+                <strong id="roundText">0 / 3</strong>
+              </div>
+              <div class="score-chip">
+                <span>振り直し</span>
+                <strong id="rerollsText">2</strong>
+              </div>
+              <div class="score-chip">
+                <span>合計点</span>
+                <strong id="totalText">0</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>今回の役</span>
+                <strong id="roleText">-</strong>
+              </div>
+              <div class="score-chip">
+                <span>今回の点</span>
+                <strong id="scoreText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>保持数</span>
+                <strong id="heldText">0</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="rollBtn" class="button ghost" type="button">振る</button>
+              <button id="bankBtn" class="button ghost" type="button">この役で確定</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <div class="hold-card">
+              <div class="hold-buttons" id="holdButtons"></div>
+            </div>
+            <div class="role-card">
+              <p class="section-label">役一覧</p>
+              <ol class="role-list">
+                <li>5種類そろう: 朝の全部まわし 25点</li>
+                <li>4つ同じ: 集中ブロック 18点</li>
+                <li>3つ同じ+2つ同じ: 返信と見積セット 16点</li>
+                <li>連番5つ: 朝の流れ完成 20点</li>
+                <li>3つ同じ: ひとまとまり 12点</li>
+                <li>2組ペア: 2本立て 10点</li>
+                <li>1組ペア: 小さく整う 6点</li>
+                <li>それ以外: 合計値そのまま</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: 1-5で保持切替 / Enterで振る or 確定 / Bで確定 / Rで再開 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>最初の一投で2組以上見えたら、片方に寄せると役をまとめやすいです。</li>
+          <li>連番狙いなら中央の目を多めに残すと形が崩れにくいです。</li>
+          <li>これは気分転換用で、実務判断や専門助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い業務ラベルの役づくりだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const DIE_LABELS = ["返信", "見積", "共有", "確認", "再訪", "送付"];
+        const FIXED_ROUNDS = [
+          [
+            [1, 1, 3, 4, 6],
+            [1, 1, 1, 4, 6],
+            [1, 1, 1, 2, 6],
+          ],
+          [
+            [2, 3, 3, 5, 5],
+            [2, 3, 4, 5, 5],
+            [2, 3, 4, 5, 6],
+          ],
+          [
+            [4, 4, 2, 6, 1],
+            [4, 4, 4, 6, 1],
+            [4, 4, 4, 4, 1],
+          ],
+        ];
+
+        const canvas = document.getElementById("diceCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const roundText = document.getElementById("roundText");
+        const rerollsText = document.getElementById("rerollsText");
+        const totalText = document.getElementById("totalText");
+        const roleText = document.getElementById("roleText");
+        const scoreText = document.getElementById("scoreText");
+        const heldText = document.getElementById("heldText");
+        const startBtn = document.getElementById("startBtn");
+        const rollBtn = document.getElementById("rollBtn");
+        const bankBtn = document.getElementById("bankBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const holdButtonsRoot = document.getElementById("holdButtons");
+
+        const state = {
+          mode: "ready",
+          round: 0,
+          rollIndex: -1,
+          rerollsLeft: 2,
+          dice: [1, 1, 1, 1, 1],
+          held: [false, false, false, false, false],
+          currentRole: "-",
+          currentScore: 0,
+          totalScore: 0,
+          status: "開始待ち",
+          rounds: FIXED_ROUNDS,
+        };
+
+        const holdButtons = Array.from({ length: 5 }, (_, index) => {
+          const button = document.createElement("button");
+          button.className = "button ghost";
+          button.type = "button";
+          button.dataset.index = String(index);
+          button.textContent = `保持 ${index + 1}`;
+          button.addEventListener("click", () => toggleHold(index));
+          holdButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function getCounts(values) {
+          const counts = new Map();
+          values.forEach((value) => {
+            counts.set(value, (counts.get(value) || 0) + 1);
+          });
+          return [...counts.values()].sort((a, b) => b - a);
+        }
+
+        function isStraight(values) {
+          const sorted = [...values].sort((a, b) => a - b);
+          return sorted.every((value, index) => value === sorted[0] + index);
+        }
+
+        function evaluateDice(values) {
+          const counts = getCounts(values);
+          const sum = values.reduce((total, value) => total + value, 0);
+          if (isStraight(values)) {
+            return { role: "朝の流れ完成", score: 20 };
+          }
+          if (counts.length === 5) {
+            return { role: "朝の全部まわし", score: 25 };
+          }
+          if (counts[0] === 4) {
+            return { role: "集中ブロック", score: 18 };
+          }
+          if (counts[0] === 3 && counts[1] === 2) {
+            return { role: "返信と見積セット", score: 16 };
+          }
+          if (counts[0] === 3) {
+            return { role: "ひとまとまり", score: 12 };
+          }
+          if (counts[0] === 2 && counts[1] === 2) {
+            return { role: "2本立て", score: 10 };
+          }
+          if (counts[0] === 2) {
+            return { role: "小さく整う", score: 6 };
+          }
+          return { role: "素点", score: sum };
+        }
+
+        function getCurrentRoundRolls() {
+          return state.rounds[state.round - 1] || [];
+        }
+
+        function updateScorePreview() {
+          const result = evaluateDice(state.dice);
+          state.currentRole = result.role;
+          state.currentScore = result.score;
+        }
+
+        function setStatus(message) {
+          state.status = message;
+          updateHud();
+        }
+
+        function updateHud() {
+          statusText.textContent = state.status;
+          roundText.textContent = `${state.round} / 3`;
+          rerollsText.textContent = String(state.rerollsLeft);
+          totalText.textContent = String(state.totalScore);
+          roleText.textContent = state.currentRole;
+          scoreText.textContent = String(state.currentScore);
+          heldText.textContent = String(state.held.filter(Boolean).length);
+
+          const playing = state.mode === "playing";
+          rollBtn.disabled = !playing || state.rollIndex >= 2;
+          bankBtn.disabled = !playing || state.rollIndex < 0;
+
+          holdButtons.forEach((button, index) => {
+            button.disabled = !playing || state.rollIndex < 0;
+            button.classList.toggle("is-held", state.held[index]);
+          });
+        }
+
+        function applyRoll(targetIndex) {
+          const roundRolls = getCurrentRoundRolls();
+          const nextDice = roundRolls[targetIndex] || roundRolls[roundRolls.length - 1] || state.dice;
+          state.dice = state.dice.map((value, index) => (state.held[index] ? value : nextDice[index]));
+          state.rollIndex = targetIndex;
+          state.rerollsLeft = Math.max(0, 2 - targetIndex);
+          updateScorePreview();
+          setStatus(targetIndex >= 2 ? "この役で確定してください" : "保持する目を選んで続けられます");
+          render();
+        }
+
+        function startRound(roundNumber) {
+          state.round = roundNumber;
+          state.rollIndex = -1;
+          state.rerollsLeft = 2;
+          state.held = [false, false, false, false, false];
+          state.dice = [1, 1, 1, 1, 1];
+          state.currentRole = "-";
+          state.currentScore = 0;
+          setStatus(`ラウンド ${roundNumber} を始めてください`);
+          render();
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.totalScore = 0;
+          startRound(1);
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.round = 0;
+          state.rollIndex = -1;
+          state.rerollsLeft = 2;
+          state.dice = [1, 1, 1, 1, 1];
+          state.held = [false, false, false, false, false];
+          state.currentRole = "-";
+          state.currentScore = 0;
+          state.totalScore = 0;
+          state.status = "開始待ち";
+          updateHud();
+          render();
+        }
+
+        function toggleHold(index) {
+          if (state.mode !== "playing" || state.rollIndex < 0) return false;
+          state.held[index] = !state.held[index];
+          setStatus(state.held[index] ? `サイコロ ${index + 1} を保持しました` : `サイコロ ${index + 1} の保持を外しました`);
+          render();
+          return true;
+        }
+
+        function rollDice() {
+          if (state.mode !== "playing") return false;
+          const nextIndex = state.rollIndex + 1;
+          if (nextIndex > 2) return false;
+          applyRoll(nextIndex);
+          return true;
+        }
+
+        function bankScore() {
+          if (state.mode !== "playing" || state.rollIndex < 0) return false;
+          state.totalScore += state.currentScore;
+          if (state.round >= 3) {
+            state.mode = "ended";
+            setStatus(`3ラウンド終了 合計 ${state.totalScore} 点`);
+            render();
+            return true;
+          }
+          startRound(state.round + 1);
+          return true;
+        }
+
+        function drawDie(x, y, value, held, index) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = held ? "#dbeafe" : "#ffffff";
+          ctx.strokeStyle = held ? "#2563eb" : "#94a3b8";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(-48, -54, 96, 108, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          const pipMap = {
+            1: [[0, 0]],
+            2: [[-18, -18], [18, 18]],
+            3: [[-18, -18], [0, 0], [18, 18]],
+            4: [[-18, -18], [18, -18], [-18, 18], [18, 18]],
+            5: [[-18, -18], [18, -18], [0, 0], [-18, 18], [18, 18]],
+            6: [[-18, -22], [18, -22], [-18, 0], [18, 0], [-18, 22], [18, 22]],
+          };
+          ctx.fillStyle = "#0f172a";
+          (pipMap[value] || []).forEach(([px, py]) => {
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          ctx.textAlign = "center";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 14px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(`${index + 1}`, 0, -32);
+          ctx.font = "600 15px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(DIE_LABELS[value - 1], 0, 76);
+          if (held) {
+            ctx.fillStyle = "#2563eb";
+            ctx.font = "700 12px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText("KEEP", 0, -62);
+          }
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+          gradient.addColorStop(0, "#e0f2fe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "left";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("朝の役づくりダイス", 28, 42);
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("保持と振り直しで役を整える", 28, 72);
+
+          const startX = 110;
+          const gap = 120;
+          for (let index = 0; index < 5; index += 1) {
+            drawDie(startX + gap * index, 190, state.dice[index], state.held[index], index);
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "center";
+          ctx.font = "700 28px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.currentRole === "-" ? "開始して最初の一投へ" : `${state.currentRole} ${state.currentScore}点`, canvas.width / 2, 338);
+          ctx.fillStyle = "#475569";
+          ctx.font = "600 22px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.status, canvas.width / 2, 392);
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        startBtn.addEventListener("click", startGame);
+        rollBtn.addEventListener("click", rollDice);
+        bankBtn.addEventListener("click", bankScore);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key >= "1" && event.key <= "5") {
+            event.preventDefault();
+            toggleHold(Number(event.key) - 1);
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else if (state.mode === "playing" && state.rollIndex < 2) {
+              rollDice();
+            } else if (state.mode === "playing") {
+              bankScore();
+            }
+            return;
+          }
+          if (event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            bankScore();
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else {
+              resetGame();
+            }
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+            round: state.round,
+            rollIndex: state.rollIndex,
+            rerollsLeft: state.rerollsLeft,
+            dice: state.dice,
+            held: state.held,
+            currentRole: state.currentRole,
+            currentScore: state.currentScore,
+            totalScore: state.totalScore,
+            status: state.status,
+            availableActions:
+              state.mode === "ready"
+                ? ["start"]
+                : state.mode === "ended"
+                  ? ["reset"]
+                  : ["roll", "bank", "toggle-1-5"],
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+          });
+        }
+
+        window.startGame = () => {
+          startGame();
+          return renderGameToText();
+        };
+        window.resetGame = () => {
+          resetGame();
+          return renderGameToText();
+        };
+        window.rollDice = () => {
+          rollDice();
+          return renderGameToText();
+        };
+        window.bankScore = () => {
+          bankScore();
+          return renderGameToText();
+        };
+        window.toggleHold = (index) => {
+          toggleHold(index);
+          return renderGameToText();
+        };
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

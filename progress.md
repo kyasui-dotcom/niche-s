@@ -514,3 +514,18 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/proposal-draughts.html`.
 - Verified in the in-app browser: the page loads, Start works, a valid player move is accepted, the AI replies, the turn returns to the player, and no console warnings or errors were captured.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, and draughts/checkers concepts on the next run.
+
+## 2026-06-06
+
+- Added `business-procedures/morning-dice-five.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の役づくりダイス" - a minimal dice-poker style game where entrepreneurs hold and reroll lightweight work-label dice.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Replaced the startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Fixed the role-evaluation order so a straight is scored as `朝の流れ完成` instead of being absorbed by the distinct-values role.
+- Adjusted die-label placement so labels do not overlap pip dots on the canvas.
+- Verified local HTTP 200 for `/business-procedures/morning-dice-five.html`.
+- Verified with the shared Playwright client that the deterministic 3-round flow ends at `mode: "ended"` with `totalScore: 50` and no console/page errors.
+- Verified hold interactions with Playwright: holding dice 1 and 2 preserves them across reroll and updates the role from `小さく整う` to `ひとまとまり`.
+- Verified desktop and 390px mobile screenshots; the canvas, side panel, controls, tips, and boundary section remain legible.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-dice-five.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-dice-five.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, draughts/checkers, Shut the Box, and dice-poker concepts on the next run.
