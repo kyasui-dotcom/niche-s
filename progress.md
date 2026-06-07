@@ -1,5 +1,19 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-07
+
+- Added `business-procedures/morning-cup-shuffle.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の優先カップシャッフル" - a minimal shell-game style page where entrepreneurs track one lightweight priority card across 3 shuffled cups.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, labor, contract, permit, or administrative filing judgments.
+- Replaced the startup launch kit mini-game card in both copies, linked the new page from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `startShuffle`, `selectCup`, and `nextRound` hooks for automated validation.
+- Added left/right selection plus Enter-confirm so the game works with the shared Playwright client instead of requiring number-key-only input.
+- Verified local HTTP 200 for `/business-procedures/morning-cup-shuffle.html`.
+- Verified with the shared Playwright client that the deterministic 4-round flow ends at `mode: "ended"` with `score: 60`, `correct: 4`, and no console/page errors.
+- Verified the end-state screenshot; the board, labels, and result text remain legible after all 4 rounds.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-cup-shuffle.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-cup-shuffle.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, draughts/checkers, Shut the Box, dice-poker, and shell-game shuffle concepts on the next run.
+
 ## 2026-06-05
 
 - Added `business-procedures/morning-shut-the-box.html` and mirrored it under `public/business-procedures/`.

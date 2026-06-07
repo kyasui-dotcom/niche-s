@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の優先カップシャッフル | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="最優先カードの位置を3枚のカップで追いかける、起業家向けの小さなシャッフルゲーム。扱うのは返信、見積、共有などの軽い業務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の優先カップシャッフル | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="最優先カードの位置を追いかけるだけで遊べる、起業家向けの最小スコープな3枚シャッフルゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-cup-shuffle.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-cup-shuffle.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #shuffleCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .guide-card,
+      .pick-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .game-controls,
+      .pick-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .pick-buttons .button {
+        flex: 1 1 calc(33.333% - 10px);
+        min-width: 84px;
+      }
+      .guide-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の優先カップシャッフル</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の優先カップシャッフル</h1>
+        <p class="lede">
+          3枚のカップの下にある「最優先」カードを追いかけるだけの、小さなシャッフルゲームです。
+          題材は返信、見積、共有のような軽い業務ラベルだけで、法務、税務、労務、契約、許認可、行政手続きの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-dice-five.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>最優先カードの位置だけ覚える</h2>
+          <p class="section-copy">
+            ラウンド開始時に1枚だけ「最優先」が見えます。シャッフル後に、そのカードがどこへ動いたかを1-3で答えてください。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="shuffleCanvas" width="720" height="450" aria-label="朝の優先カップシャッフルの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>ラウンド</span>
+                <strong id="roundText">0 / 4</strong>
+              </div>
+              <div class="score-chip">
+                <span>正解数</span>
+                <strong id="correctText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>合計点</span>
+                <strong id="scoreText">0</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>目標ラベル</span>
+                <strong id="targetText">-</strong>
+              </div>
+              <div class="score-chip">
+                <span>現在の段階</span>
+                <strong id="phaseText">待機</strong>
+              </div>
+              <div class="score-chip">
+                <span>前回結果</span>
+                <strong id="resultText">-</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="shuffleBtn" class="button ghost" type="button">シャッフル開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次へ</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <div class="pick-card">
+              <div class="pick-buttons" id="pickButtons"></div>
+            </div>
+            <div class="guide-card">
+              <p class="section-label">ルール</p>
+              <ol class="guide-list">
+                <li>各ラウンドで「最優先」になるカードは1枚だけです。</li>
+                <li>シャッフル後は裏向きになるので、位置だけを追います。</li>
+                <li>4ラウンドの合計点で終わりです。正解すると各15点入ります。</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: Enterで開始/シャッフル/次へ / 1-3で選択 / Rで再開 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>中央に入ったカードはその後の入れ替わり先を追うと見失いにくいです。</li>
+          <li>毎回全部を見るより、「最優先」の1枚だけを追うと短く終わります。</li>
+          <li>これは気分転換用で、実務判断や専門助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い業務ラベルの並び替えだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、労務、契約、許認可、行政提出などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const CARD_LABELS = ["返信", "見積", "共有"];
+        const ROUNDS = [
+          { targetCard: 0, swaps: [[0, 1], [1, 2]] },
+          { targetCard: 2, swaps: [[0, 2], [0, 1], [1, 2]] },
+          { targetCard: 1, swaps: [[1, 2], [0, 1], [1, 2]] },
+          { targetCard: 0, swaps: [[0, 1], [0, 2], [1, 2], [0, 1]] },
+        ];
+
+        const canvas = document.getElementById("shuffleCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const roundText = document.getElementById("roundText");
+        const correctText = document.getElementById("correctText");
+        const scoreText = document.getElementById("scoreText");
+        const targetText = document.getElementById("targetText");
+        const phaseText = document.getElementById("phaseText");
+        const resultText = document.getElementById("resultText");
+        const startBtn = document.getElementById("startBtn");
+        const shuffleBtn = document.getElementById("shuffleBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const pickButtonsRoot = document.getElementById("pickButtons");
+
+        const state = {
+          mode: "ready",
+          round: 0,
+          score: 0,
+          correct: 0,
+          status: "開始待ち",
+          targetCard: 0,
+          order: [0, 1, 2],
+          reveal: true,
+          activeSlot: 0,
+          result: "-",
+          rounds: ROUNDS,
+        };
+
+        const pickButtons = Array.from({ length: 3 }, (_, index) => {
+          const button = document.createElement("button");
+          button.className = "button ghost";
+          button.type = "button";
+          button.textContent = `${index + 1} を選ぶ`;
+          button.addEventListener("click", () => selectCup(index));
+          pickButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function getPhaseLabel() {
+          if (state.mode === "ready") return "待機";
+          if (state.mode === "memorize") return "記憶";
+          if (state.mode === "guessing") return "選択";
+          if (state.mode === "resolved") return "結果";
+          if (state.mode === "ended") return "終了";
+          return "-";
+        }
+
+        function getTargetSlot() {
+          return state.order.findIndex((card) => card === state.targetCard);
+        }
+
+        function setStatus(message) {
+          state.status = message;
+          updateHud();
+        }
+
+        function updateHud() {
+          statusText.textContent = state.status;
+          roundText.textContent = `${state.round} / 4`;
+          correctText.textContent = String(state.correct);
+          scoreText.textContent = String(state.score);
+          targetText.textContent = state.mode === "ready" ? "-" : CARD_LABELS[state.targetCard];
+          phaseText.textContent = getPhaseLabel();
+          resultText.textContent = state.result;
+
+          startBtn.disabled = state.mode !== "ready";
+          shuffleBtn.disabled = state.mode !== "memorize";
+          nextBtn.disabled = state.mode !== "resolved";
+
+          const canPick = state.mode === "guessing";
+          pickButtons.forEach((button) => {
+            button.disabled = !canPick;
+          });
+        }
+
+        function applySwaps(order, swaps) {
+          const next = [...order];
+          swaps.forEach(([from, to]) => {
+            const temp = next[from];
+            next[from] = next[to];
+            next[to] = temp;
+          });
+          return next;
+        }
+
+        function startRound(roundNumber) {
+          const roundData = state.rounds[roundNumber - 1];
+          state.round = roundNumber;
+          state.targetCard = roundData.targetCard;
+          state.order = [0, 1, 2];
+          state.reveal = true;
+          state.activeSlot = 0;
+          state.result = "-";
+          state.mode = "memorize";
+          setStatus(`ラウンド ${roundNumber} の最優先カードを覚えてください`);
+          render();
+        }
+
+        function startGame() {
+          state.score = 0;
+          state.correct = 0;
+          startRound(1);
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.round = 0;
+          state.score = 0;
+          state.correct = 0;
+          state.status = "開始待ち";
+          state.targetCard = 0;
+          state.order = [0, 1, 2];
+          state.reveal = true;
+          state.activeSlot = 0;
+          state.result = "-";
+          updateHud();
+          render();
+        }
+
+        function startShuffle() {
+          if (state.mode !== "memorize") return false;
+          const roundData = state.rounds[state.round - 1];
+          state.order = applySwaps(state.order, roundData.swaps);
+          state.reveal = false;
+          state.activeSlot = 0;
+          state.mode = "guessing";
+          setStatus("最優先カードがある位置を1-3で選んでください");
+          render();
+          return true;
+        }
+
+        function moveSelection(delta) {
+          if (state.mode !== "guessing") return false;
+          state.activeSlot = (state.activeSlot + delta + 3) % 3;
+          setStatus(`${state.activeSlot + 1} 番を選択中です`);
+          render();
+          return true;
+        }
+
+        function selectCup(slotIndex) {
+          if (state.mode !== "guessing") return false;
+          const targetSlot = getTargetSlot();
+          state.reveal = true;
+          state.mode = "resolved";
+          if (slotIndex === targetSlot) {
+            state.correct += 1;
+            state.score += 15;
+            state.result = "正解";
+            setStatus(`正解です。${slotIndex + 1} 番に最優先カードがありました`);
+          } else {
+            state.result = "不正解";
+            setStatus(`正解は ${targetSlot + 1} 番でした`);
+          }
+          render();
+          return true;
+        }
+
+        function nextRound() {
+          if (state.mode !== "resolved") return false;
+          if (state.round >= state.rounds.length) {
+            state.mode = "ended";
+            setStatus(`4ラウンド終了 合計 ${state.score} 点`);
+            render();
+            return true;
+          }
+          startRound(state.round + 1);
+          return true;
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        function drawCup(slotIndex, x, y) {
+          const cardId = state.order[slotIndex];
+          const isTarget = cardId === state.targetCard;
+          const isVisible = state.reveal;
+          const isActive = state.mode === "guessing" && state.activeSlot === slotIndex;
+
+          ctx.save();
+          ctx.translate(x, y);
+
+          ctx.fillStyle = isActive ? "#2563eb" : "#0f172a";
+          ctx.beginPath();
+          ctx.roundRect(-72, -70, 144, 120, 24);
+          ctx.fill();
+
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.roundRect(-52, -10, 104, 92, 16);
+          ctx.fill();
+
+          ctx.textAlign = "center";
+          ctx.fillStyle = "#cbd5e1";
+          ctx.font = "700 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(`${slotIndex + 1}`, 0, -28);
+
+          if (isVisible) {
+            ctx.fillStyle = isTarget ? "#2563eb" : "#0f172a";
+            ctx.font = "700 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText(CARD_LABELS[cardId], 0, 26);
+            ctx.font = "600 13px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillStyle = isTarget ? "#2563eb" : "#475569";
+            ctx.fillText(isTarget ? "最優先" : "通常", 0, 52);
+          } else {
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "700 38px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText("?", 0, 34);
+          }
+
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+          gradient.addColorStop(0, "#dcfce7");
+          gradient.addColorStop(1, "#eff6ff");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "left";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("朝の優先カップシャッフル", 28, 42);
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("最優先カードの位置だけを追う", 28, 72);
+
+          const positions = [156, 360, 564];
+          positions.forEach((x, index) => {
+            drawCup(index, x, 210);
+          });
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "center";
+          ctx.font = "700 28px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.mode === "ready" ? "開始して最優先カードを確認" : `${CARD_LABELS[state.targetCard]} を追跡中`, canvas.width / 2, 356);
+          ctx.fillStyle = "#475569";
+          ctx.font = "600 22px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.status, canvas.width / 2, 402);
+        }
+
+        startBtn.addEventListener("click", startGame);
+        shuffleBtn.addEventListener("click", startShuffle);
+        nextBtn.addEventListener("click", nextRound);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key >= "1" && event.key <= "3") {
+            event.preventDefault();
+            selectCup(Number(event.key) - 1);
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else if (state.mode === "memorize") {
+              startShuffle();
+            } else if (state.mode === "guessing") {
+              selectCup(state.activeSlot);
+            } else if (state.mode === "resolved") {
+              nextRound();
+            }
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else {
+              resetGame();
+            }
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+            round: state.round,
+            score: state.score,
+            correct: state.correct,
+            targetCard: CARD_LABELS[state.targetCard],
+            activeSlot: state.activeSlot,
+            targetSlot: state.reveal ? getTargetSlot() : null,
+            visibleOrder: state.reveal ? state.order.map((card) => CARD_LABELS[card]) : ["?", "?", "?"],
+            status: state.status,
+            result: state.result,
+            availableActions:
+              state.mode === "ready"
+                ? ["start"]
+                : state.mode === "memorize"
+                  ? ["shuffle"]
+                  : state.mode === "guessing"
+                    ? ["pick-1", "pick-2", "pick-3"]
+                    : state.mode === "resolved"
+                      ? ["next"]
+                      : ["reset"],
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+          });
+        }
+
+        window.startGame = () => {
+          startGame();
+          return renderGameToText();
+        };
+        window.resetGame = () => {
+          resetGame();
+          return renderGameToText();
+        };
+        window.startShuffle = () => {
+          startShuffle();
+          return renderGameToText();
+        };
+        window.selectCup = (index) => {
+          selectCup(index);
+          return renderGameToText();
+        };
+        window.nextRound = () => {
+          nextRound();
+          return renderGameToText();
+        };
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
