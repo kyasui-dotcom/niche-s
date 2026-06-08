@@ -1,5 +1,13 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-08
+
+- Added `business-procedures/morning-focus-nonogram.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の集中ノノグラム" - a minimal 5x5 nonogram where entrepreneurs fill a small focus block from row and column hints.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative filing judgments.
+- Replaced the startup launch kit mini-game card in both copies, linked the new page from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `clickCell`, and `setCell` hooks for automated validation.
+
 ## 2026-06-07
 
 - Added `business-procedures/morning-cup-shuffle.html` and mirrored it under `public/business-procedures/`.

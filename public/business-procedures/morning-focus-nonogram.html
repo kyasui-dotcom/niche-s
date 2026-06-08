@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の集中ノノグラム | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="5x5 の最小ノノグラムで集中の形をそろえる、起業家向けの軽量ブラウザゲームです。許認可、税務、法務、行政判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の集中ノノグラム | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="5x5 の最小ノノグラムで集中の形をそろえる、小さな起業家向けゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-focus-nonogram.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-focus-nonogram.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #nonogramGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の集中ノノグラム</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の集中ノノグラム</h1>
+        <p class="lede">
+          5x5 のヒントを見て、朝の集中ブロックをそろえる最小ノノグラムです。
+          触るのは優先順位と集中の比喩だけで、許認可、税務、法務、行政判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-cup-shuffle.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>ヒントどおりに集中の形を埋める</h2>
+          <p class="section-copy">矢印で移動し、X で塗る、Z で空白メモ、C で消すだけ。5x5 なので短く終わります。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="nonogramGame" width="720" height="540" aria-label="朝の集中ノノグラムのゲーム画面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>正しく埋めた数</span>
+              <strong id="filledText">0 / 13</strong>
+            </div>
+            <div class="game-stat">
+              <span>ミス</span>
+              <strong id="mistakeText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">待機中</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <p class="game-note">操作: 矢印 / タップ移動、X で塗る、Z で空白メモ、C で消す、F でフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは集中の形だけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは、朝の優先順位と集中の塊をそろえる比喩だけを扱います。許認可、税務、法務、行政手続きの可否判断や提出案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("nonogramGame");
+        const ctx = canvas.getContext("2d");
+        const filledText = document.getElementById("filledText");
+        const mistakeText = document.getElementById("mistakeText");
+        const statusText = document.getElementById("statusText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const size = 5;
+        const solution = [
+          [0, 0, 1, 0, 0],
+          [0, 1, 1, 1, 0],
+          [1, 1, 1, 1, 1],
+          [0, 1, 1, 1, 0],
+          [0, 0, 1, 0, 0],
+        ];
+        const rowClues = [[1], [3], [5], [3], [1]];
+        const colClues = [[1], [3], [5], [3], [1]];
+        const totalFilled = solution.flat().filter(Boolean).length;
+        const board = Array.from({ length: size }, () => Array(size).fill(0));
+        const state = {
+          mode: "ready",
+          selectedRow: 0,
+          selectedCol: 0,
+          correctFilled: 0,
+          mistakes: 0,
+        };
+
+        const layout = {
+          originX: 220,
+          originY: 130,
+          cell: 56,
+          topClueY: 82,
+          leftClueX: 184,
+        };
+
+        function startGame() {
+          if (state.mode === "cleared") resetGame();
+          state.mode = "playing";
+          updateHud();
+          render();
+        }
+
+        function resetGame() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              board[row][col] = 0;
+            }
+          }
+          state.mode = "ready";
+          state.selectedRow = 0;
+          state.selectedCol = 0;
+          state.correctFilled = 0;
+          state.mistakes = 0;
+          updateHud();
+          render();
+        }
+
+        function recount() {
+          let correct = 0;
+          let mistakes = 0;
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if (board[row][col] === 1 && solution[row][col] === 1) correct += 1;
+              if (board[row][col] === 1 && solution[row][col] === 0) mistakes += 1;
+            }
+          }
+          state.correctFilled = correct;
+          state.mistakes = mistakes;
+          if (correct === totalFilled && mistakes === 0 && isSolved()) {
+            state.mode = "cleared";
+          } else if (state.mode !== "ready") {
+            state.mode = "playing";
+          }
+        }
+
+        function isSolved() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if ((board[row][col] === 1 ? 1 : 0) !== solution[row][col]) return false;
+            }
+          }
+          return true;
+        }
+
+        function setCell(value) {
+          if (state.mode === "ready") startGame();
+          board[state.selectedRow][state.selectedCol] = value;
+          recount();
+          updateHud();
+          render();
+        }
+
+        function moveSelection(dx, dy) {
+          state.selectedCol = clamp(state.selectedCol + dx, 0, size - 1);
+          state.selectedRow = clamp(state.selectedRow + dy, 0, size - 1);
+          render();
+        }
+
+        function clickCell(row, col) {
+          state.selectedRow = row;
+          state.selectedCol = col;
+          const next = board[row][col] === 1 ? -1 : 1;
+          setCell(next);
+        }
+
+        function updateHud() {
+          filledText.textContent = `${state.correctFilled} / ${totalFilled}`;
+          mistakeText.textContent = String(state.mistakes);
+          statusText.textContent =
+            state.mode === "cleared" ? "クリア" : state.mode === "playing" ? "入力中" : "待機中";
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eff6ff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.fillText("focus nonogram", 24, 40);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("Fill the shape from small clues.", 24, 64);
+
+          drawClues();
+          drawGrid();
+          drawLegend();
+
+          if (state.mode !== "playing") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            ctx.fillText(state.mode === "cleared" ? "集中ブロック完成" : "Start で開始", canvas.width / 2, canvas.height / 2 - 18);
+            ctx.font = "18px sans-serif";
+            ctx.fillText("5x5 のヒントどおりに塗るだけです。", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function drawClues() {
+          ctx.fillStyle = "#334155";
+          ctx.font = "700 20px sans-serif";
+          ctx.textAlign = "center";
+          for (let col = 0; col < size; col += 1) {
+            const x = layout.originX + col * layout.cell + layout.cell / 2;
+            ctx.fillText(colClues[col].join(" "), x, layout.topClueY);
+          }
+          ctx.textAlign = "right";
+          for (let row = 0; row < size; row += 1) {
+            const y = layout.originY + row * layout.cell + layout.cell / 2 + 7;
+            ctx.fillText(rowClues[row].join(" "), layout.leftClueX, y);
+          }
+          ctx.textAlign = "start";
+        }
+
+        function drawGrid() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              const x = layout.originX + col * layout.cell;
+              const y = layout.originY + row * layout.cell;
+              const selected = row === state.selectedRow && col === state.selectedCol;
+              ctx.fillStyle = selected ? "#dbeafe" : "#ffffff";
+              ctx.fillRect(x, y, layout.cell, layout.cell);
+              ctx.strokeStyle = "#94a3b8";
+              ctx.lineWidth = (row === 0 || col === 0 || row === size - 1 || col === size - 1) ? 2 : 1.5;
+              ctx.strokeRect(x, y, layout.cell, layout.cell);
+
+              if (board[row][col] === 1) {
+                ctx.fillStyle = solution[row][col] ? "#2563eb" : "#ef4444";
+                ctx.fillRect(x + 7, y + 7, layout.cell - 14, layout.cell - 14);
+              } else if (board[row][col] === -1) {
+                ctx.strokeStyle = "#94a3b8";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x + 14, y + 14);
+                ctx.lineTo(x + layout.cell - 14, y + layout.cell - 14);
+                ctx.moveTo(x + layout.cell - 14, y + 14);
+                ctx.lineTo(x + 14, y + layout.cell - 14);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
+        function drawLegend() {
+          ctx.fillStyle = "#1e293b";
+          ctx.font = "16px sans-serif";
+          ctx.fillText("青: 正しい集中", 40, 430);
+          ctx.fillText("赤: 塗りすぎ", 40, 460);
+          ctx.fillText("X: 空白メモ", 40, 490);
+        }
+
+        function canvasCellFromPoint(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (clientX - rect.left) * scaleX;
+          const y = (clientY - rect.top) * scaleY;
+          if (x < layout.originX || y < layout.originY) return null;
+          const col = Math.floor((x - layout.originX) / layout.cell);
+          const row = Math.floor((y - layout.originY) / layout.cell);
+          if (row < 0 || row >= size || col < 0 || col >= size) return null;
+          return { row, col };
+        }
+
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            selected: { row: state.selectedRow, col: state.selectedCol },
+            correctFilled: state.correctFilled,
+            totalFilled,
+            mistakes: state.mistakes,
+            board: board.map((row) => row.slice()),
+          });
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+        canvas.addEventListener("pointerdown", (event) => {
+          const cell = canvasCellFromPoint(event.clientX, event.clientY);
+          if (!cell) return;
+          clickCell(cell.row, cell.col);
+        });
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "arrowup") moveSelection(0, -1);
+          if (key === "arrowdown") moveSelection(0, 1);
+          if (key === "arrowleft") moveSelection(-1, 0);
+          if (key === "arrowright") moveSelection(1, 0);
+          if (key === "x") setCell(1);
+          if (key === "z") setCell(-1);
+          if (key === "c" || key === "backspace" || key === "delete") setCell(0);
+          if (key === " ") {
+            event.preventDefault();
+            if (state.mode === "ready") startGame();
+            else setCell(board[state.selectedRow][state.selectedCol] === 1 ? 0 : 1);
+          }
+          if (key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen?.();
+            else canvas.requestFullscreen?.().catch(() => {});
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.clickCell = clickCell;
+        window.setCell = setCell;
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
