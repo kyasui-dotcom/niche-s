@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の合図サイモン | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4つの合図を順番どおりに覚える、起業家向けの小さな Simon 系ミニゲーム。扱うのは返信・提案・集中・休憩の軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の合図サイモン | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4つの合図を順番どおりに覚える、小さな Simon 系ミニゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-signal-simon.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-signal-simon.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-board {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+        padding: 18px;
+      }
+      .pad-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .signal-pad {
+        min-height: 150px;
+        border: 2px solid transparent;
+        border-radius: 22px;
+        font: inherit;
+        font-weight: 700;
+        color: #0f172a;
+        display: grid;
+        gap: 8px;
+        place-items: center;
+        cursor: pointer;
+        transition:
+          transform 120ms ease,
+          filter 120ms ease,
+          box-shadow 120ms ease,
+          border-color 120ms ease;
+      }
+      .signal-pad small {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(15, 23, 42, 0.76);
+      }
+      .signal-pad:hover {
+        transform: translateY(-1px);
+      }
+      .signal-pad.active,
+      .signal-pad:focus-visible {
+        outline: none;
+        border-color: #0f172a;
+        box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
+        filter: brightness(1.08);
+      }
+      .signal-pad:disabled {
+        cursor: default;
+        opacity: 0.92;
+      }
+      .pad-reply {
+        background: #bfdbfe;
+      }
+      .pad-offer {
+        background: #fde68a;
+      }
+      .pad-focus {
+        background: #bbf7d0;
+      }
+      .pad-break {
+        background: #fecdd3;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .game-copy-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .key-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .key-chip {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .signal-pad {
+          min-height: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の合図サイモン</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の合図サイモン</h1>
+        <p class="lede">
+          4つの合図を順番どおりに覚える、短時間向けの Simon 系ミニゲームです。
+          使うのは返信・提案・集中・休憩の軽い比喩だけで、法務、税務、許認可、契約、行政判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-focus-nonogram.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>光った順にタップするだけ</h2>
+          <p class="section-copy">毎ラウンドで合図が1つずつ増えます。間違えたら終了、3ラウンド超えでひと休み成功です。</p>
+        </div>
+        <div class="game-shell">
+          <div class="game-board">
+            <div class="pad-grid" id="padGrid">
+              <button class="signal-pad pad-reply" data-pad="reply" type="button">
+                返信
+                <small>1 キー</small>
+              </button>
+              <button class="signal-pad pad-offer" data-pad="offer" type="button">
+                提案
+                <small>2 キー</small>
+              </button>
+              <button class="signal-pad pad-focus" data-pad="focus" type="button">
+                集中
+                <small>3 キー</small>
+              </button>
+              <button class="signal-pad pad-break" data-pad="break" type="button">
+                休憩
+                <small>4 キー</small>
+              </button>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>ラウンド</span>
+              <strong id="roundText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>最高記録</span>
+              <strong id="bestText">0</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="replayBtn" class="button ghost" type="button">同じ並びでもう一度</button>
+              <button id="newBtn" class="button ghost" type="button">新しい並びにする</button>
+            </div>
+            <div class="game-copy-box">
+              <p class="section-label">Keys</p>
+              <div class="key-grid">
+                <div class="key-chip">1 キー: 返信</div>
+                <div class="key-chip">2 キー: 提案</div>
+                <div class="key-chip">3 キー: 集中</div>
+                <div class="key-chip">4 キー: 休憩</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く遊ぶコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>4ラウンド未満なら、最初と最後だけでも先に覚えると通しやすくなります。</li>
+          <li>光っている間は押せないので、見終わってから順番に入力します。</li>
+          <li>3ラウンド超えを目安に区切る前提の、軽い気分転換用です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝の合図だけ</h2>
+        </div>
+        <p class="small">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件、投資判断などの助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const pads = [
+          { id: "reply", label: "返信" },
+          { id: "offer", label: "提案" },
+          { id: "focus", label: "集中" },
+          { id: "break", label: "休憩" },
+        ];
+        const keyMap = { 1: "reply", 2: "offer", 3: "focus", 4: "break" };
+
+        const statusText = document.getElementById("statusText");
+        const roundText = document.getElementById("roundText");
+        const bestText = document.getElementById("bestText");
+        const startBtn = document.getElementById("startBtn");
+        const replayBtn = document.getElementById("replayBtn");
+        const newBtn = document.getElementById("newBtn");
+        const padButtons = Array.from(document.querySelectorAll(".signal-pad"));
+
+        const state = {
+          mode: "ready",
+          seed: 3,
+          round: 0,
+          best: 0,
+          sequence: [],
+          playerIndex: 0,
+          flashIndex: -1,
+          message: "開始待ち",
+        };
+
+        function nextRand() {
+          state.seed = (state.seed * 1664525 + 1013904223) % 4294967296;
+          return state.seed / 4294967296;
+        }
+
+        function buildSequence(length = 24) {
+          const next = [];
+          for (let i = 0; i < length; i += 1) {
+            next.push(pads[Math.floor(nextRand() * pads.length)].id);
+          }
+          return next;
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          roundText.textContent = String(state.round);
+          bestText.textContent = String(state.best);
+        }
+
+        function activeInputEnabled() {
+          return state.mode === "input";
+        }
+
+        function syncButtons() {
+          const disabled = !activeInputEnabled();
+          padButtons.forEach((button) => {
+            const isActive = button.dataset.pad === state.sequence[state.flashIndex];
+            button.disabled = disabled;
+            button.classList.toggle("active", isActive);
+          });
+        }
+
+        function resetForSeed(advanceSeed) {
+          if (advanceSeed) {
+            state.seed = (state.seed + 97) % 4294967296;
+          }
+          state.sequence = buildSequence();
+          state.round = 0;
+          state.playerIndex = 0;
+          state.flashIndex = -1;
+          state.mode = "ready";
+          state.message = "開始待ち";
+          updateHud();
+          syncButtons();
+        }
+
+        function sleep(ms) {
+          return new Promise((resolve) => window.setTimeout(resolve, ms));
+        }
+
+        async function flashPad(padId) {
+          state.flashIndex = pads.findIndex((pad) => pad.id === padId);
+          syncButtons();
+          await sleep(420);
+          state.flashIndex = -1;
+          syncButtons();
+          await sleep(130);
+        }
+
+        async function playRound() {
+          state.mode = "demo";
+          state.playerIndex = 0;
+          state.message = `ラウンド ${state.round} を記憶`;
+          updateHud();
+          syncButtons();
+          for (let i = 0; i < state.round; i += 1) {
+            await flashPad(state.sequence[i]);
+          }
+          state.mode = "input";
+          state.message = "同じ順番で押してください";
+          updateHud();
+          syncButtons();
+        }
+
+        async function startGame() {
+          if (!state.sequence.length) {
+            state.sequence = buildSequence();
+          }
+          state.round = 1;
+          state.playerIndex = 0;
+          await playRound();
+        }
+
+        async function advanceRound() {
+          state.best = Math.max(state.best, state.round);
+          state.round += 1;
+          state.playerIndex = 0;
+          await playRound();
+        }
+
+        function failRound(expectedId) {
+          const expected = pads.find((pad) => pad.id === expectedId)?.label ?? expectedId;
+          state.best = Math.max(state.best, Math.max(0, state.round - 1));
+          state.mode = "failed";
+          state.message = `終了: 正解は「${expected}」でした`;
+          updateHud();
+          syncButtons();
+        }
+
+        async function pressPad(padId) {
+          if (state.mode === "ready") {
+            await startGame();
+            return true;
+          }
+          if (state.mode !== "input") {
+            return false;
+          }
+
+          const expected = state.sequence[state.playerIndex];
+          if (padId !== expected) {
+            failRound(expected);
+            return false;
+          }
+
+          state.flashIndex = pads.findIndex((pad) => pad.id === padId);
+          syncButtons();
+          await sleep(140);
+          state.flashIndex = -1;
+          state.playerIndex += 1;
+          syncButtons();
+
+          if (state.playerIndex === state.round) {
+            state.message = `ラウンド ${state.round} クリア`;
+            updateHud();
+            await sleep(260);
+            await advanceRound();
+            return true;
+          }
+
+          state.message = `残り ${state.round - state.playerIndex} 手`;
+          updateHud();
+          return true;
+        }
+
+        padButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            void pressPad(button.dataset.pad);
+          });
+        });
+
+        startBtn.addEventListener("click", () => {
+          void startGame();
+        });
+        replayBtn.addEventListener("click", () => {
+          state.round = 0;
+          state.playerIndex = 0;
+          state.flashIndex = -1;
+          state.mode = "ready";
+          state.message = "開始待ち";
+          updateHud();
+          syncButtons();
+        });
+        newBtn.addEventListener("click", () => {
+          resetForSeed(true);
+        });
+
+        window.addEventListener("keydown", (event) => {
+          const padId = keyMap[event.key];
+          if (!padId) return;
+          event.preventDefault();
+          void pressPad(padId);
+        });
+
+        window.startGame = startGame;
+        window.pressSignal = pressPad;
+        window.peekSignalSequence = () => state.sequence.slice(0, state.round);
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            round: state.round,
+            best: state.best,
+            playerIndex: state.playerIndex,
+            currentSequence: state.sequence.slice(0, state.round),
+            activeSignal: state.flashIndex >= 0 ? pads[state.flashIndex].label : null,
+            message: state.message,
+          });
+
+        resetForSeed(false);
+      })();
+    </script>
+  </body>
+</html>
