@@ -1,5 +1,14 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-10
+
+- Added `business-procedures/morning-word-search.html` and will mirror it under `public/business-procedures/`.
+- Game concept: "朝のことば探し" - a minimal 5x5 word-search where entrepreneurs find lightweight work words like 返信, 見積, 共有, 再訪, and 休憩.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
+- Updated the startup launch kit mini-game feature slot and added discovery from the business procedure hub chip list.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `toggleAnchor`, `confirmSelection`, and `clickCell` hooks for automated validation.
+- TODO: verify local HTTP 200, deterministic clear path, screenshot legibility, push, and deploy.
+
 ## 2026-06-08
 
 - Added `business-procedures/morning-focus-nonogram.html` and mirrored it under `public/business-procedures/`.

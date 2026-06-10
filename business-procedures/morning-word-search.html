@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝のことば探し | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="5x5 の盤面から短い仕事ことばを探す、起業家向けの最小ワードサーチです。扱うのは返信・見積・共有などの軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝のことば探し | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="5x5 の盤面から短い仕事ことばを探す、小さなワードサーチゲーム。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-word-search.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-word-search.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px;
+      }
+      #wordSearchGame {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .word-list {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .word-list ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .word-list li.done {
+        color: #2563eb;
+        font-weight: 700;
+      }
+      .game-note,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-copy {
+        margin: 0;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .game-controls .button {
+          flex: 1 1 150px;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝のことば探し</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝のことば探し</h1>
+        <p class="lede">
+          5x5 の盤面から、返信・見積・共有などの短いことばを探す最小ワードサーチです。
+          扱うのは朝の軽い仕事ことばだけで、法務、税務、許認可、行政判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-focus-nonogram.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>始点と終点を選ぶだけ</h2>
+          <p class="section-copy">
+            矢印でカーソル移動、Enter で始点、もう一度 Enter で終点を確定します。まっすぐ2文字のことばだけなので短く終わります。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="wordSearchGame" width="720" height="540" aria-label="朝のことば探しのゲーム画面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>見つけた数</span>
+              <strong id="foundText">0 / 5</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">待機中</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択</span>
+              <strong id="selectionText">未選択</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">Start</button>
+              <button id="resetBtn" class="button ghost" type="button">Reset</button>
+            </div>
+            <div class="word-list">
+              <span>探すことば</span>
+              <ul id="wordList"></ul>
+            </div>
+            <p class="game-note">操作: 矢印で移動、Enter で始点/終点、Backspace で解除、F でフルスクリーン。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い仕事ことばだけ</h2>
+        </div>
+        <p class="game-copy">
+          このゲームは娯楽用のミニゲームです。返信、見積、共有、再訪、休憩のような軽い比喩だけを扱い、法務、税務、許認可、行政手続きの判断や案内は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("wordSearchGame");
+        const ctx = canvas.getContext("2d");
+        const foundText = document.getElementById("foundText");
+        const statusText = document.getElementById("statusText");
+        const selectionText = document.getElementById("selectionText");
+        const wordList = document.getElementById("wordList");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const grid = [
+          ["返", "信", "休", "憩", "ネ"],
+          ["ラ", "ノ", "モ", "リ", "再"],
+          ["見", "積", "チ", "ム", "訪"],
+          ["オ", "ヤ", "共", "有", "ト"],
+          ["メ", "モ", "ケ", "ル", "ス"],
+        ];
+        const words = [
+          { label: "返信", cells: [[0, 0], [0, 1]] },
+          { label: "休憩", cells: [[0, 2], [0, 3]] },
+          { label: "見積", cells: [[2, 0], [2, 1]] },
+          { label: "共有", cells: [[3, 2], [3, 3]] },
+          { label: "再訪", cells: [[1, 4], [2, 4]] },
+        ];
+        const size = grid.length;
+        const foundSet = new Set();
+        const state = {
+          mode: "ready",
+          selectedRow: 0,
+          selectedCol: 0,
+          anchor: null,
+          message: "待機中",
+        };
+        const layout = {
+          originX: 186,
+          originY: 112,
+          cell: 74,
+        };
+
+        function startGame() {
+          if (state.mode === "cleared") resetGame();
+          state.mode = "playing";
+          state.message = "ことばを探してください";
+          updateHud();
+          render();
+        }
+
+        function resetGame() {
+          foundSet.clear();
+          state.mode = "ready";
+          state.selectedRow = 0;
+          state.selectedCol = 0;
+          state.anchor = null;
+          state.message = "待機中";
+          updateHud();
+          render();
+        }
+
+        function moveSelection(dx, dy) {
+          state.selectedCol = clamp(state.selectedCol + dx, 0, size - 1);
+          state.selectedRow = clamp(state.selectedRow + dy, 0, size - 1);
+          render();
+        }
+
+        function toggleAnchor() {
+          if (state.mode === "ready") {
+            startGame();
+          }
+          if (state.mode === "cleared") return;
+          if (!state.anchor) {
+            state.anchor = [state.selectedRow, state.selectedCol];
+            state.message = "終点を選んで Enter";
+          } else {
+            confirmSelection();
+          }
+          updateHud();
+          render();
+        }
+
+        function clearAnchor() {
+          state.anchor = null;
+          state.message = state.mode === "cleared" ? "クリア" : "始点を選んでください";
+          updateHud();
+          render();
+        }
+
+        function confirmSelection() {
+          if (!state.anchor) return false;
+          const start = state.anchor;
+          const end = [state.selectedRow, state.selectedCol];
+          const matched = words.find((word) => !foundSet.has(word.label) && matchesWord(word.cells, start, end));
+          if (matched) {
+            foundSet.add(matched.label);
+            state.message = `${matched.label} を発見`;
+            if (foundSet.size === words.length) {
+              state.mode = "cleared";
+              state.message = "全て発見しました";
+            }
+          } else {
+            state.message = "ことばになっていません";
+          }
+          state.anchor = null;
+          updateHud();
+          render();
+          return Boolean(matched);
+        }
+
+        function clickCell(row, col) {
+          state.selectedRow = row;
+          state.selectedCol = col;
+          if (!state.anchor) {
+            toggleAnchor();
+          } else {
+            confirmSelection();
+          }
+        }
+
+        function matchesWord(cells, start, end) {
+          return samePair(cells[0], start, cells[1], end) || samePair(cells[1], start, cells[0], end);
+        }
+
+        function samePair(a, b, c, d) {
+          return a[0] === b[0] && a[1] === b[1] && c[0] === d[0] && c[1] === d[1];
+        }
+
+        function updateHud() {
+          foundText.textContent = `${foundSet.size} / ${words.length}`;
+          statusText.textContent = state.mode === "cleared" ? "クリア" : state.mode === "playing" ? "探索中" : "待機中";
+          selectionText.textContent = state.anchor
+            ? `${grid[state.anchor[0]][state.anchor[1]]} → ${grid[state.selectedRow][state.selectedCol]}`
+            : "未選択";
+          wordList.innerHTML = words
+            .map((word) => `<li class="${foundSet.has(word.label) ? "done" : ""}">${foundSet.has(word.label) ? "✓ " : ""}${word.label}</li>`)
+            .join("");
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, "#eff6ff");
+          grad.addColorStop(1, "#ffffff");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 24px sans-serif";
+          ctx.fillText("morning word search", 24, 40);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText(state.message, 24, 64);
+
+          drawBoard();
+          drawLegend();
+
+          if (state.mode !== "playing" && state.mode !== "cleared") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.68)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "800 34px sans-serif";
+            ctx.fillText("Start で開始", canvas.width / 2, canvas.height / 2 - 16);
+            ctx.font = "18px sans-serif";
+            ctx.fillText("5つの短いことばだけを探します。", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = "start";
+          }
+        }
+
+        function drawBoard() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              const x = layout.originX + col * layout.cell;
+              const y = layout.originY + row * layout.cell;
+              const isSelected = row === state.selectedRow && col === state.selectedCol;
+              const isAnchor = state.anchor && row === state.anchor[0] && col === state.anchor[1];
+              const isFound = words.some((word) => foundSet.has(word.label) && word.cells.some(([r, c]) => r === row && c === col));
+              ctx.fillStyle = isFound ? "#dbeafe" : isSelected ? "#fef3c7" : "#ffffff";
+              ctx.fillRect(x, y, layout.cell, layout.cell);
+              ctx.strokeStyle = isAnchor ? "#2563eb" : "#94a3b8";
+              ctx.lineWidth = isAnchor ? 4 : 2;
+              ctx.strokeRect(x, y, layout.cell, layout.cell);
+              ctx.fillStyle = "#0f172a";
+              ctx.font = "700 28px sans-serif";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(grid[row][col], x + layout.cell / 2, y + layout.cell / 2 + 2);
+            }
+          }
+          ctx.textAlign = "start";
+          ctx.textBaseline = "alphabetic";
+        }
+
+        function drawLegend() {
+          ctx.fillStyle = "#1e293b";
+          ctx.font = "16px sans-serif";
+          ctx.fillText("黄: 現在位置", 36, 485);
+          ctx.fillText("青枠: 始点", 176, 485);
+          ctx.fillText("青背景: 発見済み", 312, 485);
+        }
+
+        function canvasCellFromPoint(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (clientX - rect.left) * scaleX;
+          const y = (clientY - rect.top) * scaleY;
+          if (x < layout.originX || y < layout.originY) return null;
+          const col = Math.floor((x - layout.originX) / layout.cell);
+          const row = Math.floor((y - layout.originY) / layout.cell);
+          if (row < 0 || row >= size || col < 0 || col >= size) return null;
+          return { row, col };
+        }
+
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "origin top-left, x right, y down",
+            mode: state.mode,
+            selected: { row: state.selectedRow, col: state.selectedCol, value: grid[state.selectedRow][state.selectedCol] },
+            anchor: state.anchor ? { row: state.anchor[0], col: state.anchor[1], value: grid[state.anchor[0]][state.anchor[1]] } : null,
+            foundWords: words.filter((word) => foundSet.has(word.label)).map((word) => word.label),
+            remainingWords: words.filter((word) => !foundSet.has(word.label)).map((word) => word.label),
+          });
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+        canvas.addEventListener("pointerdown", (event) => {
+          const cell = canvasCellFromPoint(event.clientX, event.clientY);
+          if (!cell) return;
+          clickCell(cell.row, cell.col);
+        });
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "arrowup") moveSelection(0, -1);
+          if (key === "arrowdown") moveSelection(0, 1);
+          if (key === "arrowleft") moveSelection(-1, 0);
+          if (key === "arrowright") moveSelection(1, 0);
+          if (key === "enter" || key === " ") {
+            event.preventDefault();
+            toggleAnchor();
+          }
+          if (key === "backspace" || key === "delete") {
+            event.preventDefault();
+            clearAnchor();
+          }
+          if (key === "f") {
+            if (document.fullscreenElement) document.exitFullscreen?.();
+            else canvas.requestFullscreen?.().catch(() => {});
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.toggleAnchor = toggleAnchor;
+        window.confirmSelection = confirmSelection;
+        window.clickCell = clickCell;
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
