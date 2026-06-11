@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の色そろえフラッド | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="左上から色を広げて盤面を1色にそろえる、起業家向けの小さなフラッドパズル。扱うのは返信・共有・見直しなど軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の色そろえフラッド | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="左上から色を広げて盤面を1色にそろえる、小さなフラッドパズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-flood-fill.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-flood-fill.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .status-card,
+      .game-page .swatch-btn,
+      .game-page .board-cell {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .status-panel,
+      .rule-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+      }
+      .stage-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .stage-head strong {
+        font-size: 1.4rem;
+        color: var(--dark);
+      }
+      .board-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .board-cell {
+        aspect-ratio: 1 / 1;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        position: relative;
+      }
+      .board-cell.flooded::after {
+        content: "";
+        position: absolute;
+        inset: 6px;
+        border: 2px solid rgba(255, 255, 255, 0.92);
+        border-radius: 8px;
+      }
+      .board-cell.cursor {
+        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.18);
+      }
+      .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .swatch-btn {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--dark);
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .swatch-chip {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        margin-right: 8px;
+        vertical-align: middle;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+      }
+      .swatch-btn.active {
+        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+      }
+      .swatch-btn strong,
+      .status-card strong {
+        display: block;
+      }
+      .status-panel {
+        gap: 12px;
+      }
+      .status-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .status-card span,
+      .game-copy,
+      .rule-list,
+      .game-note,
+      .swatch-btn small {
+        color: var(--muted);
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page" tabindex="-1">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の色そろえフラッド</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の色そろえフラッド</h1>
+        <p class="lede">
+          左上から色を広げて、5x5 の盤面を1色にそろえるだけの小さなクラシック寄りパズルです。
+          題材は返信、共有、見直し、休憩など軽い比喩に限り、法務、税務、許認可、契約、労務、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-word-search.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>左上のまとまりを4色で広げます</h2>
+          <p class="section-copy">
+            5手クリアを目安にした最小スコープです。選んだ色で左上のまとまりが広がり、25マスすべてつながるとクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="stage-head">
+              <div>
+                <span>クリア条件</span>
+                <strong>25マスを1色にする</strong>
+              </div>
+              <div>
+                <span>つながった数</span>
+                <strong id="floodText">5 / 25</strong>
+              </div>
+            </div>
+            <div class="board-grid" id="boardGrid" aria-label="flood board"></div>
+          </div>
+          <aside class="status-panel" aria-label="game status">
+            <div class="status-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="status-card">
+              <span>手数</span>
+              <strong id="moveText">0 手</strong>
+            </div>
+            <div class="status-card">
+              <span>現在色</span>
+              <strong id="colorText">返信</strong>
+            </div>
+            <div class="palette-grid" id="paletteGrid"></div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">初期配置へ戻す</button>
+            </div>
+            <p class="game-note">操作: 1-4 または Enter で色を選択 / ←→で色を移動 / Rで初期配置へ戻す</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はこれだけです</h2>
+        </div>
+        <ol class="rule-list">
+          <li>左上からつながっている領域が、選んだ色に変わります。</li>
+          <li>同じ色で隣接したマスは一気につながります。</li>
+          <li>実務の優先順位や専門判断を決めるものではなく、気分転換用の娯楽です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const SIZE = 5;
+        const COLORS = [
+          { label: "返信", fill: "#60a5fa" },
+          { label: "共有", fill: "#34d399" },
+          { label: "見直し", fill: "#f59e0b" },
+          { label: "休憩", fill: "#f472b6" },
+        ];
+        const SEED_BOARD = [
+          [0, 1, 2, 3, 1],
+          [0, 1, 2, 3, 1],
+          [0, 1, 2, 3, 2],
+          [0, 1, 2, 3, 3],
+          [0, 1, 2, 1, 1],
+        ];
+
+        const boardGrid = document.getElementById("boardGrid");
+        const paletteGrid = document.getElementById("paletteGrid");
+        const floodText = document.getElementById("floodText");
+        const statusText = document.getElementById("statusText");
+        const moveText = document.getElementById("moveText");
+        const colorText = document.getElementById("colorText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          board: cloneBoard(SEED_BOARD),
+          moves: 0,
+          activeColor: 0,
+          selectedColor: 0,
+        };
+
+        function cloneBoard(board) {
+          return board.map((row) => [...row]);
+        }
+
+        function inBounds(row, col) {
+          return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
+        }
+
+        function getFloodCells() {
+          const target = state.board[0][0];
+          const queue = [[0, 0]];
+          const seen = new Set(["0,0"]);
+          while (queue.length) {
+            const [row, col] = queue.shift();
+            [
+              [row - 1, col],
+              [row + 1, col],
+              [row, col - 1],
+              [row, col + 1],
+            ].forEach(([nextRow, nextCol]) => {
+              const key = `${nextRow},${nextCol}`;
+              if (!inBounds(nextRow, nextCol) || seen.has(key)) return;
+              if (state.board[nextRow][nextCol] !== target) return;
+              seen.add(key);
+              queue.push([nextRow, nextCol]);
+            });
+          }
+          return [...seen].map((key) => key.split(",").map(Number));
+        }
+
+        function isCleared() {
+          const first = state.board[0][0];
+          return state.board.every((row) => row.every((value) => value === first));
+        }
+
+        function setStatus(message) {
+          statusText.textContent = message;
+        }
+
+        function syncPalette() {
+          const buttons = paletteGrid.querySelectorAll(".swatch-btn");
+          buttons.forEach((button, index) => {
+            button.classList.toggle("active", index === state.selectedColor);
+          });
+        }
+
+        function syncBoard() {
+          const floodedKeys = new Set(getFloodCells().map(([row, col]) => `${row},${col}`));
+          floodText.textContent = `${floodedKeys.size} / ${SIZE * SIZE}`;
+          moveText.textContent = `${state.moves} 手`;
+          colorText.textContent = COLORS[state.activeColor].label;
+
+          boardGrid.querySelectorAll(".board-cell").forEach((cell, index) => {
+            const row = Math.floor(index / SIZE);
+            const col = index % SIZE;
+            const color = COLORS[state.board[row][col]];
+            const key = `${row},${col}`;
+            cell.style.background = color.fill;
+            cell.classList.toggle("flooded", floodedKeys.has(key));
+          });
+          syncPalette();
+        }
+
+        function renderBoard() {
+          boardGrid.innerHTML = "";
+          for (let row = 0; row < SIZE; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              const cell = document.createElement("div");
+              cell.className = "board-cell";
+              cell.setAttribute("aria-hidden", "true");
+              boardGrid.appendChild(cell);
+            }
+          }
+          syncBoard();
+        }
+
+        function renderPalette() {
+          paletteGrid.innerHTML = "";
+          COLORS.forEach((color, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "swatch-btn";
+            button.innerHTML = `<strong><span class="swatch-chip" style="background:${color.fill}"></span>${index + 1}. ${color.label}</strong><small>左上の色をこの色に広げる</small>`;
+            button.addEventListener("click", () => selectColor(index));
+            paletteGrid.appendChild(button);
+          });
+          syncPalette();
+        }
+
+        function resetGame() {
+          state.board = cloneBoard(SEED_BOARD);
+          state.moves = 0;
+          state.activeColor = state.board[0][0];
+          state.selectedColor = state.activeColor;
+          state.mode = "playing";
+          setStatus("開始中");
+          renderBoard();
+          renderPalette();
+          document.body.focus();
+        }
+
+        function applyFlood(colorIndex) {
+          if (state.mode !== "playing") return false;
+          if (colorIndex === state.board[0][0]) {
+            state.selectedColor = colorIndex;
+            syncPalette();
+            return false;
+          }
+          getFloodCells().forEach(([row, col]) => {
+            state.board[row][col] = colorIndex;
+          });
+          state.activeColor = colorIndex;
+          state.selectedColor = colorIndex;
+          state.moves += 1;
+          if (isCleared()) {
+            state.mode = "cleared";
+            setStatus(`クリア: ${state.moves} 手`);
+          } else {
+            setStatus(`進行中: ${state.moves} 手`);
+          }
+          syncBoard();
+          return true;
+        }
+
+        function selectColor(colorIndex) {
+          state.selectedColor = colorIndex;
+          syncPalette();
+          return applyFlood(colorIndex);
+        }
+
+        function moveSelection(delta) {
+          state.selectedColor = (state.selectedColor + delta + COLORS.length) % COLORS.length;
+          syncPalette();
+        }
+
+        startBtn.addEventListener("click", resetGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "r") {
+            resetGame();
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            applyFlood(state.selectedColor);
+            return;
+          }
+          const index = Number.parseInt(event.key, 10);
+          if (!Number.isNaN(index) && index >= 1 && index <= COLORS.length) {
+            event.preventDefault();
+            selectColor(index - 1);
+          }
+        });
+
+        window.render_game_to_text = () =>
+          JSON.stringify(
+            {
+              coordinateSystem: "5x5 row-major grid, top-left origin",
+              mode: state.mode,
+              moves: state.moves,
+              activeColor: state.activeColor,
+              selectedColor: state.selectedColor,
+              floodedCount: getFloodCells().length,
+              board: state.board,
+              status: statusText.textContent,
+            },
+            null,
+            2
+          );
+        window.startGame = () => resetGame();
+        window.selectColor = (index) => selectColor(index);
+        window.resetGame = () => resetGame();
+        window.advanceTime = async () => {};
+
+        renderBoard();
+        renderPalette();
+      })();
+    </script>
+  </body>
+</html>
