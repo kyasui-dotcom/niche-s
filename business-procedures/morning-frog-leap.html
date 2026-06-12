@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の席替えフロッグ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="左右のカエル役を入れ替えるだけの、起業家向け最小スコープのクラシックパズル。扱うのは着手・整理などの軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の席替えフロッグ | 起業家向けミニゲーム" />
+    <meta property="og:description" content="7マスだけで遊ぶ、左右入れ替え型の小さなクラシックパズルです。" />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-frog-leap.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-frog-leap.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .status-card,
+      .game-page .slot-btn {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .status-panel,
+      .rule-list,
+      .board-row {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+      }
+      .stage-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .stage-head strong {
+        font-size: 1.4rem;
+        color: var(--dark);
+      }
+      .board-row {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+      }
+      .slot-btn {
+        min-height: 112px;
+        border: 1px solid var(--line);
+        background: #ffffff;
+        color: var(--dark);
+        padding: 10px 8px;
+        cursor: pointer;
+      }
+      .slot-btn.empty {
+        background: #eef6ff;
+        border-style: dashed;
+        cursor: default;
+      }
+      .slot-btn.left-frog {
+        background: #dbeafe;
+        border-color: #93c5fd;
+      }
+      .slot-btn.right-frog {
+        background: #fee2e2;
+        border-color: #fca5a5;
+      }
+      .slot-btn.can-move {
+        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+      }
+      .slot-btn strong,
+      .status-card strong {
+        display: block;
+      }
+      .slot-btn small,
+      .status-card span,
+      .game-copy,
+      .rule-list,
+      .game-note {
+        color: var(--muted);
+      }
+      .status-panel {
+        gap: 12px;
+      }
+      .status-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+        .board-row {
+          gap: 8px;
+        }
+        .slot-btn {
+          min-height: 96px;
+          padding: 8px 4px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page" tabindex="-1">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の席替えフロッグ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の席替えフロッグ</h1>
+        <p class="lede">
+          左右の3匹ずつを入れ替えるだけの、7マス固定のクラシック寄りパズルです。
+          題材は着手、整理、送付、見直しのような軽い比喩に限り、法務、税務、許認可、契約、労務、行政提出の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-flood-fill.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>前進か1回ジャンプだけで左右を入れ替えます</h2>
+          <p class="section-copy">
+            左の青は右へ、右の赤は左へしか動けません。空きマスへ1歩進むか、相手を1匹だけ飛び越える最小ルールです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="stage-head">
+              <div>
+                <span>クリア条件</span>
+                <strong>左右の席を完全に入れ替える</strong>
+              </div>
+              <div>
+                <span>盤面</span>
+                <strong id="layoutText">青青青_赤赤赤</strong>
+              </div>
+            </div>
+            <div class="board-row" id="boardRow" aria-label="frog board"></div>
+          </div>
+          <aside class="status-panel" aria-label="game status">
+            <div class="status-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="status-card">
+              <span>手数</span>
+              <strong id="moveText">0 手</strong>
+            </div>
+            <div class="status-card">
+              <span>動ける位置</span>
+              <strong id="hintText">開始で表示</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">初期配置へ戻す</button>
+            </div>
+            <p class="game-note">操作: クリック / 1-7 で位置選択 / Rで初期配置へ戻す</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はこれだけです</h2>
+        </div>
+        <ol class="rule-list">
+          <li>青は右へ、赤は左へだけ動きます。</li>
+          <li>空きマスへ1歩進むか、向かい側を1匹だけ飛び越えられます。</li>
+          <li>実務判断や専門助言の代わりではなく、数十秒の気分転換用です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const START_LAYOUT = ["L", "L", "L", "_", "R", "R", "R"];
+        const GOAL_LAYOUT = ["R", "R", "R", "_", "L", "L", "L"];
+        const LABELS = {
+          L: { title: "着手", body: "右へ進む", emoji: "→" },
+          R: { title: "整理", body: "左へ進む", emoji: "←" },
+          _: { title: "空き", body: "移動先", emoji: "·" },
+        };
+
+        const boardRow = document.getElementById("boardRow");
+        const layoutText = document.getElementById("layoutText");
+        const statusText = document.getElementById("statusText");
+        const moveText = document.getElementById("moveText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          layout: [...START_LAYOUT],
+          moves: 0,
+        };
+
+        function getMoveTargets(index) {
+          const token = state.layout[index];
+          if (token === "_") return [];
+          const direction = token === "L" ? 1 : -1;
+          const next = index + direction;
+          const jump = index + direction * 2;
+          const targets = [];
+
+          if (next >= 0 && next < state.layout.length && state.layout[next] === "_") {
+            targets.push(next);
+          }
+          if (
+            jump >= 0 &&
+            jump < state.layout.length &&
+            state.layout[next] !== "_" &&
+            state.layout[next] !== token &&
+            state.layout[jump] === "_"
+          ) {
+            targets.push(jump);
+          }
+          return targets;
+        }
+
+        function getMovableIndices() {
+          return state.layout
+            .map((token, index) => ({ token, index }))
+            .filter(({ token, index }) => token !== "_" && getMoveTargets(index).length > 0)
+            .map(({ index }) => index);
+        }
+
+        function isSolved() {
+          return state.layout.every((value, index) => value === GOAL_LAYOUT[index]);
+        }
+
+        function syncStatus() {
+          layoutText.textContent = state.layout.map((token) => (token === "_" ? "_" : token === "L" ? "青" : "赤")).join("");
+          moveText.textContent = `${state.moves} 手`;
+          const movable = getMovableIndices();
+          hintText.textContent = movable.length ? movable.map((index) => index + 1).join(", ") : "-";
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          } else if (state.mode === "cleared") {
+            statusText.textContent = `クリア: ${state.moves} 手`;
+          } else if (!movable.length) {
+            statusText.textContent = "手詰まり";
+          } else {
+            statusText.textContent = "進行中";
+          }
+        }
+
+        function renderBoard() {
+          const movable = new Set(getMovableIndices());
+          boardRow.innerHTML = "";
+          state.layout.forEach((token, index) => {
+            const meta = LABELS[token];
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "slot-btn";
+            if (token === "_") {
+              button.classList.add("empty");
+              button.disabled = true;
+            } else {
+              button.classList.add(token === "L" ? "left-frog" : "right-frog");
+              if (movable.has(index)) {
+                button.classList.add("can-move");
+              }
+              button.addEventListener("click", () => moveFrom(index));
+            }
+            button.innerHTML = `<strong>${index + 1}. ${meta.title}</strong><small>${meta.emoji} ${meta.body}</small>`;
+            boardRow.appendChild(button);
+          });
+          syncStatus();
+        }
+
+        function resetGame() {
+          state.layout = [...START_LAYOUT];
+          state.moves = 0;
+          state.mode = "playing";
+          renderBoard();
+          document.body.focus();
+        }
+
+        function moveFrom(index) {
+          if (state.mode !== "playing") return false;
+          const targets = getMoveTargets(index);
+          if (!targets.length) return false;
+          const target = targets[0];
+          [state.layout[index], state.layout[target]] = [state.layout[target], state.layout[index]];
+          state.moves += 1;
+          if (isSolved()) {
+            state.mode = "cleared";
+          }
+          renderBoard();
+          return true;
+        }
+
+        function startGame() {
+          resetGame();
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "r") {
+            resetGame();
+            return;
+          }
+          const index = Number.parseInt(event.key, 10);
+          if (!Number.isNaN(index) && index >= 1 && index <= 7) {
+            event.preventDefault();
+            moveFrom(index - 1);
+          }
+        });
+
+        window.startGame = () => startGame();
+        window.moveFrom = (index) => moveFrom(index);
+        window.resetGame = () => resetGame();
+        window.advanceTime = async () => {};
+        window.render_game_to_text = () =>
+          JSON.stringify(
+            {
+              coordinateSystem: "7 slots left-to-right, index 0..6",
+              mode: state.mode,
+              moves: state.moves,
+              movableSlots: getMovableIndices(),
+              layout: state.layout,
+              status: statusText.textContent,
+            },
+            null,
+            2
+          );
+
+        renderBoard();
+      })();
+    </script>
+  </body>
+</html>
