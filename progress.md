@@ -10,7 +10,8 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/morning-sevens.html`.
 - Verified with the shared Playwright client that the deterministic `B` path ends at `mode: "ended"` with `score: 114`, `clearedLanes: 3`, and no console/page errors.
 - Verified the gameplay screenshot; the cleared board, score line, and lane labels remain legible.
-- TODO: push and deploy.
+- Pushed commit `e661fc1` to GitHub branch `backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-sevens.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-sevens.html`.
 
 ## 2026-06-10
 
