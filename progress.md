@@ -1,5 +1,17 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-13
+
+- Added `business-procedures/morning-sevens.html` and will mirror it under `public/business-procedures/`.
+- Game concept: "朝の段取りセブンズ" - a minimal sevens-style card puzzle where entrepreneurs extend light work-label lanes from a central baseline.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
+- Added discovery from both the business procedure hub chip list and the startup launch kit mini-game section, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playCard`, `drawCard`, and `autoPlayOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-sevens.html`.
+- Verified with the shared Playwright client that the deterministic `B` path ends at `mode: "ended"` with `score: 114`, `clearedLanes: 3`, and no console/page errors.
+- Verified the gameplay screenshot; the cleared board, score line, and lane labels remain legible.
+- TODO: push and deploy.
+
 ## 2026-06-10
 
 - Added `business-procedures/morning-word-search.html` and will mirror it under `public/business-procedures/`.

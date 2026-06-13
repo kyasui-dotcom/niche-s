@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の段取りセブンズ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="手札を中央の基準カードから左右に伸ばして並べ切る、起業家向けの小さなセブンズ風ゲーム。扱うのは返信、見積、共有などの軽い業務ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の段取りセブンズ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="中央カードから左右に仕事ラベルを伸ばして手札を並べ切る、小さなセブンズ風ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-sevens.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-sevens.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #sevensCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .rules-card,
+      .hand-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+      .game-controls,
+      .hand-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .hand-buttons .button {
+        flex: 1 1 calc(25% - 10px);
+        min-width: 96px;
+      }
+      .button.is-legal {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.16);
+        background: #ccfbf1;
+      }
+      .button.is-selected {
+        border-color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.14);
+      }
+      .rules-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の段取りセブンズ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の段取りセブンズ</h1>
+        <p class="lede">
+          中央の基準カードから左右へつなぎ、手札を並べ切る小さなセブンズ風ゲームです。
+          題材は返信、見積、共有のような軽い仕事ラベルだけで、契約、法務、税務、許認可、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-word-search.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>中央から 1 枚ずつ段取りを広げる</h2>
+          <p class="section-copy">
+            盤面には各列の「3」が置かれています。手札から同じ列の「2」か「4」を出し、次に「1」または「5」へ広げてください。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="sevensCanvas" width="720" height="450" aria-label="朝の段取りセブンズの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>手札</span>
+                <strong id="handText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>山札</span>
+                <strong id="deckText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>得点</span>
+                <strong id="scoreText">0</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>合法手</span>
+                <strong id="legalText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>列完成</span>
+                <strong id="clearedText">0 / 3</strong>
+              </div>
+              <div class="score-chip">
+                <span>経過</span>
+                <strong id="turnText">0</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="drawBtn" class="button ghost" type="button">山札を引く</button>
+              <button id="autoBtn" class="button ghost" type="button">合法手を1枚出す</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <div class="hand-card">
+              <p class="section-label">手札</p>
+              <div class="hand-buttons" id="handButtons"></div>
+            </div>
+            <div class="rules-card">
+              <p class="section-label">ルール</p>
+              <ol class="rules-list">
+                <li>各列の中央「3」から同じ列の「2」「4」だけ出せます。</li>
+                <li>その後は同じ列で 1 ずつ外側へ広げます。</li>
+                <li>合法手がない時は山札を 1 枚引けます。</li>
+                <li>3 列ぶん 12 枚を並べ切るとクリアです。</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: ←→で手札選択 / Enterで出す / Aで山札 / Bで合法手 / Rで再開 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>まずは 2 と 4 を早めに開いて、合法手の選択肢を増やすと詰まりにくいです。</li>
+          <li>同じ列を一気に端まで伸ばすと、手札の見通しがよくなります。</li>
+          <li>これは気分転換用で、実務判断や専門助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い仕事ラベルの並べ替えだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const LANES = [
+          { key: "reply", label: "返信", accent: "#2563eb" },
+          { key: "quote", label: "見積", accent: "#f97316" },
+          { key: "share", label: "共有", accent: "#0f766e" },
+        ];
+        const FIXED_DECK = [
+          { lane: 0, rank: 1 },
+          { lane: 1, rank: 5 },
+          { lane: 2, rank: 2 },
+          { lane: 0, rank: 4 },
+          { lane: 1, rank: 2 },
+          { lane: 2, rank: 5 },
+          { lane: 0, rank: 2 },
+          { lane: 1, rank: 4 },
+          { lane: 2, rank: 1 },
+          { lane: 0, rank: 5 },
+          { lane: 1, rank: 1 },
+          { lane: 2, rank: 4 },
+        ];
+        const HAND_LIMIT = 8;
+
+        const canvas = document.getElementById("sevensCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const handText = document.getElementById("handText");
+        const deckText = document.getElementById("deckText");
+        const scoreText = document.getElementById("scoreText");
+        const legalText = document.getElementById("legalText");
+        const clearedText = document.getElementById("clearedText");
+        const turnText = document.getElementById("turnText");
+        const startBtn = document.getElementById("startBtn");
+        const drawBtn = document.getElementById("drawBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const handButtonsRoot = document.getElementById("handButtons");
+
+        const state = {
+          mode: "ready",
+          status: "開始待ち",
+          board: [],
+          hand: [],
+          deck: [],
+          score: 0,
+          turns: 0,
+          selectedHand: 0,
+        };
+
+        const handButtons = Array.from({ length: HAND_LIMIT }, (_, index) => {
+          const button = document.createElement("button");
+          button.className = "button ghost";
+          button.type = "button";
+          button.dataset.index = String(index);
+          button.textContent = `手札 ${index + 1}`;
+          button.addEventListener("click", () => playCard(index));
+          handButtonsRoot.appendChild(button);
+          return button;
+        });
+
+        function resetBoard() {
+          state.board = LANES.map(() => ({
+            placed: new Set([3]),
+            min: 3,
+            max: 3,
+          }));
+        }
+
+        function makeCardLabel(card) {
+          return `${LANES[card.lane].label}${card.rank}`;
+        }
+
+        function isLegalCard(card) {
+          const row = state.board[card.lane];
+          return card.rank === row.min - 1 || card.rank === row.max + 1;
+        }
+
+        function legalIndexes() {
+          return state.hand
+            .map((card, index) => (card && isLegalCard(card) ? index : -1))
+            .filter((index) => index >= 0);
+        }
+
+        function setStatus(message) {
+          state.status = message;
+          updateHud();
+        }
+
+        function drawUntilLimit() {
+          while (state.hand.length < HAND_LIMIT && state.deck.length > 0) {
+            state.hand.push(state.deck.shift());
+          }
+        }
+
+        function countClearedLanes() {
+          return state.board.filter((row) => row.min === 1 && row.max === 5).length;
+        }
+
+        function updateHud() {
+          const legal = legalIndexes();
+          statusText.textContent = state.status;
+          handText.textContent = String(state.hand.length);
+          deckText.textContent = String(state.deck.length);
+          scoreText.textContent = String(state.score);
+          legalText.textContent = String(legal.length);
+          clearedText.textContent = `${countClearedLanes()} / 3`;
+          turnText.textContent = String(state.turns);
+
+          const ready = state.mode === "ready";
+          const playing = state.mode === "playing";
+          startBtn.disabled = !ready;
+          drawBtn.disabled = !playing || state.deck.length === 0;
+          autoBtn.disabled = !playing || legal.length === 0;
+
+          handButtons.forEach((button, index) => {
+            const card = state.hand[index];
+            button.disabled = !playing || !card;
+            button.textContent = card ? `${index + 1}. ${makeCardLabel(card)}` : `${index + 1}. 空き`;
+            button.classList.toggle("is-legal", card ? isLegalCard(card) : false);
+            button.classList.toggle("is-selected", card ? index === state.selectedHand : false);
+          });
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.status = "中央の3から外へ広げてください";
+          state.score = 0;
+          state.turns = 0;
+          state.selectedHand = 0;
+          state.deck = FIXED_DECK.map((card) => ({ ...card }));
+          state.hand = [];
+          resetBoard();
+          drawUntilLimit();
+          updateHud();
+          render();
+        }
+
+        function finishIfCleared() {
+          if (state.hand.length === 0 && state.deck.length === 0) {
+            state.mode = "ended";
+            setStatus(`全列クリア 得点 ${state.score}`);
+            render();
+            return true;
+          }
+          return false;
+        }
+
+        function playCard(index) {
+          if (state.mode !== "playing") return false;
+          const card = state.hand[index];
+          if (!card || !isLegalCard(card)) {
+            setStatus("その手札はまだ出せません");
+            render();
+            return false;
+          }
+
+          const row = state.board[card.lane];
+          row.placed.add(card.rank);
+          row.min = Math.min(row.min, card.rank);
+          row.max = Math.max(row.max, card.rank);
+          state.hand.splice(index, 1);
+          state.turns += 1;
+          state.score += row.min === 1 && row.max === 5 ? 14 : 8;
+          drawUntilLimit();
+          if (state.selectedHand >= state.hand.length) {
+            state.selectedHand = Math.max(0, state.hand.length - 1);
+          }
+          setStatus(`${makeCardLabel(card)} を並べました`);
+          render();
+          return !finishIfCleared();
+        }
+
+        function drawCard() {
+          if (state.mode !== "playing" || state.deck.length === 0 || state.hand.length >= HAND_LIMIT) return false;
+          state.hand.push(state.deck.shift());
+          state.turns += 1;
+          state.score = Math.max(0, state.score - 1);
+          setStatus("山札から 1 枚引きました");
+          render();
+          return true;
+        }
+
+        function moveSelection(delta) {
+          if (state.mode !== "playing" || state.hand.length === 0) return false;
+          state.selectedHand = (state.selectedHand + delta + state.hand.length) % state.hand.length;
+          setStatus(`手札 ${state.selectedHand + 1} を選択中`);
+          render();
+          return true;
+        }
+
+        function autoPlayOne() {
+          const legal = legalIndexes();
+          if (!legal.length) return false;
+          return playCard(legal[0]);
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.status = "開始待ち";
+          state.score = 0;
+          state.turns = 0;
+          state.selectedHand = 0;
+          state.hand = [];
+          state.deck = [];
+          resetBoard();
+          updateHud();
+          render();
+        }
+
+        function drawCardFace(x, y, label, rank, color, active) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = active ? "#ecfeff" : "#ffffff";
+          ctx.strokeStyle = active ? color : "#94a3b8";
+          ctx.lineWidth = active ? 3 : 2;
+          ctx.beginPath();
+          ctx.roundRect(-36, -46, 72, 92, 16);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = color;
+          ctx.font = "700 22px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(String(rank), 0, -12);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "600 13px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(label, 0, 20);
+          ctx.restore();
+        }
+
+        function drawPlaceholder(x, y) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = "#e2e8f0";
+          ctx.strokeStyle = "#cbd5e1";
+          ctx.setLineDash([8, 8]);
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(-36, -46, 72, 92, 16);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+          gradient.addColorStop(0, "#fef3c7");
+          gradient.addColorStop(1, "#eef2ff");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "left";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("朝の段取りセブンズ", 28, 42);
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("中央の3から左右へ段取りを広げる", 28, 72);
+
+          const startY = 128;
+          LANES.forEach((lane, laneIndex) => {
+            const row = state.board[laneIndex];
+            const y = startY + laneIndex * 70;
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 16px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillText(lane.label, 36, y + 8);
+            for (let rank = 1; rank <= 5; rank += 1) {
+              const x = 180 + (rank - 1) * 88;
+              if (row.placed.has(rank)) {
+                drawCardFace(x, y, lane.label, rank, lane.accent, rank === row.min || rank === row.max);
+              } else {
+                drawPlaceholder(x, y);
+              }
+            }
+          });
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("手札", 36, 382);
+          for (let index = 0; index < HAND_LIMIT; index += 1) {
+            const card = state.hand[index];
+            const x = 168 + index * 118;
+            if (card) {
+              drawCardFace(
+                x,
+                382,
+                LANES[card.lane].label,
+                card.rank,
+                LANES[card.lane].accent,
+                index === state.selectedHand || isLegalCard(card)
+              );
+            } else {
+              drawPlaceholder(x, 382);
+            }
+          }
+
+          ctx.fillStyle = "#475569";
+          ctx.textAlign = "center";
+          ctx.font = "600 20px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.status, canvas.width / 2, 440);
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        startBtn.addEventListener("click", startGame);
+        drawBtn.addEventListener("click", drawCard);
+        autoBtn.addEventListener("click", autoPlayOne);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key >= "1" && event.key <= "4") {
+            event.preventDefault();
+            playCard(Number(event.key) - 1);
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else if (state.mode === "playing") {
+              if (!playCard(state.selectedHand)) {
+                drawCard();
+              }
+            } else {
+              resetGame();
+            }
+            return;
+          }
+          if (event.key === "a" || event.key === "A") {
+            event.preventDefault();
+            drawCard();
+            return;
+          }
+          if (event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            autoPlayOne();
+            return;
+          }
+          if (event.key === "d" || event.key === "D") {
+            event.preventDefault();
+            drawCard();
+            return;
+          }
+          if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            if (state.mode === "ready") {
+              startGame();
+            } else {
+              resetGame();
+            }
+            return;
+          }
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        function renderGameToText() {
+          return JSON.stringify({
+            mode: state.mode,
+              status: state.status,
+              score: state.score,
+              turns: state.turns,
+              selectedHand: state.selectedHand,
+              deckRemaining: state.deck.length,
+              hand: state.hand.map((card) => ({
+                lane: LANES[card.lane].label,
+                rank: card.rank,
+                legal: isLegalCard(card),
+            })),
+            board: state.board.map((row, laneIndex) => ({
+              lane: LANES[laneIndex].label,
+              min: row.min,
+              max: row.max,
+              placed: [...row.placed].sort((a, b) => a - b),
+            })),
+            legalIndexes: legalIndexes(),
+            clearedLanes: countClearedLanes(),
+            availableActions:
+              state.mode === "ready"
+                ? ["start"]
+                : state.mode === "ended"
+                  ? ["reset"]
+                  : ["play-0-3", "draw", "auto"],
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+          });
+        }
+
+        window.startGame = () => {
+          startGame();
+          return renderGameToText();
+        };
+        window.resetGame = () => {
+          resetGame();
+          return renderGameToText();
+        };
+        window.playCard = (index) => {
+          playCard(index);
+          return renderGameToText();
+        };
+        window.drawCard = () => {
+          drawCard();
+          return renderGameToText();
+        };
+        window.autoPlayOne = () => {
+          autoPlayOne();
+          return renderGameToText();
+        };
+        window.moveSelection = (delta) => {
+          moveSelection(delta);
+          return renderGameToText();
+        };
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.render_game_to_text = renderGameToText;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
