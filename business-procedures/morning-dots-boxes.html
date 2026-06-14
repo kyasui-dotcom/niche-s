@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の四角取りドッツ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="線を引いて小さな四角を取るだけの、起業家向け最小スコープのクラシックゲーム。扱うのは返信、見積、共有などの軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の四角取りドッツ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="3x3の点をつないで2x2の四角を取り合う、小さなドッツ・アンド・ボックス風ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-dots-boxes.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-dots-boxes.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .edge-btn,
+      .status-card,
+      .box-cell {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .status-panel,
+      .rule-list,
+      .tips-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+        gap: 18px;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+      }
+      .stage-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .stage-head strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.35rem;
+      }
+      .board-wrap {
+        position: relative;
+        width: min(100%, 520px);
+        aspect-ratio: 1;
+        margin: 0 auto;
+      }
+      .edge-btn,
+      .dot,
+      .box-cell {
+        position: absolute;
+      }
+      .edge-btn {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        cursor: pointer;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+      }
+      .edge-btn:hover:enabled,
+      .edge-btn:focus-visible:enabled {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+      }
+      .edge-btn.player {
+        background: #bfdbfe;
+        border-color: #60a5fa;
+      }
+      .edge-btn.cpu {
+        background: #fecaca;
+        border-color: #f87171;
+      }
+      .edge-btn.suggest {
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+        border-color: #0f766e;
+      }
+      .edge-btn:disabled {
+        cursor: default;
+      }
+      .edge-btn.horizontal {
+        width: 22%;
+        height: 6%;
+      }
+      .edge-btn.vertical {
+        width: 6%;
+        height: 22%;
+      }
+      .dot {
+        width: 6%;
+        aspect-ratio: 1;
+        border-radius: 999px;
+        background: #0f172a;
+        transform: translate(-50%, -50%);
+      }
+      .box-cell {
+        width: 22%;
+        height: 22%;
+        border: 1px dashed #dbe4ee;
+        background: #f8fafc;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 8px;
+        color: var(--muted);
+      }
+      .box-cell.player {
+        background: #dbeafe;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+      .box-cell.cpu {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #b91c1c;
+      }
+      .box-cell strong {
+        display: block;
+        font-size: 1rem;
+      }
+      .status-panel {
+        gap: 12px;
+      }
+      .status-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .status-card strong,
+      .score-grid strong {
+        display: block;
+        color: var(--dark);
+      }
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .game-copy,
+      .game-note,
+      .rule-list,
+      .tips-list {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の四角取りドッツ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の四角取りドッツ</h1>
+        <p class="lede">
+          線を1本ずつ引いて、できた四角を取るだけの小さなクラシックゲームです。
+          題材は返信、見積、共有、整理のような軽い仕事ラベルに限り、法務、税務、許認可、契約、労務、行政提出など他領域の判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-sevens.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>線を引いて 4 マスを取り切る</h2>
+          <p class="section-copy">
+            あなたは青、相手は赤です。四角を完成させた側に点が入り、そのまま続けてもう1本引けます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="stage-head">
+              <div>
+                <span>クリア条件</span>
+                <strong>4マス終了時に青が上回る</strong>
+              </div>
+              <div>
+                <span>おすすめ線</span>
+                <strong id="hintText">開始で表示</strong>
+              </div>
+            </div>
+            <div class="board-wrap" id="boardWrap" aria-label="ドッツ・アンド・ボックス盤面"></div>
+          </div>
+          <aside class="status-panel" aria-label="game status">
+            <div class="status-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-grid">
+              <div class="status-card">
+                <span>あなた</span>
+                <strong id="playerScoreText">0</strong>
+              </div>
+              <div class="status-card">
+                <span>相手</span>
+                <strong id="cpuScoreText">0</strong>
+              </div>
+              <div class="status-card">
+                <span>残り線</span>
+                <strong id="leftText">12</strong>
+              </div>
+              <div class="status-card">
+                <span>手番</span>
+                <strong id="turnText">開始待ち</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="autoBtn" class="button ghost" type="button">おすすめ線を引く</button>
+              <button id="resetBtn" class="button ghost" type="button">最初からやり直す</button>
+            </div>
+            <p class="game-note">操作: 線をクリック / Aでおすすめ線 / Rでやり直し</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>最小ルールで遊べます</h2>
+        </div>
+        <ol class="rule-list">
+          <li>空いている線を1本ずつ引きます。</li>
+          <li>四角を完成させた側がそのマスを取り、続けて次の1本を引けます。</li>
+          <li>これは短い気分転換用で、専門判断や助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>数十秒で切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>3辺そろったマスを相手に渡さないように、序盤は空き線の多い場所から引くと安全です。</li>
+          <li>取り切れるマスが出たら、連続手番で一気に回収できます。</li>
+          <li>扱うのは軽い仕事ラベルの比喩だけで、権威領域の判断には踏み込みません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>他領域の判断には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const EDGE_LAYOUT = [
+          { id: 0, kind: "h", left: 17, top: 6, label: "返信1" },
+          { id: 1, kind: "h", left: 55, top: 6, label: "見積1" },
+          { id: 2, kind: "h", left: 17, top: 44, label: "共有1" },
+          { id: 3, kind: "h", left: 55, top: 44, label: "整理1" },
+          { id: 4, kind: "h", left: 17, top: 82, label: "返信2" },
+          { id: 5, kind: "h", left: 55, top: 82, label: "見積2" },
+          { id: 6, kind: "v", left: 6, top: 17, label: "共有2" },
+          { id: 7, kind: "v", left: 44, top: 17, label: "整理2" },
+          { id: 8, kind: "v", left: 82, top: 17, label: "返信3" },
+          { id: 9, kind: "v", left: 6, top: 55, label: "見積3" },
+          { id: 10, kind: "v", left: 44, top: 55, label: "共有3" },
+          { id: 11, kind: "v", left: 82, top: 55, label: "整理3" },
+        ];
+        const DOTS = [
+          { left: 6, top: 6 },
+          { left: 44, top: 6 },
+          { left: 82, top: 6 },
+          { left: 6, top: 44 },
+          { left: 44, top: 44 },
+          { left: 82, top: 44 },
+          { left: 6, top: 82 },
+          { left: 44, top: 82 },
+          { left: 82, top: 82 },
+        ];
+        const BOXES = [
+          { id: 0, edges: [0, 7, 2, 6], left: 17, top: 17, label: "返信" },
+          { id: 1, edges: [1, 8, 3, 7], left: 55, top: 17, label: "見積" },
+          { id: 2, edges: [2, 10, 4, 9], left: 17, top: 55, label: "共有" },
+          { id: 3, edges: [3, 11, 5, 10], left: 55, top: 55, label: "整理" },
+        ];
+
+        const boardWrap = document.getElementById("boardWrap");
+        const statusText = document.getElementById("statusText");
+        const playerScoreText = document.getElementById("playerScoreText");
+        const cpuScoreText = document.getElementById("cpuScoreText");
+        const leftText = document.getElementById("leftText");
+        const turnText = document.getElementById("turnText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          turn: "player",
+          claimed: {},
+          boxes: {},
+          playerScore: 0,
+          cpuScore: 0,
+          status: "開始待ち",
+          cpuTimer: null,
+        };
+
+        const edgeButtons = new Map();
+        const boxNodes = new Map();
+
+        function buildBoard() {
+          boardWrap.innerHTML = "";
+
+          for (const box of BOXES) {
+            const node = document.createElement("div");
+            node.className = "box-cell";
+            node.style.left = `${box.left}%`;
+            node.style.top = `${box.top}%`;
+            node.innerHTML = `<div><strong>${box.label}</strong><span>未取得</span></div>`;
+            boardWrap.appendChild(node);
+            boxNodes.set(box.id, node);
+          }
+
+          for (const edge of EDGE_LAYOUT) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `edge-btn ${edge.kind === "h" ? "horizontal" : "vertical"}`;
+            button.style.left = `${edge.left}%`;
+            button.style.top = `${edge.top}%`;
+            button.dataset.edgeId = String(edge.id);
+            button.setAttribute("aria-label", `${edge.label} の線`);
+            button.addEventListener("click", () => handlePlayerMove(edge.id));
+            boardWrap.appendChild(button);
+            edgeButtons.set(edge.id, button);
+          }
+
+          for (const dot of DOTS) {
+            const node = document.createElement("div");
+            node.className = "dot";
+            node.style.left = `${dot.left}%`;
+            node.style.top = `${dot.top}%`;
+            boardWrap.appendChild(node);
+          }
+        }
+
+        function resetGame() {
+          if (state.cpuTimer) {
+            clearTimeout(state.cpuTimer);
+            state.cpuTimer = null;
+          }
+          state.mode = "ready";
+          state.turn = "player";
+          state.claimed = {};
+          state.boxes = {};
+          state.playerScore = 0;
+          state.cpuScore = 0;
+          state.status = "開始待ち";
+          render();
+        }
+
+        function startGame() {
+          resetGame();
+          state.mode = "playing";
+          state.status = "あなたの手番です";
+          render();
+        }
+
+        function availableEdges() {
+          return EDGE_LAYOUT.filter((edge) => !state.claimed[edge.id]).map((edge) => edge.id);
+        }
+
+        function completedByEdge(edgeId) {
+          return BOXES.filter((box) => box.edges.includes(edgeId) && !state.boxes[box.id]).filter((box) =>
+            box.edges.every((candidate) => candidate === edgeId || state.claimed[candidate]),
+          );
+        }
+
+        function willCreateThirdSide(edgeId) {
+          return BOXES.filter((box) => box.edges.includes(edgeId) && !state.boxes[box.id]).some((box) => {
+            const claimedCount = box.edges.filter((candidate) => candidate === edgeId || state.claimed[candidate]).length;
+            return claimedCount === 3;
+          });
+        }
+
+        function bestMove() {
+          const open = availableEdges();
+          if (!open.length) return null;
+
+          const scoring = open.filter((edgeId) => completedByEdge(edgeId).length > 0);
+          if (scoring.length) return scoring[0];
+
+          const safe = open.filter((edgeId) => !willCreateThirdSide(edgeId));
+          if (safe.length) return safe[0];
+
+          return open[0];
+        }
+
+        function cpuMove() {
+          const open = availableEdges();
+          if (!open.length) return null;
+
+          const scoring = open.filter((edgeId) => completedByEdge(edgeId).length > 0);
+          if (scoring.length) return scoring[0];
+
+          const safe = open.filter((edgeId) => !willCreateThirdSide(edgeId));
+          if (safe.length) return safe[Math.floor(safe.length / 2)];
+
+          return open[Math.floor(open.length / 2)];
+        }
+
+        function claimEdge(edgeId, owner) {
+          if (state.mode !== "playing" || state.claimed[edgeId]) return false;
+
+          state.claimed[edgeId] = owner;
+          const completed = completedByEdge(edgeId);
+
+          if (completed.length) {
+            for (const box of completed) {
+              state.boxes[box.id] = owner;
+              if (owner === "player") {
+                state.playerScore += 1;
+              } else {
+                state.cpuScore += 1;
+              }
+            }
+          } else {
+            state.turn = owner === "player" ? "cpu" : "player";
+          }
+
+          if (Object.keys(state.boxes).length === BOXES.length) {
+            state.mode = "ended";
+            if (state.playerScore > state.cpuScore) {
+              state.status = "クリア: 青が取り切りました";
+            } else if (state.playerScore < state.cpuScore) {
+              state.status = "終了: 赤が上回りました";
+            } else {
+              state.status = "引き分け";
+            }
+          } else if (owner === "player") {
+            state.status = completed.length ? "四角完成でもう1手です" : "相手の手番です";
+          } else {
+            state.status = completed.length ? "相手が四角を取りました" : "あなたの手番です";
+          }
+
+          render();
+
+          if (state.mode === "playing" && state.turn === "cpu") {
+            queueCpuMove();
+          }
+          return true;
+        }
+
+        function handlePlayerMove(edgeId) {
+          if (state.mode !== "playing" || state.turn !== "player") return;
+          claimEdge(edgeId, "player");
+        }
+
+        function queueCpuMove() {
+          if (state.cpuTimer) clearTimeout(state.cpuTimer);
+          state.cpuTimer = setTimeout(() => {
+            state.cpuTimer = null;
+            autoStep("cpu");
+          }, 320);
+        }
+
+        function autoStep(forceOwner) {
+          if (state.mode === "ready") {
+            startGame();
+            return bestMove();
+          }
+          if (state.mode !== "playing") return null;
+
+          const owner = forceOwner || state.turn;
+          const move = owner === "cpu" ? cpuMove() : bestMove();
+          if (move === null) return null;
+
+          claimEdge(move, owner);
+          return move;
+        }
+
+        function render() {
+          const hint = bestMove();
+          const left = availableEdges().length;
+
+          statusText.textContent = state.status;
+          playerScoreText.textContent = String(state.playerScore);
+          cpuScoreText.textContent = String(state.cpuScore);
+          leftText.textContent = String(left);
+          turnText.textContent =
+            state.mode === "ready" ? "開始待ち" : state.mode === "ended" ? "終了" : state.turn === "player" ? "あなた" : "相手";
+          hintText.textContent = hint === null ? "-" : `線 ${hint + 1}`;
+
+          for (const edge of EDGE_LAYOUT) {
+            const button = edgeButtons.get(edge.id);
+            const owner = state.claimed[edge.id] || "";
+            button.className = `edge-btn ${edge.kind === "h" ? "horizontal" : "vertical"}${owner ? ` ${owner}` : ""}${hint === edge.id && state.mode === "playing" && state.turn === "player" ? " suggest" : ""}`;
+            button.disabled = Boolean(owner) || state.mode !== "playing" || state.turn !== "player";
+            button.textContent = owner ? (owner === "player" ? "青" : "赤") : "";
+          }
+
+          for (const box of BOXES) {
+            const node = boxNodes.get(box.id);
+            const owner = state.boxes[box.id];
+            node.className = `box-cell${owner ? ` ${owner}` : ""}`;
+            node.innerHTML = owner
+              ? `<div><strong>${box.label}</strong><span>${owner === "player" ? "青が取得" : "赤が取得"}</span></div>`
+              : `<div><strong>${box.label}</strong><span>未取得</span></div>`;
+          }
+        }
+
+        function renderGameState() {
+          return {
+            mode: state.mode,
+            turn: state.turn,
+            playerScore: state.playerScore,
+            cpuScore: state.cpuScore,
+            remainingEdges: availableEdges().length,
+            recommendedEdge: bestMove(),
+            boxes: BOXES.map((box) => state.boxes[box.id] || "_"),
+          };
+        }
+
+        startBtn.addEventListener("click", startGame);
+        autoBtn.addEventListener("click", () => {
+          if (state.mode === "ready") {
+            startGame();
+            return;
+          }
+          if (state.turn === "player") autoStep("player");
+        });
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "r" || event.key === "R") {
+            resetGame();
+          }
+          if (event.key === "a" || event.key === "A") {
+            if (state.turn === "player") autoStep("player");
+          }
+        });
+
+        window.__dotsBoxesGame = {
+          startGame,
+          resetGame,
+          playEdge(edgeId) {
+            return claimEdge(edgeId, state.turn);
+          },
+          autoStep,
+          getState: renderGameState,
+          render_game_to_text() {
+            return JSON.stringify(renderGameState());
+          },
+        };
+
+        buildBoard();
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
