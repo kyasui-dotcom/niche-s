@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の1差ソリティア | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="台札との差が1のカードを順につなげて盤面を片付ける、起業家向けの小さなクラシックカードゲーム。扱うのは返信や見積などの軽い仕事ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の1差ソリティア | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="台札との差が1のカードを出して盤面を片付ける、小さなソリティア風ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-one-diff-solitaire.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-one-diff-solitaire.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .pile-card,
+      .tableau-card,
+      .score-chip {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .game-panel,
+      .tableau-grid,
+      .pile-row,
+      .controls-row,
+      .tips-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+        gap: 18px;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+      }
+      .pile-row {
+        grid-template-columns: repeat(2, minmax(0, 180px));
+        justify-content: center;
+      }
+      .pile-card,
+      .tableau-card {
+        border: 1px solid var(--line);
+        background: #ffffff;
+        padding: 14px;
+        min-height: 112px;
+        display: grid;
+        align-content: space-between;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+      }
+      .pile-card strong,
+      .tableau-card strong,
+      .score-chip strong {
+        display: block;
+        color: var(--dark);
+      }
+      .pile-card.active {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+      }
+      .tableau-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .tableau-card {
+        cursor: pointer;
+        text-align: left;
+      }
+      .tableau-card:hover:enabled,
+      .tableau-card:focus-visible:enabled {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      }
+      .tableau-card.legal {
+        border-color: #0f766e;
+        background: #ecfeff;
+      }
+      .tableau-card.selected {
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+      }
+      .tableau-card.cleared {
+        visibility: hidden;
+      }
+      .card-rank {
+        font-size: 2rem;
+        line-height: 1;
+        color: #0f172a;
+      }
+      .card-meta,
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .score-chip {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .controls-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .tableau-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .controls-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の1差ソリティア</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の1差ソリティア</h1>
+        <p class="lede">
+          台札との差が 1 のカードを順につなげて、盤面を片付ける小さなソリティア風ゲームです。
+          題材は返信、見積、共有、再訪のような軽い仕事ラベルだけに絞り、法務、税務、許認可、契約、労務、行政提出などの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-sevens.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>台札の前後 1 をつないで片付ける</h2>
+          <p class="section-copy">
+            数字が 1 つ上か 1 つ下なら出せます。出せるカードがない時だけ山札をめくり、12 枚すべて片付ければクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="pile-row">
+              <article class="pile-card active" aria-live="polite">
+                <span>台札</span>
+                <strong id="wasteText" class="card-rank">3</strong>
+                <span id="wasteLabel" class="card-meta">返信</span>
+              </article>
+              <article class="pile-card">
+                <span>山札</span>
+                <strong id="stockText" class="card-rank">4</strong>
+                <span id="stockStatus" class="card-meta">出せない時に 1 枚めくる</span>
+              </article>
+            </div>
+            <div id="tableauGrid" class="tableau-grid" aria-label="solitaire tableau"></div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="score-grid">
+              <div class="score-chip">
+                <span>状態</span>
+                <strong id="statusText">開始待ち</strong>
+              </div>
+              <div class="score-chip">
+                <span>残り</span>
+                <strong id="remainingText">12</strong>
+              </div>
+              <div class="score-chip">
+                <span>山札</span>
+                <strong id="stockCountText">4</strong>
+              </div>
+              <div class="score-chip">
+                <span>連続</span>
+                <strong id="streakText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>得点</span>
+                <strong id="scoreText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>合法手</span>
+                <strong id="legalText">0</strong>
+              </div>
+            </div>
+            <div class="controls-row">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="drawBtn" class="button ghost" type="button">山札をめくる</button>
+              <button id="autoBtn" class="button ghost" type="button">1 手すすめる</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+            </div>
+            <p class="game-note">操作: ←→で候補移動 / Enterで出す / Aで山札 / Bで1手すすめる / Rで再開 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く気分を切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>まずは合法手を続けて、山札を温存すると盤面が開きやすいです。</li>
+          <li>1 手すすめるで迷いを切って、長く悩まない前提で遊べます。</li>
+          <li>これは娯楽用の軽いカードゲームで、専門判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い仕事ラベルの並びだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const LABELS = ["返信", "見積", "共有", "再訪"];
+        const TABLEAU_SEED = [
+          { rank: 4, label: "返信" },
+          { rank: 5, label: "見積" },
+          { rank: 2, label: "共有" },
+          { rank: 1, label: "再訪" },
+          { rank: 2, label: "返信" },
+          { rank: 3, label: "見積" },
+          { rank: 4, label: "共有" },
+          { rank: 5, label: "再訪" },
+          { rank: 4, label: "見積" },
+          { rank: 3, label: "共有" },
+          { rank: 2, label: "再訪" },
+          { rank: 1, label: "返信" },
+        ];
+        const STOCK_SEED = [
+          { rank: 5, label: "共有" },
+          { rank: 4, label: "再訪" },
+          { rank: 1, label: "見積" },
+          { rank: 2, label: "共有" },
+        ];
+
+        const tableauGrid = document.getElementById("tableauGrid");
+        const wasteText = document.getElementById("wasteText");
+        const wasteLabel = document.getElementById("wasteLabel");
+        const stockText = document.getElementById("stockText");
+        const stockStatus = document.getElementById("stockStatus");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const stockCountText = document.getElementById("stockCountText");
+        const streakText = document.getElementById("streakText");
+        const scoreText = document.getElementById("scoreText");
+        const legalText = document.getElementById("legalText");
+        const startBtn = document.getElementById("startBtn");
+        const drawBtn = document.getElementById("drawBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          tableau: [],
+          stock: [],
+          waste: { rank: 3, label: "返信" },
+          selectedIndex: 0,
+          streak: 0,
+          score: 0,
+        };
+
+        function cloneCard(card) {
+          return { rank: card.rank, label: card.label, cleared: false };
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.tableau = TABLEAU_SEED.map(cloneCard);
+          state.stock = STOCK_SEED.map((card) => ({ rank: card.rank, label: card.label }));
+          state.waste = { rank: 3, label: "返信" };
+          state.selectedIndex = 0;
+          state.streak = 0;
+          state.score = 0;
+          render();
+        }
+
+        function startGame() {
+          if (state.mode === "playing") return;
+          if (state.mode === "cleared" || state.mode === "stuck") resetGame();
+          state.mode = "playing";
+          ensureSelection();
+          render();
+        }
+
+        function remainingCount() {
+          return state.tableau.filter((card) => !card.cleared).length;
+        }
+
+        function isPlayable(card) {
+          if (!card || card.cleared) return false;
+          return Math.abs(card.rank - state.waste.rank) === 1;
+        }
+
+        function legalIndices() {
+          const result = [];
+          state.tableau.forEach((card, index) => {
+            if (isPlayable(card)) result.push(index);
+          });
+          return result;
+        }
+
+        function ensureSelection() {
+          const active = state.tableau
+            .map((card, index) => ({ card, index }))
+            .filter((entry) => !entry.card.cleared)
+            .map((entry) => entry.index);
+          if (!active.length) {
+            state.selectedIndex = -1;
+            return;
+          }
+          if (!active.includes(state.selectedIndex)) {
+            state.selectedIndex = active[0];
+          }
+        }
+
+        function nextSelectable(step) {
+          const active = state.tableau
+            .map((card, index) => ({ card, index }))
+            .filter((entry) => !entry.card.cleared)
+            .map((entry) => entry.index);
+          if (!active.length) return;
+          const currentIndex = Math.max(0, active.indexOf(state.selectedIndex));
+          const nextIndex = (currentIndex + step + active.length) % active.length;
+          state.selectedIndex = active[nextIndex];
+          render();
+        }
+
+        function finishIfNeeded() {
+          if (remainingCount() === 0) {
+            state.mode = "cleared";
+            statusText.textContent = "クリア";
+            return true;
+          }
+          if (!legalIndices().length && !state.stock.length) {
+            state.mode = "stuck";
+            statusText.textContent = "山札切れ";
+            return true;
+          }
+          return false;
+        }
+
+        function playCard(index) {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing") return false;
+          const card = state.tableau[index];
+          if (!isPlayable(card)) return false;
+          card.cleared = true;
+          state.waste = { rank: card.rank, label: card.label };
+          state.streak += 1;
+          state.score += 10 + state.streak * 2;
+          ensureSelection();
+          finishIfNeeded();
+          render();
+          return true;
+        }
+
+        function drawFromStock() {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing" || !state.stock.length) return false;
+          if (legalIndices().length) return false;
+          const card = state.stock.shift();
+          state.waste = { rank: card.rank, label: card.label };
+          state.streak = 0;
+          finishIfNeeded();
+          render();
+          return true;
+        }
+
+        function autoPlayOne() {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing") return false;
+          const legal = legalIndices();
+          if (legal.length) {
+            return playCard(legal[0]);
+          }
+          return drawFromStock();
+        }
+
+        function render() {
+          const legal = new Set(legalIndices());
+          ensureSelection();
+          wasteText.textContent = String(state.waste.rank);
+          wasteLabel.textContent = state.waste.label;
+          stockText.textContent = state.stock.length ? String(state.stock[0].rank) : "0";
+          stockStatus.textContent = state.stock.length ? `次は ${state.stock[0].label}` : "山札は空です";
+          statusText.textContent =
+            state.mode === "ready"
+              ? "開始待ち"
+              : state.mode === "playing"
+                ? "進行中"
+                : state.mode === "cleared"
+                  ? "クリア"
+                  : "山札切れ";
+          remainingText.textContent = String(remainingCount());
+          stockCountText.textContent = String(state.stock.length);
+          streakText.textContent = String(state.streak);
+          scoreText.textContent = String(state.score);
+          legalText.textContent = String(legal.size);
+
+          tableauGrid.innerHTML = "";
+          state.tableau.forEach((card, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "tableau-card";
+            if (card.cleared) {
+              button.classList.add("cleared");
+              button.disabled = true;
+            } else {
+              if (legal.has(index)) button.classList.add("legal");
+              if (index === state.selectedIndex) button.classList.add("selected");
+              button.addEventListener("click", () => {
+                state.selectedIndex = index;
+                if (!playCard(index)) render();
+              });
+            }
+            button.setAttribute("data-index", String(index));
+            button.innerHTML = `
+              <span>${card.label}</span>
+              <strong class="card-rank">${card.rank}</strong>
+              <span class="card-meta">${legal.has(index) ? "今出せる" : "待機中"}</span>
+            `;
+            tableauGrid.appendChild(button);
+          });
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          document.documentElement.requestFullscreen?.().catch(() => {});
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            nextSelectable(-1);
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            nextSelectable(1);
+          } else if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            if (state.selectedIndex >= 0) playCard(state.selectedIndex);
+          } else if (event.key === "a" || event.key === "A") {
+            event.preventDefault();
+            drawFromStock();
+          } else if (event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            autoPlayOne();
+          } else if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+            startGame();
+          } else if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        startBtn.addEventListener("click", startGame);
+        drawBtn.addEventListener("click", drawFromStock);
+        autoBtn.addEventListener("click", autoPlayOne);
+        resetBtn.addEventListener("click", () => {
+          resetGame();
+          startGame();
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.playCard = playCard;
+        window.drawFromStock = drawFromStock;
+        window.autoPlayOne = autoPlayOne;
+        window.advanceTime = () => {
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            waste: state.waste,
+            stock: state.stock.length,
+            streak: state.streak,
+            score: state.score,
+            remaining: remainingCount(),
+            legalIndices: legalIndices(),
+            selectedIndex: state.selectedIndex,
+            tableau: state.tableau.map((card, index) => ({
+              index,
+              rank: card.rank,
+              label: card.label,
+              cleared: card.cleared,
+              playable: isPlayable(card),
+            })),
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
