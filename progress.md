@@ -13,6 +13,19 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `e661fc1` to GitHub branch `backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-sevens.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-sevens.html`.
 
+## 2026-06-15
+
+- Added `business-procedures/morning-one-diff-solitaire.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の1差ソリティア" - a minimal one-up/one-down solitaire using only lightweight entrepreneur task labels and explicit authority-boundary copy.
+- Replaced the featured mini-game card in both startup launch kit copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playCard`, `drawFromStock`, and `autoPlayOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-one-diff-solitaire.html`.
+- Verified with Playwright that a deterministic `B` autoplay path reaches `mode: "cleared"` with `remaining: 0`, `score: 236`, and no console/page errors.
+- Verified the gameplay screenshot in a mid-state; legal cards, side stats, and authority-boundary copy remain legible on desktop.
+- Pushed commit `42bdc3d` to `origin/backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-one-diff-solitaire.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-one-diff-solitaire.html`.
+- TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, draughts/checkers, Shut the Box, dice-poker, sevens, flood-fill, frog-leap, word-search, Simon, dots-and-boxes, and solitaire concepts on the next run.
+
 ## 2026-06-10
 
 - Added `business-procedures/morning-word-search.html` and will mirror it under `public/business-procedures/`.
