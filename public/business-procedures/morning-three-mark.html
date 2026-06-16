@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の3目ならべ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="3x3 の盤面で先に3つ並べる、起業家向けの最小スコープなクラシックゲーム。扱うのは返信や見積のような軽い仕事ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の3目ならべ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="3x3 で短く決着する、起業家向けの小さな3目ならべゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-three-mark.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-three-mark.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .board-cell,
+      .score-chip {
+        border-radius: 10px;
+      }
+      .game-hero,
+      .game-shell,
+      .game-panel,
+      .board-grid,
+      .controls-row,
+      .tips-list,
+      .legend-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+        gap: 18px;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 18px;
+        display: grid;
+        gap: 18px;
+      }
+      .legend-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .legend-chip,
+      .score-chip {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .board-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .board-cell {
+        min-height: 120px;
+        border: 1px solid var(--line);
+        background: #ffffff;
+        padding: 14px;
+        display: grid;
+        align-content: space-between;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+      }
+      .board-cell:hover:enabled,
+      .board-cell:focus-visible:enabled {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      }
+      .board-cell.selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+      }
+      .board-cell.filled {
+        cursor: default;
+      }
+      .board-cell.win {
+        border-color: #0f766e;
+        background: #ecfeff;
+      }
+      .cell-mark {
+        font-size: 2.4rem;
+        line-height: 1;
+        color: var(--dark);
+      }
+      .cell-label,
+      .game-copy,
+      .game-note,
+      .tips-list {
+        color: var(--muted);
+      }
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .controls-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .legend-grid,
+        .controls-row {
+          grid-template-columns: 1fr;
+        }
+        .board-cell {
+          min-height: 102px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の3目ならべ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の3目ならべ</h1>
+        <p class="lede">
+          3x3 の盤面で先に 3 つそろえた側が勝つ、最小スコープのクラシック寄りゲームです。
+          題材は返信、見積、共有のような軽い仕事ラベルだけに絞り、法務、税務、許認可、契約、労務、行政提出などの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-one-diff-solitaire.html">1差ソリティアを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>短く先読みして 3 つそろえる</h2>
+          <p class="section-copy">
+            あなたは丸印、相手は角印です。空きマスに置いて先に 3 つ並べれば勝ち。9 マスで終わるので、短い気分転換向けです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="legend-grid" aria-label="cell labels">
+              <div class="legend-chip"><strong>返信</strong><span class="cell-label">左列</span></div>
+              <div class="legend-chip"><strong>見積</strong><span class="cell-label">中央列</span></div>
+              <div class="legend-chip"><strong>共有</strong><span class="cell-label">右列</span></div>
+            </div>
+            <div id="boardGrid" class="board-grid" aria-label="three in a row board"></div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="score-grid">
+              <div class="score-chip">
+                <span>状態</span>
+                <strong id="statusText">開始待ち</strong>
+              </div>
+              <div class="score-chip">
+                <span>手番</span>
+                <strong id="turnText">あなた</strong>
+              </div>
+              <div class="score-chip">
+                <span>残り</span>
+                <strong id="remainingText">9</strong>
+              </div>
+              <div class="score-chip">
+                <span>結果</span>
+                <strong id="resultText">未決着</strong>
+              </div>
+              <div class="score-chip">
+                <span>あなた</span>
+                <strong id="playerCountText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>相手</span>
+                <strong id="cpuCountText">0</strong>
+              </div>
+            </div>
+            <div class="controls-row">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="autoBtn" class="button ghost" type="button">1 手すすめる</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+              <button id="hintBtn" class="button ghost" type="button">最善手を見る</button>
+            </div>
+            <p id="messageText" class="game-note">操作: ←→↑↓で移動 / Enterで置く / Bで1手すすめる / Hで最善手 / Rで再開 / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>数十秒で切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>中央が空いていれば、まず中央を取ると次の選択肢を広げやすいです。</li>
+          <li>勝ち筋より先に相手の 2 連を止めると、短い盤面でも崩れにくいです。</li>
+          <li>これは娯楽用の軽い 3 目ならべで、専門判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い仕事ラベルの置き方だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const CELL_LABELS = [
+          "返信 / 朝イチ",
+          "見積 / 朝イチ",
+          "共有 / 朝イチ",
+          "返信 / 昼前",
+          "見積 / 昼前",
+          "共有 / 昼前",
+          "返信 / 夕方",
+          "見積 / 夕方",
+          "共有 / 夕方",
+        ];
+        const LINES = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        const boardGrid = document.getElementById("boardGrid");
+        const statusText = document.getElementById("statusText");
+        const turnText = document.getElementById("turnText");
+        const remainingText = document.getElementById("remainingText");
+        const resultText = document.getElementById("resultText");
+        const playerCountText = document.getElementById("playerCountText");
+        const cpuCountText = document.getElementById("cpuCountText");
+        const messageText = document.getElementById("messageText");
+        const startBtn = document.getElementById("startBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const hintBtn = document.getElementById("hintBtn");
+
+        const state = {
+          mode: "ready",
+          board: Array(9).fill(""),
+          selectedIndex: 0,
+          turn: "player",
+          winner: "",
+          winningLine: [],
+          message: "中央から入ると選びやすいです。",
+        };
+
+        function resetGame() {
+          state.mode = "ready";
+          state.board = Array(9).fill("");
+          state.selectedIndex = 0;
+          state.turn = "player";
+          state.winner = "";
+          state.winningLine = [];
+          state.message = "中央から入ると選びやすいです。";
+          render();
+        }
+
+        function startGame() {
+          if (state.mode === "playing") return;
+          if (state.mode === "ended") resetGame();
+          state.mode = "playing";
+          ensureSelection();
+          render();
+        }
+
+        function ensureSelection() {
+          if (state.board[state.selectedIndex] === "") return;
+          const open = openIndices();
+          state.selectedIndex = open.length ? open[0] : -1;
+        }
+
+        function openIndices() {
+          return state.board
+            .map((mark, index) => ({ mark, index }))
+            .filter((entry) => entry.mark === "")
+            .map((entry) => entry.index);
+        }
+
+        function countMarks(mark) {
+          return state.board.filter((cell) => cell === mark).length;
+        }
+
+        function winnerFor(board) {
+          for (const line of LINES) {
+            const [a, b, c] = line;
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+              return { mark: board[a], line };
+            }
+          }
+          return null;
+        }
+
+        function bestMove(mark) {
+          const opponent = mark === "O" ? "X" : "O";
+          const open = openIndices();
+
+          for (const index of open) {
+            const board = [...state.board];
+            board[index] = mark;
+            if (winnerFor(board)?.mark === mark) return index;
+          }
+
+          for (const index of open) {
+            const board = [...state.board];
+            board[index] = opponent;
+            if (winnerFor(board)?.mark === opponent) return index;
+          }
+
+          const priority = [4, 0, 2, 6, 8, 1, 3, 5, 7];
+          return priority.find((index) => state.board[index] === "") ?? -1;
+        }
+
+        function finishIfNeeded() {
+          const win = winnerFor(state.board);
+          if (win) {
+            state.mode = "ended";
+            state.turn = "done";
+            state.winner = win.mark;
+            state.winningLine = win.line;
+            state.message = win.mark === "O" ? "先読み成功です。" : "次は中央か角から入り直すと組みやすいです。";
+            render();
+            return true;
+          }
+          if (!openIndices().length) {
+            state.mode = "ended";
+            state.turn = "done";
+            state.winner = "draw";
+            state.winningLine = [];
+            state.message = "引き分けです。短く切り替えて次に進めます。";
+            render();
+            return true;
+          }
+          return false;
+        }
+
+        function placeMark(index, mark) {
+          if (index < 0 || state.board[index] !== "") return false;
+          state.board[index] = mark;
+          state.selectedIndex = index;
+          return true;
+        }
+
+        function cpuTurn() {
+          if (state.mode !== "playing") return false;
+          const index = bestMove("X");
+          if (index < 0) return false;
+          placeMark(index, "X");
+          state.turn = "player";
+          state.message = "相手が置きました。次の 1 手を決めましょう。";
+          finishIfNeeded();
+          render();
+          return true;
+        }
+
+        function playCell(index) {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing" || state.turn !== "player") return false;
+          if (!placeMark(index, "O")) return false;
+          state.turn = "cpu";
+          state.message = "相手が次の手を選んでいます。";
+          if (finishIfNeeded()) return true;
+          cpuTurn();
+          render();
+          return true;
+        }
+
+        function autoPlayOne() {
+          if (state.mode === "ready") startGame();
+          if (state.mode !== "playing") return false;
+          const index = bestMove("O");
+          if (index < 0) return false;
+          return playCell(index);
+        }
+
+        function showHint() {
+          if (state.mode === "ready") startGame();
+          const index = bestMove("O");
+          if (index < 0) return false;
+          state.selectedIndex = index;
+          state.message = `おすすめは ${CELL_LABELS[index]} です。`;
+          render();
+          return true;
+        }
+
+        function moveSelection(deltaRow, deltaCol) {
+          const open = openIndices();
+          if (!open.length) return;
+          let index = state.selectedIndex >= 0 ? state.selectedIndex : open[0];
+          const row = Math.floor(index / 3);
+          const col = index % 3;
+          const nextRow = (row + deltaRow + 3) % 3;
+          const nextCol = (col + deltaCol + 3) % 3;
+          const nextIndex = nextRow * 3 + nextCol;
+          if (state.board[nextIndex] === "") {
+            state.selectedIndex = nextIndex;
+          } else {
+            state.selectedIndex = open[0];
+          }
+          render();
+        }
+
+        function render() {
+          ensureSelection();
+          const remaining = openIndices().length;
+          statusText.textContent =
+            state.mode === "ready" ? "開始待ち" : state.mode === "playing" ? "進行中" : "終了";
+          turnText.textContent =
+            state.turn === "player" ? "あなた" : state.turn === "cpu" ? "相手" : "完了";
+          remainingText.textContent = String(remaining);
+          resultText.textContent =
+            state.winner === "O" ? "あなたの勝ち" : state.winner === "X" ? "相手の勝ち" : state.winner === "draw" ? "引き分け" : "未決着";
+          playerCountText.textContent = String(countMarks("O"));
+          cpuCountText.textContent = String(countMarks("X"));
+          messageText.textContent = state.message;
+
+          boardGrid.innerHTML = "";
+          state.board.forEach((mark, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "board-cell";
+            if (index === state.selectedIndex && state.mode !== "ended") button.classList.add("selected");
+            if (mark) button.classList.add("filled");
+            if (state.winningLine.includes(index)) button.classList.add("win");
+            button.disabled = state.mode === "ended";
+            button.addEventListener("click", () => {
+              if (mark) {
+                state.selectedIndex = index;
+                render();
+                return;
+              }
+              state.selectedIndex = index;
+              playCell(index);
+            });
+            button.innerHTML = `
+              <span>${CELL_LABELS[index]}</span>
+              <strong class="cell-mark">${mark || "・"}</strong>
+              <span class="cell-label">${mark === "O" ? "あなた" : mark === "X" ? "相手" : "空きマス"}</span>
+            `;
+            boardGrid.appendChild(button);
+          });
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          document.documentElement.requestFullscreen?.().catch(() => {});
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(0, -1);
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(0, 1);
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(-1, 0);
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(1, 0);
+          } else if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            if (state.selectedIndex >= 0) playCell(state.selectedIndex);
+          } else if (event.key === "b" || event.key === "B") {
+            event.preventDefault();
+            autoPlayOne();
+          } else if (event.key === "h" || event.key === "H") {
+            event.preventDefault();
+            showHint();
+          } else if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+            startGame();
+          } else if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        startBtn.addEventListener("click", startGame);
+        autoBtn.addEventListener("click", autoPlayOne);
+        resetBtn.addEventListener("click", () => {
+          resetGame();
+          startGame();
+        });
+        hintBtn.addEventListener("click", showHint);
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.playCell = playCell;
+        window.autoPlayOne = autoPlayOne;
+        window.showHint = showHint;
+        window.advanceTime = () => {
+          render();
+        };
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            turn: state.turn,
+            selectedIndex: state.selectedIndex,
+            winner: state.winner,
+            winningLine: state.winningLine,
+            remaining: openIndices().length,
+            board: state.board.map((mark, index) => ({
+              index,
+              label: CELL_LABELS[index],
+              mark,
+            })),
+            note: "座標は index 0-8 の左上から右下、行優先です。",
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

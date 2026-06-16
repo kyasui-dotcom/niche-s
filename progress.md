@@ -26,6 +26,15 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-one-diff-solitaire.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-one-diff-solitaire.html`.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, draughts/checkers, Shut the Box, dice-poker, sevens, flood-fill, frog-leap, word-search, Simon, dots-and-boxes, and solitaire concepts on the next run.
 
+## 2026-06-16
+
+- Added `business-procedures/morning-three-mark.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の3目ならべ" - a minimal tic-tac-toe style game where entrepreneurs place marks on lightweight work-label slots only.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playCell`, `autoPlayOne`, and `showHint` hooks for automated validation.
+- TODO: verify local HTTP 200, deterministic autoplay end state, screenshot legibility, push, and deploy.
+
 ## 2026-06-10
 
 - Added `business-procedures/morning-word-search.html` and will mirror it under `public/business-procedures/`.
