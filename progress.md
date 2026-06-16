@@ -33,7 +33,10 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
 - Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
 - Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playCell`, `autoPlayOne`, and `showHint` hooks for automated validation.
-- TODO: verify local HTTP 200, deterministic autoplay end state, screenshot legibility, push, and deploy.
+- Verified local HTTP 200 for `/business-procedures/morning-three-mark.html` and `/business-procedures/startup-launch-kit.html`.
+- Verified with the shared Playwright client that a deterministic `B` autoplay path ends at `mode: "ended"` with `winner: "draw"`, `remaining: 0`, and no visual breakage in the gameplay screenshot.
+- Verified the end-state screenshot; the 3x3 board, side stats, controls, and authority-boundary copy remain legible on desktop.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-three-mark.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-three-mark.html`.
 
 ## 2026-06-10
 
