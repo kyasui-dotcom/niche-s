@@ -598,3 +598,15 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified desktop and 390px mobile screenshots; the canvas, side panel, controls, tips, and boundary section remain legible.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-dice-five.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-dice-five.html`.
 - TODO: avoid reusing maze, falling-block, minesweeper, Sokoban, task triage, snake, memory, pong, invader, lane-dodger, catch, block-breaker, whack-a-mole, Frogger/crossing, Asteroids, Pac-Man route-collection, Lunar Lander, Flappy Bird-style, sliding-puzzle, High-Low card, slot-machine, Connect Four, Reversi, code-breaking/Mastermind, Battleship, janken, Nim, sequence-memory, hangman, bingo, adjacent-swap sorting, Hanoi, sum-to-target number-selection, peg-solitaire, draughts/checkers, Shut the Box, and dice-poker concepts on the next run.
+
+## 2026-06-17
+
+- Added `business-procedures/morning-five-line.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の五目ならべ" - a minimal 5x5 five-in-a-row page where entrepreneurs place only lightweight work-label marks and the opponent follows a fixed pattern.
+- Kept the authority boundary explicit; the page states it does not handle legal, tax, permit, labor, contract, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` sitemap files.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playCell`, `autoPlayOne`, and `showHint` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-five-line.html`.
+- Verified with the shared Playwright client that a deterministic `B` path ends at `mode: "ended"` with `winner: "O"`, `winningLine: [0,6,12,18,24]`, and no console/page errors.
+- Verified the gameplay screenshot; the 5x5 board, result cards, controls, and boundary copy remain legible on desktop.
+- TODO: push, deploy, confirm live HTTP 200, and avoid reusing five-in-a-row / gomoku concepts on the next run.
