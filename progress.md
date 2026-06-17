@@ -609,4 +609,6 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Verified local HTTP 200 for `/business-procedures/morning-five-line.html`.
 - Verified with the shared Playwright client that a deterministic `B` path ends at `mode: "ended"` with `winner: "O"`, `winningLine: [0,6,12,18,24]`, and no console/page errors.
 - Verified the gameplay screenshot; the 5x5 board, result cards, controls, and boundary copy remain legible on desktop.
-- TODO: push, deploy, confirm live HTTP 200, and avoid reusing five-in-a-row / gomoku concepts on the next run.
+- Pushed commit `1c9a9dc` to `origin/backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-five-line.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-five-line.html`.
+- TODO: avoid reusing five-in-a-row / gomoku concepts on the next run.
