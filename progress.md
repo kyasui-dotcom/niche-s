@@ -612,3 +612,7 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `1c9a9dc` to `origin/backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-five-line.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-five-line.html`.
 - TODO: avoid reusing five-in-a-row / gomoku concepts on the next run.
+- Added `business-procedures/morning-four-queens.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4タスク配置" - a minimal 4-Queens style placement puzzle where entrepreneurs place four lightweight task markers without row, column, or diagonal conflicts.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Added discovery from both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
