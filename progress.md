@@ -616,3 +616,9 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Game concept: "朝の4タスク配置" - a minimal 4-Queens style placement puzzle where entrepreneurs place four lightweight task markers without row, column, or diagonal conflicts.
 - Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
 - Added discovery from both business procedure hub copies and added sitemap entries in both root and `public` sitemap files.
+- Verified local HTTP 200 for `/business-procedures/morning-four-queens.html`.
+- Verified with Playwright that the deterministic placement `2列目 → 4列目 → 1列目 → 3列目` reaches `mode: "cleared"` with no console or page errors.
+- Verified a 390px mobile screenshot flow with no console or page errors; the board, controls, and boundary copy stack correctly.
+- Pushed commit `c4237ba` to `origin/backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-four-queens.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-four-queens.html`.
+- TODO: avoid reusing 4-Queens / N-Queens placement concepts on the next run.
