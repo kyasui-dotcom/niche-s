@@ -622,3 +622,15 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Pushed commit `c4237ba` to `origin/backup/20260404-230957`.
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-four-queens.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-four-queens.html`.
 - TODO: avoid reusing 4-Queens / N-Queens placement concepts on the next run.
+
+## 2026-06-19
+
+- Added `business-procedures/morning-knight-route.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝のナイト巡回" - a minimal knight-move route puzzle where entrepreneurs visit only lightweight work spots such as 相談, 返信, 見積, 共有, and 再訪.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `playMove`, `autoPlayOne`, and `showHint` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-knight-route.html`.
+- Verified with the shared web-game Playwright client that a deterministic `B` path reaches `mode: "cleared"` with `visitedCount: 9`, `remaining: 0`, and no console/page errors.
+- Verified a 390px mobile screenshot flow with no console or page errors; the hero, board, controls, tips, and boundary section stack correctly.
+- TODO: avoid reusing knight-route / knight-tour style path concepts on the next run.
