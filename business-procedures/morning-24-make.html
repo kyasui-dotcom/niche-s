@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の24メイク | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4枚の数字カードを足し引き掛け割りして24を作る、起業家向けの小さなクラシック計算ゲーム。扱うのは朝の軽作業ラベルだけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の24メイク | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4枚の数字カードを組み合わせて24を作る、最小スコープのクラシック寄り計算ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-24-make.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-24-make.html" />
+    <link rel="icon" href="./og-image.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .number-card,
+      .game-page .op-button,
+      .game-page .score-card {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-shell,
+      .number-grid,
+      .game-panel,
+      .score-grid,
+      .tips-list,
+      .history-list,
+      .solution-list {
+        display: grid;
+        gap: 14px;
+      }
+      .game-shell {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #ffffff;
+        padding: 16px;
+        display: grid;
+        gap: 14px;
+      }
+      .target-banner,
+      .operator-row,
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .target-banner {
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--line);
+        background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 100%);
+        padding: 14px 16px;
+      }
+      .target-banner strong {
+        display: block;
+        font-size: 1.5rem;
+        color: var(--dark);
+      }
+      .number-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .number-card,
+      .op-button {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        color: var(--dark);
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .number-card strong,
+      .score-card strong {
+        display: block;
+        font-size: 1.2rem;
+      }
+      .number-card small,
+      .number-card span,
+      .score-card span,
+      .game-copy,
+      .game-note,
+      .tips-list,
+      .history-list,
+      .solution-list {
+        color: var(--muted);
+      }
+      .number-card.active,
+      .op-button.active {
+        border-color: #2563eb;
+        background: #dbeafe;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+      }
+      .number-card:disabled,
+      .op-button:disabled {
+        cursor: default;
+        opacity: 0.55;
+      }
+      .operator-row {
+        align-items: stretch;
+      }
+      .op-button {
+        flex: 1 1 calc(25% - 10px);
+        min-width: 72px;
+        text-align: center;
+      }
+      .score-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .score-card {
+        border: 1px solid var(--line);
+        background: #fbfdff;
+        padding: 12px;
+      }
+      .history-list,
+      .solution-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .game-panel {
+        gap: 12px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .number-grid,
+        .score-grid {
+          grid-template-columns: 1fr;
+        }
+        .target-banner {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .op-button {
+          flex-basis: calc(50% - 10px);
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の24メイク</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の24メイク</h1>
+        <p class="lede">
+          4枚の数字カードを足し引き掛け割りして 24 を作るだけの、小さなクラシック寄り計算ゲームです。
+          題材は返信、見直し、共有のような軽い朝タスクだけに絞り、法務、税務、許認可、契約、労務、行政提出などの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-dots-boxes.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>4枚を3回つないで 24 を作る</h2>
+          <p class="section-copy">
+            数字カードを2枚選び、演算子を1つ押してまとめます。最後に1枚だけ残り、その値が 24 なら正解です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="target-banner">
+              <div>
+                <span>目標</span>
+                <strong>24 を作る</strong>
+              </div>
+              <div>
+                <span>現在の式</span>
+                <strong id="expressionText">まだ未開始</strong>
+              </div>
+            </div>
+            <div class="number-grid" id="numberGrid" aria-label="number cards"></div>
+            <div class="operator-row" aria-label="operations">
+              <button class="op-button" data-op="+" type="button">+</button>
+              <button class="op-button" data-op="-" type="button">-</button>
+              <button class="op-button" data-op="*" type="button">×</button>
+              <button class="op-button" data-op="/" type="button">÷</button>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="score-grid">
+              <div class="score-card">
+                <span>状態</span>
+                <strong id="statusText">開始待ち</strong>
+              </div>
+              <div class="score-card">
+                <span>問題</span>
+                <strong id="roundText">1 / 3</strong>
+              </div>
+              <div class="score-card">
+                <span>残りカード</span>
+                <strong id="remainingText">4</strong>
+              </div>
+              <div class="score-card">
+                <span>手数</span>
+                <strong id="stepText">0 / 3</strong>
+              </div>
+              <div class="score-card">
+                <span>結果</span>
+                <strong id="resultText">未達成</strong>
+              </div>
+              <div class="score-card">
+                <span>ヒント</span>
+                <strong id="hintText">非表示</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="undoBtn" class="button ghost" type="button">1手戻す</button>
+              <button id="hintBtn" class="button ghost" type="button">ヒント</button>
+              <button id="resetBtn" class="button ghost" type="button">この問題をやり直す</button>
+              <button id="nextBtn" class="button ghost" type="button">次の問題</button>
+            </div>
+            <div class="score-card">
+              <span>手順ログ</span>
+              <ol class="history-list" id="historyList">
+                <li>まだ操作していません</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: 数字を2枚選択 → 演算子を押す / U=1手戻す / H=ヒント / N=次の問題 / R=やり直し</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rule</p>
+          <h2>遊び方はかなり小さめです</h2>
+        </div>
+        <ol class="tips-list">
+          <li>各問題は4枚固定で、3回演算すると最後の1枚だけが残ります。</li>
+          <li>割り算は0で割れません。小数になってもかまいません。</li>
+          <li>これは朝の軽い気分転換用で、実際の見積判断や専門判断の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Hints</p>
+          <h2>解き筋は3問だけに絞っています</h2>
+        </div>
+        <ol class="solution-list">
+          <li>問題1: ひき算から始めると 24 に届きます。</li>
+          <li>問題2: たし算でひとかたまりを作ると組みやすいです。</li>
+          <li>問題3: 7 と 4 の差を作ってから掛けると届きます。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝タスクの数字比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出など、他の専門領域の判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const rounds = [
+          {
+            cards: [
+              { label: "返信9件", value: 9 },
+              { label: "見直し6分", value: 6 },
+              { label: "共有4本", value: 4 },
+              { label: "追記2行", value: 2 },
+            ],
+            hint: "9 と 6 の差を先に作る",
+            solution: "(9 - 6) × 4 × 2 = 24",
+          },
+          {
+            cards: [
+              { label: "返信8件", value: 8 },
+              { label: "共有5本", value: 5 },
+              { label: "見積4行", value: 4 },
+              { label: "整理1回", value: 1 },
+            ],
+            hint: "5 と 1 を先にまとめる",
+            solution: "(5 + 1) × (8 - 4) = 24",
+          },
+          {
+            cards: [
+              { label: "導線7分", value: 7 },
+              { label: "返信4件", value: 4 },
+              { label: "共有4本", value: 4 },
+              { label: "確認2回", value: 2 },
+            ],
+            hint: "7 と 4 の差を先に作る",
+            solution: "(7 - 4) × 4 × 2 = 24",
+          },
+        ];
+
+        const numberGrid = document.getElementById("numberGrid");
+        const expressionText = document.getElementById("expressionText");
+        const statusText = document.getElementById("statusText");
+        const roundText = document.getElementById("roundText");
+        const remainingText = document.getElementById("remainingText");
+        const stepText = document.getElementById("stepText");
+        const resultText = document.getElementById("resultText");
+        const hintText = document.getElementById("hintText");
+        const historyList = document.getElementById("historyList");
+        const startBtn = document.getElementById("startBtn");
+        const undoBtn = document.getElementById("undoBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const opButtons = Array.from(document.querySelectorAll(".op-button"));
+
+        const state = {
+          mode: "ready",
+          roundIndex: 0,
+          cards: [],
+          selectedIds: [],
+          history: [],
+          hintShown: false,
+        };
+
+        function cloneRound(roundIndex) {
+          return rounds[roundIndex].cards.map((card, index) => ({
+            id: `r${roundIndex}-c${index}`,
+            label: card.label,
+            value: card.value,
+            expression: String(card.value),
+            used: false,
+          }));
+        }
+
+        function snapshot() {
+          return {
+            cards: state.cards.map((card) => ({ ...card })),
+            selectedIds: [...state.selectedIds],
+            history: state.history.map((entry) => ({ ...entry })),
+            hintShown: state.hintShown,
+            mode: state.mode,
+          };
+        }
+
+        function restore(saved) {
+          state.cards = saved.cards.map((card) => ({ ...card }));
+          state.selectedIds = [...saved.selectedIds];
+          state.history = saved.history.map((entry) => ({ ...entry }));
+          state.hintShown = saved.hintShown;
+          state.mode = saved.mode;
+          render();
+        }
+
+        function getActiveCards() {
+          return state.cards.filter((card) => !card.used);
+        }
+
+        function getSelectedCards() {
+          return state.selectedIds
+            .map((id) => state.cards.find((card) => card.id === id && !card.used))
+            .filter(Boolean);
+        }
+
+        function formatNumber(value) {
+          if (Math.abs(value - Math.round(value)) < 0.0001) {
+            return String(Math.round(value));
+          }
+          return String(Number(value.toFixed(2)));
+        }
+
+        function resetRound(roundIndex = state.roundIndex) {
+          state.roundIndex = roundIndex;
+          state.cards = cloneRound(roundIndex);
+          state.selectedIds = [];
+          state.history = [];
+          state.hintShown = false;
+          state.mode = "ready";
+          render();
+        }
+
+        function startGame() {
+          if (state.mode === "playing") return;
+          if (state.mode === "cleared" || state.mode === "ended") {
+            resetRound(state.roundIndex);
+          }
+          state.mode = "playing";
+          render();
+        }
+
+        function toggleCard(cardId) {
+          if (state.mode !== "playing") return;
+          const card = state.cards.find((item) => item.id === cardId);
+          if (!card || card.used) return;
+          if (state.selectedIds.includes(cardId)) {
+            state.selectedIds = state.selectedIds.filter((id) => id !== cardId);
+          } else if (state.selectedIds.length < 2) {
+            state.selectedIds = [...state.selectedIds, cardId];
+          } else {
+            state.selectedIds = [state.selectedIds[1], cardId];
+          }
+          render();
+        }
+
+        function evaluate(a, b, op) {
+          if (op === "+") return a + b;
+          if (op === "-") return a - b;
+          if (op === "*") return a * b;
+          if (op === "/") return b === 0 ? null : a / b;
+          return null;
+        }
+
+        function applyOperation(op) {
+          if (state.mode !== "playing") return false;
+          const [first, second] = getSelectedCards();
+          if (!first || !second) {
+            statusText.textContent = "2枚選んでください";
+            return false;
+          }
+          const value = evaluate(first.value, second.value, op);
+          if (value === null || !Number.isFinite(value)) {
+            statusText.textContent = "その割り算はできません";
+            return false;
+          }
+
+          const saved = snapshot();
+          first.used = true;
+          second.used = true;
+          const newCard = {
+            id: `r${state.roundIndex}-m${state.history.length}`,
+            label: `${formatNumber(first.value)} ${op === "*" ? "×" : op === "/" ? "÷" : op} ${formatNumber(second.value)}`,
+            value,
+            expression: `(${first.expression} ${op === "*" ? "×" : op === "/" ? "÷" : op} ${second.expression})`,
+            used: false,
+          };
+          state.cards.push(newCard);
+          state.selectedIds = [];
+          state.history.push({
+            text: `${formatNumber(first.value)} ${op === "*" ? "×" : op === "/" ? "÷" : op} ${formatNumber(second.value)} = ${formatNumber(value)}`,
+            snapshot: saved,
+          });
+          settleRound();
+          render();
+          return true;
+        }
+
+        function settleRound() {
+          const activeCards = getActiveCards();
+          if (activeCards.length > 1) {
+            state.mode = "playing";
+            return;
+          }
+          const finalValue = activeCards[0]?.value ?? 0;
+          state.mode = Math.abs(finalValue - 24) < 0.0001 ? "cleared" : "ended";
+        }
+
+        function undo() {
+          const last = state.history[state.history.length - 1];
+          if (!last) return;
+          restore(last.snapshot);
+        }
+
+        function nextRound() {
+          if (state.roundIndex >= rounds.length - 1) {
+            resetRound(0);
+            return;
+          }
+          resetRound(state.roundIndex + 1);
+        }
+
+        function showHint() {
+          state.hintShown = true;
+          render();
+          return rounds[state.roundIndex].solution;
+        }
+
+        function renderCards() {
+          numberGrid.innerHTML = "";
+          getActiveCards().forEach((card) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "number-card";
+            if (state.selectedIds.includes(card.id)) {
+              button.classList.add("active");
+            }
+            button.dataset.cardId = card.id;
+            button.innerHTML = `<span>${card.label}</span><strong>${formatNumber(card.value)}</strong><small>${card.expression}</small>`;
+            button.addEventListener("click", () => toggleCard(card.id));
+            numberGrid.appendChild(button);
+          });
+        }
+
+        function renderHistory() {
+          historyList.innerHTML = "";
+          if (!state.history.length) {
+            historyList.innerHTML = "<li>まだ操作していません</li>";
+            return;
+          }
+          state.history.forEach((entry) => {
+            const li = document.createElement("li");
+            li.textContent = entry.text;
+            historyList.appendChild(li);
+          });
+        }
+
+        function render() {
+          const activeCards = getActiveCards();
+          const finalCard = activeCards.length === 1 ? activeCards[0] : null;
+          renderCards();
+          renderHistory();
+          expressionText.textContent = finalCard ? finalCard.expression : `${activeCards.length}枚を整理中`;
+          roundText.textContent = `${state.roundIndex + 1} / ${rounds.length}`;
+          remainingText.textContent = String(activeCards.length);
+          stepText.textContent = `${state.history.length} / 3`;
+          resultText.textContent = state.mode === "cleared" ? "24達成" : state.mode === "ended" ? "やり直し" : "未達成";
+          hintText.textContent = state.hintShown ? rounds[state.roundIndex].hint : "非表示";
+
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          } else if (state.mode === "playing") {
+            statusText.textContent = state.selectedIds.length === 2 ? "演算子を選ぶ" : "2枚選ぶ";
+          } else if (state.mode === "cleared") {
+            statusText.textContent = "クリア";
+          } else {
+            statusText.textContent = "24に届かず";
+          }
+
+          startBtn.disabled = state.mode === "playing";
+          undoBtn.disabled = !state.history.length;
+          nextBtn.disabled = state.mode !== "cleared" && state.mode !== "ended";
+          opButtons.forEach((button) => {
+            button.disabled = state.mode !== "playing" || state.selectedIds.length !== 2;
+          });
+        }
+
+        opButtons.forEach((button) => {
+          button.addEventListener("click", () => applyOperation(button.dataset.op));
+        });
+        startBtn.addEventListener("click", startGame);
+        undoBtn.addEventListener("click", undo);
+        hintBtn.addEventListener("click", showHint);
+        resetBtn.addEventListener("click", () => resetRound(state.roundIndex));
+        nextBtn.addEventListener("click", nextRound);
+
+        window.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          if (key === "u") {
+            undo();
+          } else if (key === "h") {
+            showHint();
+          } else if (key === "r") {
+            resetRound(state.roundIndex);
+          } else if (key === "n") {
+            nextRound();
+          }
+        });
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            round: state.roundIndex + 1,
+            activeValues: getActiveCards().map((card) => formatNumber(card.value)),
+            steps: state.history.length,
+            hintShown: state.hintShown,
+          });
+        window.startGame = startGame;
+        window.resetGame = () => resetRound(state.roundIndex);
+        window.advanceRound = nextRound;
+        window.showHint = showHint;
+        window.applyOperation = applyOperation;
+        window.toggleCard = toggleCard;
+        window.advanceTime = () => render();
+
+        resetRound(0);
+      })();
+    </script>
+  </body>
+</html>

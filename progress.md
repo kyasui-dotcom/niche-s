@@ -1,5 +1,19 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-20
+
+- Added `business-procedures/morning-24-make.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の24メイク" - a minimal 24-game style arithmetic page where entrepreneurs combine only lightweight morning-task numbers into 24.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Added discovery from both business procedure hub copies, replaced the featured startup launch kit mini-game card in both copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `advanceRound`, `showHint`, `toggleCard`, and `applyOperation` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-24-make.html`.
+- Verified with the shared Playwright client that the start flow reaches `mode: "playing"` with no console/page errors.
+- Verified with direct Playwright that the deterministic three-round sequence clears all rounds with `activeValues: ["24"]` and no console/page errors.
+- Verified a 390px mobile screenshot; the hero, card grid, controls, history log, rules, hints, and boundary section remain legible.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-24-make.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-24-make.html`.
+- TODO: avoid reusing 24-game / arithmetic-combine-to-target concepts on the next run.
+
 ## 2026-06-13
 
 - Added `business-procedures/morning-sevens.html` and will mirror it under `public/business-procedures/`.
