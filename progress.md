@@ -14,6 +14,18 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 - Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-24-make.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-24-make.html`.
 - TODO: avoid reusing 24-game / arithmetic-combine-to-target concepts on the next run.
 
+## 2026-06-21
+
+- Added `business-procedures/morning-forward-pawn.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の前進ポーン" - a minimal 3x3 forward-pawn / tiny-chess-variant page using only lightweight entrepreneur labels and explicit authority-boundary copy.
+- Replaced the featured startup launch kit mini-game card, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectCell`, `autoStep`, and `getState` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-forward-pawn.html` and `/business-procedures/startup-launch-kit.html`.
+- Verified with the shared Playwright client that the deterministic autoplay path ends at `mode: "ended"` with `winner: "player"` and no console/page errors.
+- Verified both desktop and 390px mobile screenshots; the board, controls, recent-move chips, rules, tips, and boundary section remain legible.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-forward-pawn.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-forward-pawn.html`.
+- TODO: avoid reusing forward-pawn / tiny-chess-variant concepts on the next run.
+
 ## 2026-06-13
 
 - Added `business-procedures/morning-sevens.html` and will mirror it under `public/business-procedures/`.
