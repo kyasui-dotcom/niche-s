@@ -1,0 +1,1 @@
+{"mode":"playing","turn":"player","winner":null,"selected":null,"playerCount":2,"cpuCount":3,"board":[["","cpu","cpu"],["","cpu",""],["player","","player"]],"recommendedMove":{"from":{"row":2,"col":2},"to":{"row":1,"col":1},"capture":true},"legalTargets":[]}
