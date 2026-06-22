@@ -1,5 +1,16 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-22
+
+- Added `business-procedures/morning-number-link.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の数つなぎ9" - a minimal 3x3 number-link / Hidato-style page where entrepreneurs place only lightweight sequence numbers and explicit authority-boundary copy.
+- Added discovery from both business procedure hub copies, replaced the featured startup launch kit mini-game card in both copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `placeNumber`, `undoMove`, `autoPlayOne`, and `getState` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-number-link.html`.
+- Verified with the shared Playwright client that a deterministic `Enter` path reaches `mode: "cleared"` with `history: [1,2,8,6,3]` and no console/page errors.
+- Verified a 390px mobile screenshot; hero, board, status cards, controls, tips, and boundary section stack correctly.
+- TODO: push commit and deploy.
+
 ## 2026-06-20
 
 - Added `business-procedures/morning-24-make.html` and mirrored it under `public/business-procedures/`.

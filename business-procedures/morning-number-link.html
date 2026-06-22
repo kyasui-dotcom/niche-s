@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の数つなぎ9 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="1から9までを隣り合うマスにつなぐ、起業家向けの最小スコープ数字パズル。扱うのは段取りの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の数つなぎ9 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="1から9までを隣り合うマスにつなぐ、小さなクラシック寄り数字パズル。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-number-link.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-number-link.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+      }
+      #numberLinkCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+        touch-action: manipulation;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .game-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .game-controls .button:last-child {
+        grid-column: 1 / -1;
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      .game-note {
+        font-size: 0.92rem;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の数つなぎ9</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の数つなぎ9</h1>
+        <p class="lede">
+          1から9までを、<strong>隣り合うマスだけ</strong>でつないでいく小さな数字パズルです。
+          題材は朝の段取りの比喩だけで、法務、税務、許認可、行政手続きなど他の権威領域の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-label-sudoku.html">別の数字ゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>次の数字を、前の数字の隣へ置くだけ</h2>
+          <p class="section-copy">
+            固定された数字を手がかりに、2から順番に置いていきます。斜めを含む8方向なら隣接として扱います。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="numberLinkCanvas" width="720" height="450" tabindex="0" aria-label="朝の数つなぎ9の盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>次に置く数字</span>
+              <strong id="currentNumberText">2</strong>
+            </div>
+            <div class="game-stat">
+              <span>埋まったマス</span>
+              <strong id="filledText">4 / 9</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="placeBtn" class="button ghost" type="button">置く</button>
+              <button id="undoBtn" class="button ghost" type="button">1手戻す</button>
+              <button id="resetBtn" class="button ghost" type="button">やり直す</button>
+            </div>
+            <p class="game-note">操作: 矢印で移動 / Enterで置く / Uで戻す / Rでやり直し / Fで全画面</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く解くコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>次の数字は、必ずひとつ前の数字の隣にしか置けません。</li>
+          <li>固定数字の前後関係から、通るルートを先に細く考えると早いです。</li>
+          <li>扱うのは段取り整理の比喩だけで、実務判断には使いません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは数字パズルだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、契約、労務などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("numberLinkCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const currentNumberText = document.getElementById("currentNumberText");
+        const filledText = document.getElementById("filledText");
+        const startBtn = document.getElementById("startBtn");
+        const placeBtn = document.getElementById("placeBtn");
+        const undoBtn = document.getElementById("undoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const SIZE = 3;
+        const CELL = 108;
+        const BOARD_X = 198;
+        const BOARD_Y = 76;
+        const FIXED_MAP = new Map([
+          [0, 1],
+          [5, 4],
+          [7, 6],
+          [4, 9],
+        ]);
+
+        const state = {
+          mode: "ready",
+          message: "開始待ち",
+          board: Array(9).fill(null),
+          fixed: Array(9).fill(false),
+          currentNumber: 2,
+          selected: 1,
+          history: [],
+        };
+
+        function buildBoard() {
+          state.board = Array(9).fill(null);
+          state.fixed = Array(9).fill(false);
+          FIXED_MAP.forEach((value, index) => {
+            state.board[index] = value;
+            state.fixed[index] = true;
+          });
+        }
+
+        function startGame() {
+          buildBoard();
+          state.mode = "playing";
+          state.currentNumber = getNextMissingNumber(2);
+          state.message = `${state.currentNumber}を置く場所を選んでください`;
+          state.selected = 1;
+          state.history = [];
+          updateHud();
+          render();
+          canvas.focus();
+        }
+
+        function resetGame() {
+          buildBoard();
+          state.mode = "ready";
+          state.message = "開始待ち";
+          state.currentNumber = getNextMissingNumber(2);
+          state.selected = 1;
+          state.history = [];
+          updateHud();
+          render();
+          canvas.focus();
+        }
+
+        function getNextMissingNumber(from) {
+          for (let target = from; target <= 9; target += 1) {
+            if (!state.board.includes(target)) return target;
+          }
+          return null;
+        }
+
+        function indexToRowCol(index) {
+          return { row: Math.floor(index / SIZE), col: index % SIZE };
+        }
+
+        function isAdjacent(a, b) {
+          const from = indexToRowCol(a);
+          const to = indexToRowCol(b);
+          const rowDiff = Math.abs(from.row - to.row);
+          const colDiff = Math.abs(from.col - to.col);
+          return rowDiff <= 1 && colDiff <= 1 && (rowDiff + colDiff > 0);
+        }
+
+        function findNumberCell(target) {
+          return state.board.findIndex((value) => value === target);
+        }
+
+        function canPlace(index) {
+          if (state.mode !== "playing") return false;
+          if (state.board[index] !== null) return false;
+          const previousCell = findNumberCell(state.currentNumber - 1);
+          return previousCell >= 0 && isAdjacent(previousCell, index);
+        }
+
+        function placeNumber(index = state.selected) {
+          if (state.mode !== "playing") return false;
+          if (!canPlace(index)) {
+            state.message = "前の数字の隣にだけ置けます";
+            updateHud();
+            render();
+            return false;
+          }
+
+          state.board[index] = state.currentNumber;
+          state.history.push(index);
+
+          const nextNumber = getNextMissingNumber(state.currentNumber + 1);
+          if (nextNumber === null) {
+            state.mode = "cleared";
+            state.message = "9までつながりました";
+          } else {
+            state.currentNumber = nextNumber;
+            state.message = `${state.currentNumber}を置く場所を選んでください`;
+            const nextTarget = state.board.findIndex((_, candidateIndex) => canPlace(candidateIndex));
+            if (nextTarget >= 0) state.selected = nextTarget;
+          }
+
+          updateHud();
+          render();
+          return true;
+        }
+
+        function undoMove() {
+          if (!state.history.length) return false;
+          const index = state.history.pop();
+          const removed = state.board[index];
+          state.board[index] = null;
+          state.currentNumber = removed;
+          state.mode = "playing";
+          state.selected = index;
+          state.message = `${removed}を置き直せます`;
+          updateHud();
+          render();
+          return true;
+        }
+
+        function moveSelection(dx, dy) {
+          const { row, col } = indexToRowCol(state.selected);
+          const nextRow = Math.max(0, Math.min(SIZE - 1, row + dy));
+          const nextCol = Math.max(0, Math.min(SIZE - 1, col + dx));
+          state.selected = nextRow * SIZE + nextCol;
+          render();
+          return state.selected;
+        }
+
+        function autoPlayOne() {
+          if (state.mode !== "playing") return false;
+          const targetByNumber = {
+            2: 1,
+            3: 2,
+            5: 8,
+            7: 6,
+            8: 3,
+          };
+          const target = targetByNumber[state.currentNumber];
+          if (typeof target !== "number") return false;
+          state.selected = target;
+          return placeNumber(target);
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          currentNumberText.textContent = state.mode === "cleared" ? "完了" : String(state.currentNumber);
+          filledText.textContent = `${state.board.filter(Boolean).length} / 9`;
+          const active = state.mode === "playing";
+          placeBtn.disabled = !active;
+          undoBtn.disabled = !state.history.length;
+        }
+
+        function drawCell(index, x, y) {
+          const value = state.board[index];
+          const fixed = state.fixed[index];
+          const selectable = canPlace(index);
+          const selected = index === state.selected;
+
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = fixed ? "#dbeafe" : value ? "#eff6ff" : "#ffffff";
+          ctx.strokeStyle = selected ? "#2563eb" : selectable ? "#34d399" : "#cbd5e1";
+          ctx.lineWidth = selected ? 4 : 2;
+          ctx.beginPath();
+          ctx.roundRect(0, 0, CELL, CELL, 18);
+          ctx.fill();
+          ctx.stroke();
+
+          if (value !== null) {
+            ctx.fillStyle = fixed ? "#1d4ed8" : "#0f172a";
+            ctx.font = "700 34px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(String(value), CELL / 2, CELL / 2 - 6);
+            ctx.font = "600 14px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.fillStyle = fixed ? "#2563eb" : "#475569";
+            ctx.fillText(fixed ? "固定" : "入力", CELL / 2, CELL / 2 + 28);
+          } else {
+            ctx.fillStyle = selectable ? "#059669" : "#94a3b8";
+            ctx.font = "700 14px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(selectable ? "置ける" : "空き", CELL / 2, CELL / 2);
+          }
+          ctx.restore();
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, "#dbeafe");
+          gradient.addColorStop(1, "#f8fafc");
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 30px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("朝の数つなぎ9", 28, 42);
+
+          ctx.fillStyle = "#475569";
+          ctx.font = "500 18px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText("前の数字に隣接するマスへ、次の数字を順番に置く", 28, 70);
+
+          for (let row = 0; row < SIZE; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              const index = row * SIZE + col;
+              drawCell(index, BOARD_X + col * (CELL + 12), BOARD_Y + row * (CELL + 12));
+            }
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.textAlign = "center";
+          ctx.font = "700 26px 'Hiragino Sans', 'Noto Sans JP', sans-serif";
+          ctx.fillText(state.message, canvas.width / 2, 424);
+          ctx.textAlign = "start";
+        }
+
+        function pointerToIndex(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (clientX - rect.left) * scaleX;
+          const y = (clientY - rect.top) * scaleY;
+
+          for (let row = 0; row < SIZE; row += 1) {
+            for (let col = 0; col < SIZE; col += 1) {
+              const index = row * SIZE + col;
+              const left = BOARD_X + col * (CELL + 12);
+              const top = BOARD_Y + row * (CELL + 12);
+              if (x >= left && x <= left + CELL && y >= top && y <= top + CELL) {
+                return index;
+              }
+            }
+          }
+          return -1;
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+            return;
+          }
+          canvas.requestFullscreen?.().catch(() => {});
+        }
+
+        function renderGameToText() {
+          return JSON.stringify({
+            coordinateSystem: "canvas 720x450 origin top-left x→right y→down",
+            mode: state.mode,
+            message: state.message,
+            currentNumber: state.mode === "cleared" ? null : state.currentNumber,
+            selectedCell: indexToRowCol(state.selected),
+            board: state.board.map((value, index) => ({
+              index,
+              row: Math.floor(index / SIZE),
+              col: index % SIZE,
+              value,
+              fixed: state.fixed[index],
+              selectable: canPlace(index),
+            })),
+            history: [...state.history],
+            availableActions: state.mode === "ready"
+              ? ["start"]
+              : state.mode === "cleared"
+                ? ["reset"]
+                : ["move", "place", "undo", "reset", "autoPlayOne"],
+          });
+        }
+
+        startBtn.addEventListener("click", startGame);
+        placeBtn.addEventListener("click", () => placeNumber());
+        undoBtn.addEventListener("click", undoMove);
+        resetBtn.addEventListener("click", resetGame);
+
+        canvas.addEventListener("pointerdown", (event) => {
+          const index = pointerToIndex(event.clientX, event.clientY);
+          if (index < 0) return;
+          state.selected = index;
+          render();
+        });
+
+        canvas.addEventListener("dblclick", (event) => {
+          const index = pointerToIndex(event.clientX, event.clientY);
+          if (index >= 0) {
+            state.selected = index;
+            placeNumber(index);
+          }
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " ", "u", "U", "r", "R", "f", "F"].includes(event.key)) {
+            event.preventDefault();
+          }
+          if (event.key === "ArrowUp") moveSelection(0, -1);
+          if (event.key === "ArrowDown") moveSelection(0, 1);
+          if (event.key === "ArrowLeft") moveSelection(-1, 0);
+          if (event.key === "ArrowRight") moveSelection(1, 0);
+          if (event.key === "Enter" || event.key === " ") placeNumber();
+          if (event.key === "u" || event.key === "U") undoMove();
+          if (event.key === "r" || event.key === "R") resetGame();
+          if (event.key === "f" || event.key === "F") toggleFullscreen();
+        });
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => {
+          updateHud();
+          render();
+          return renderGameToText();
+        };
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.placeNumber = placeNumber;
+        window.undoMove = undoMove;
+        window.autoPlayOne = autoPlayOne;
+        window.getState = () => JSON.parse(renderGameToText());
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
