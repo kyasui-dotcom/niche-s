@@ -2,12 +2,17 @@ Original prompt: Automation: Daily classic game. Create a small game for entrepr
 
 ## 2026-06-23
 
-- Added `business-procedures/morning-card-war.html` and planned to mirror it under `public/business-procedures/`.
+- Added `business-procedures/morning-card-war.html` and mirrored it under `public/business-procedures/`.
 - Game concept: "朝のカード戦争4" - a minimal four-round war-style card game where entrepreneurs choose one of two light morning-task cards against a revealed rival card.
 - Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
-- Replaced the featured startup launch kit mini-game card, added discovery from the business procedure hub, and added a sitemap entry.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
 - Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectCard`, `playRound`, and `nextRound` hooks for automated validation.
-- TODO: mirror to `public/`, verify, push commit, and deploy.
+- Verified local HTTP 200 for `/business-procedures/morning-card-war.html`.
+- Verified with Playwright for Python that the deterministic `Enter → B → Enter → Enter → Enter → Enter → B → Enter → Enter → Enter` path ends at `mode: "ended"` with `wins: 3`, `draws: 1`, and no console/page errors.
+- Verified a 390px mobile screenshot and a desktop screenshot; the hero, play card, hand cards, stats, controls, rule section, and boundary section remain legible.
+- Pushed commit `e109b45` to `origin/backup/20260404-230957`.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-card-war.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-card-war.html`.
+- TODO: avoid reusing war-style / highest-card battle concepts on the next run.
 
 ## 2026-06-22
 
