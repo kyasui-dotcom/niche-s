@@ -1,5 +1,14 @@
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
+## 2026-06-23
+
+- Added `business-procedures/morning-card-war.html` and planned to mirror it under `public/business-procedures/`.
+- Game concept: "朝のカード戦争4" - a minimal four-round war-style card game where entrepreneurs choose one of two light morning-task cards against a revealed rival card.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card, added discovery from the business procedure hub, and added a sitemap entry.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectCard`, `playRound`, and `nextRound` hooks for automated validation.
+- TODO: mirror to `public/`, verify, push commit, and deploy.
+
 ## 2026-06-22
 
 - Added `business-procedures/morning-number-link.html` and mirrored it under `public/business-procedures/`.
