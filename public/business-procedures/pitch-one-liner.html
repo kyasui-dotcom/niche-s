@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ひとこと訴求クイズ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="3つの言い回しから伝わりやすい1本を選ぶ、起業家向けの小さな日本語ミニゲーム。扱うのは訴求表現だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="ひとこと訴求クイズ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="3つの言い回しから、いちばん伝わりやすい1本を選ぶだけの小さなゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/pitch-one-liner.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/pitch-one-liner.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-panel,
+      .choice-grid,
+      .mini-list {
+        display: grid;
+        gap: 12px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-stat,
+      .choice-card,
+      .reason-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-stat,
+      .reason-box {
+        padding: 16px;
+      }
+      .game-stat strong,
+      .question-title {
+        display: block;
+        color: var(--dark);
+      }
+      .game-stat strong {
+        font-size: 1.35rem;
+      }
+      .choice-card {
+        width: 100%;
+        padding: 16px;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      }
+      .choice-card:hover,
+      .choice-card:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .choice-card.good {
+        border-color: #16a34a;
+        background: #f0fdf4;
+      }
+      .choice-card.bad {
+        border-color: #ef4444;
+        background: #fef2f2;
+      }
+      .choice-card.done {
+        cursor: default;
+      }
+      .choice-card strong {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        color: #334155;
+        font-size: 0.84rem;
+      }
+      .choice-card p {
+        margin: 12px 0 0;
+        color: var(--text);
+        font-size: 1.02rem;
+        line-height: 1.6;
+      }
+      .question-copy,
+      .game-copy,
+      .reason-box p,
+      .mini-list,
+      .helper-text {
+        color: var(--muted);
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .mini-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ ひとこと訴求クイズ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>ひとこと訴求クイズ</h1>
+        <p class="lede">
+          3つの言い回しから、いちばん伝わりやすい1本を選ぶだけの小さな起業家向けゲームです。
+          扱うのは訴求表現の比喩だけで、法務、税務、許認可、契約、行政提出など他領域の判断には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./proposal-code-break.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>伝わりやすい1本を5問で選ぶ</h2>
+          <p class="section-copy">
+            毎問、同じテーマの言い換えが3つ出ます。専門性よりも「誰に何が届くか」が一目で分かる表現を選ぶゲームです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="choice-grid">
+              <div>
+                <span class="question-title" id="questionTitle">開始待ち</span>
+                <p class="question-copy" id="questionCopy">開始すると1問目が表示されます。</p>
+              </div>
+              <div id="choiceGrid" class="choice-grid" aria-live="polite"></div>
+              <div class="reason-box">
+                <strong id="feedbackTitle">ヒント</strong>
+                <p id="feedbackText">短く、相手が自分ごと化しやすい表現が正解寄りです。</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>正解数</span>
+              <strong id="scoreText">0 / 5</strong>
+            </div>
+            <div class="game-stat">
+              <span>問題</span>
+              <strong id="roundText">0 / 5</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">準備中</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次へ</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p class="helper-text">キー操作: `1` `2` `3` で選択 / `Enter` で次へ</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>見るポイント</h2>
+        </div>
+        <ul class="mini-list">
+          <li>「すごそう」よりも、相手の状況が見える言い方を優先します。</li>
+          <li>抽象語を重ねるより、変化や対象が見える文のほうが通りやすいです。</li>
+          <li>このゲームは訴求練習用であり、広告表現や法的表示の判断は扱いません。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは訴求表現だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、景表法、契約、行政窓口案内などの判断や助言は行いません。扱うのは、起業家が日々の発信や提案で使う短い言い回しだけです。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const rounds = [
+          {
+            title: "営業が苦手な個人事業主向けのひとこと",
+            copy: "最初の相談につながりやすい一文を選びます。",
+            answer: 1,
+            reason: "誰向けかと何が起きるかが一文で見える表現です。",
+            choices: [
+              "本質的な営業支援でビジネスを前進させます。",
+              "営業が苦手でも、初回相談につながる流れを一緒に整えます。",
+              "多面的な施策で総合的に伴走します。"
+            ]
+          },
+          {
+            title: "予約の空きが少ないサービスのひとこと",
+            copy: "急ぎの人が判断しやすい一文を選びます。",
+            answer: 0,
+            reason: "空き枠の希少性と対象行動がすぐ分かります。",
+            choices: [
+              "今週は残り2枠だけなので、相談したい方は先に日程だけ押さえられます。",
+              "高密度なサポート体制を準備しています。",
+              "限定性のあるご案内を順次実施しています。"
+            ]
+          },
+          {
+            title: "SNS投稿の改善サービスのひとこと",
+            copy: "成果のイメージが一番つかみやすい一文を選びます。",
+            answer: 2,
+            reason: "投稿後の変化が具体的で、利用シーンも想像しやすい表現です。",
+            choices: [
+              "アルゴリズムを意識した高度な投稿設計を提供します。",
+              "戦略的に言語化してブランド価値を高めます。",
+              "何を投稿すればいいか迷う日でも、1本書ける状態までネタを整えます。"
+            ]
+          },
+          {
+            title: "見積作成サポートのひとこと",
+            copy: "相手の不安が減りやすい一文を選びます。",
+            answer: 1,
+            reason: "利用者が困る瞬間と解消される状態が短く結びついています。",
+            choices: [
+              "柔軟な価格設計で収益最大化に寄与します。",
+              "見積を出すたびに迷う人向けに、項目と金額の型を先に作ります。",
+              "再現性のある提案業務を構築します。"
+            ]
+          },
+          {
+            title: "初回ヒアリング改善のひとこと",
+            copy: "相談前の人がクリックしやすい一文を選びます。",
+            answer: 2,
+            reason: "面談前の不安と得られる準備物が明確です。",
+            choices: [
+              "高品質なヒアリング体験を設計します。",
+              "要件定義の精度を引き上げる支援です。",
+              "何を聞けばいいか詰まる人向けに、初回相談の質問メモを先に整えます。"
+            ]
+          }
+        ];
+
+        const questionTitle = document.getElementById("questionTitle");
+        const questionCopy = document.getElementById("questionCopy");
+        const choiceGrid = document.getElementById("choiceGrid");
+        const feedbackTitle = document.getElementById("feedbackTitle");
+        const feedbackText = document.getElementById("feedbackText");
+        const scoreText = document.getElementById("scoreText");
+        const roundText = document.getElementById("roundText");
+        const statusText = document.getElementById("statusText");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          index: -1,
+          score: 0,
+          mode: "ready",
+          revealed: false,
+          selected: null
+        };
+
+        function currentRound() {
+          return rounds[state.index] || null;
+        }
+
+        function updateHud() {
+          scoreText.textContent = `${state.score} / ${rounds.length}`;
+          roundText.textContent = `${Math.max(state.index + 1, 0)} / ${rounds.length}`;
+          statusText.textContent =
+            state.mode === "ready"
+              ? "準備中"
+              : state.mode === "playing"
+                ? "回答待ち"
+                : state.mode === "review"
+                  ? "確認中"
+                  : "終了";
+          nextBtn.disabled = state.mode === "ready" || (state.mode === "playing" && !state.revealed);
+        }
+
+        function renderChoices() {
+          const round = currentRound();
+          choiceGrid.innerHTML = "";
+          if (!round) return;
+
+          round.choices.forEach((text, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "choice-card";
+            if (state.revealed) {
+              if (index === round.answer) button.classList.add("good");
+              if (state.selected === index && index !== round.answer) button.classList.add("bad");
+              button.classList.add("done");
+            }
+            button.innerHTML = `<strong>${index + 1}</strong><p>${text}</p>`;
+            button.disabled = state.revealed;
+            button.addEventListener("click", () => answer(index));
+            choiceGrid.appendChild(button);
+          });
+        }
+
+        function renderRound() {
+          const round = currentRound();
+          if (!round) {
+            questionTitle.textContent = "5問終了";
+            questionCopy.textContent = "最初からでもう一度遊べます。";
+            feedbackTitle.textContent = state.score >= 4 ? "かなり伝わっています" : "もう1回試せます";
+            feedbackText.textContent =
+              state.score >= 4
+                ? "相手の状況が見える言い回しをかなり拾えています。"
+                : "抽象語より、誰に何が起きるかが見える一文を選ぶと当たりやすくなります。";
+            choiceGrid.innerHTML = "";
+            updateHud();
+            return;
+          }
+
+          questionTitle.textContent = round.title;
+          questionCopy.textContent = round.copy;
+          feedbackTitle.textContent = state.revealed ? "答え" : "ヒント";
+          feedbackText.textContent = state.revealed
+            ? round.reason
+            : "相手の状態、変化、行動のどれかが見える表現を探します。";
+          renderChoices();
+          updateHud();
+        }
+
+        function startGame() {
+          state.index = 0;
+          state.score = 0;
+          state.mode = "playing";
+          state.revealed = false;
+          state.selected = null;
+          renderRound();
+        }
+
+        function answer(index) {
+          if (state.mode !== "playing" || state.revealed) return false;
+          const round = currentRound();
+          if (!round) return false;
+
+          state.selected = index;
+          state.revealed = true;
+          state.mode = "review";
+          if (index === round.answer) {
+            state.score += 1;
+          }
+          renderRound();
+          return true;
+        }
+
+        function nextRound() {
+          if (state.mode === "ready") {
+            startGame();
+            return;
+          }
+          if (state.mode === "playing" && !state.revealed) {
+            return;
+          }
+          state.index += 1;
+          state.revealed = false;
+          state.selected = null;
+          state.mode = state.index >= rounds.length ? "finished" : "playing";
+          renderRound();
+        }
+
+        function resetGame() {
+          state.index = -1;
+          state.score = 0;
+          state.mode = "ready";
+          state.revealed = false;
+          state.selected = null;
+          questionTitle.textContent = "開始待ち";
+          questionCopy.textContent = "開始すると1問目が表示されます。";
+          feedbackTitle.textContent = "ヒント";
+          feedbackText.textContent = "短く、相手が自分ごと化しやすい表現が正解寄りです。";
+          choiceGrid.innerHTML = "";
+          updateHud();
+        }
+
+        startBtn.addEventListener("click", startGame);
+        nextBtn.addEventListener("click", nextRound);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (state.mode === "playing" && !state.revealed) {
+            const numeric = Number(event.key);
+            if (numeric >= 1 && numeric <= 3) {
+              answer(numeric - 1);
+              return;
+            }
+          }
+          if (event.key === "Enter") {
+            nextRound();
+          }
+        });
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            index: state.index,
+            score: state.score,
+            revealed: state.revealed,
+            selected: state.selected,
+            current: currentRound()
+              ? {
+                  title: currentRound().title,
+                  answer: state.revealed ? currentRound().answer : null
+                }
+              : null
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
