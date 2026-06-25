@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の二択バランス | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="連絡と集中を4x4の朝枠に整える、起業家向けの小さな二値ロジックゲーム。扱うのは朝の行動配分の比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の二択バランス | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="連絡と集中を4x4の朝枠に整える、小さなクラシック寄りロジックゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-balance-binary.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-balance-binary.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-stat,
+      .legend-card,
+      .rule-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-stat,
+      .legend-card,
+      .rule-card {
+        padding: 16px;
+      }
+      .board-wrap {
+        display: grid;
+        gap: 14px;
+      }
+      .board-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 88px));
+        gap: 10px;
+        justify-content: start;
+      }
+      .board-cell {
+        min-height: 88px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #f8fafc;
+        color: var(--dark);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      }
+      .board-cell:hover,
+      .board-cell:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .board-cell.selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      }
+      .board-cell.given {
+        background: #eef2ff;
+        border-color: #c7d2fe;
+      }
+      .board-cell.contact {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+      .board-cell.focus {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #166534;
+      }
+      .board-cell.conflict {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.14);
+      }
+      .board-cell.locked {
+        cursor: default;
+      }
+      .game-stat strong,
+      .legend-chip strong {
+        display: block;
+        color: var(--dark);
+      }
+      .game-stat strong {
+        font-size: 1.3rem;
+      }
+      .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .legend-chip {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+      }
+      .legend-chip.contact {
+        background: #eff6ff;
+        border-color: #93c5fd;
+      }
+      .legend-chip.focus {
+        background: #f0fdf4;
+        border-color: #86efac;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .rule-list,
+      .tips-list,
+      .game-copy,
+      .helper-text,
+      .selection-note {
+        color: var(--muted);
+      }
+      .rule-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .selection-note {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 520px) {
+        .board-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .board-cell {
+          min-height: 68px;
+          border-radius: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の二択バランス</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の二択バランス</h1>
+        <p class="lede">
+          4x4 の朝枠に、<strong>連絡</strong>と<strong>集中</strong>を均等に置く小さな二値ロジックゲームです。
+          扱うのは起業家の朝の配分イメージだけで、法務、税務、許認可、契約、労務、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-four-queens.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>連絡と集中を 2:2 でそろえる</h2>
+          <p class="section-copy">
+            各行・各列は「連絡 2 / 集中 2」。同じ種類が 3 連続にならず、完成した行や列どうしも同じ並びにならないように埋めます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="board-wrap">
+            <div class="game-stage">
+              <div id="boardGrid" class="board-grid" role="grid" aria-label="朝の二択バランス盤面"></div>
+            </div>
+            <div class="legend-card">
+              <div class="section-head compact">
+                <p class="section-label">Legend</p>
+                <h2>置けるのは 2 種類だけ</h2>
+              </div>
+              <div class="legend-grid">
+                <div class="legend-chip contact">
+                  <strong>連</strong>
+                  <span>返信・確認・軽い連絡の比喩</span>
+                </div>
+                <div class="legend-chip focus">
+                  <strong>集</strong>
+                  <span>制作・整理・深い作業の比喩</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>残りマス</span>
+              <strong id="remainingText">12</strong>
+            </div>
+            <div class="game-stat">
+              <span>ルール違反</span>
+              <strong id="conflictText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択セル</span>
+              <strong id="selectionText">1行1列</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="contactBtn" class="button ghost" type="button">連絡を置く</button>
+              <button id="focusBtn" class="button ghost" type="button">集中を置く</button>
+              <button id="clearBtn" class="button ghost" type="button">消す</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p class="helper-text">キー操作: 矢印で移動 / `1` で連絡 / `2` で集中 / `0` で消去 / `Enter` で切替</p>
+            <p id="selectionNote" class="selection-note">青い枠のセルを埋めます。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rules</p>
+          <h2>見るルールは 3 つだけ</h2>
+        </div>
+        <ol class="rule-list">
+          <li>各行・各列は、連絡 2 マスと集中 2 マスでそろえます。</li>
+          <li>同じ種類が横や縦に 3 つ続いてはいけません。</li>
+          <li>完成した行どうし、列どうしは同じ並びにしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>短く解くコツ</h2>
+        </div>
+        <ul class="tips-list">
+          <li>すでに同じ記号が 2 つ並んでいたら、その隣は反対側になります。</li>
+          <li>行か列で片方が 2 つ埋まったら、残りは自動的にもう片方です。</li>
+          <li>これは朝の配分をイメージした娯楽用パズルであり、実務判断の助言ではありません。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝配分の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政窓口、提出期限などの判断や助言は行いません。扱うのは、起業家の朝にある「連絡」と「集中」の軽い配分イメージだけです。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const size = 4;
+        const givens = [
+          [0, null, null, null],
+          [null, 1, null, null],
+          [0, null, 0, null],
+          [null, null, null, null],
+        ];
+        const solution = [
+          [0, 0, 1, 1],
+          [1, 1, 0, 0],
+          [0, 1, 0, 1],
+          [1, 0, 1, 0],
+        ];
+        const labels = ["連", "集"];
+        const classNames = ["contact", "focus"];
+
+        const boardGrid = document.getElementById("boardGrid");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const conflictText = document.getElementById("conflictText");
+        const selectionText = document.getElementById("selectionText");
+        const selectionNote = document.getElementById("selectionNote");
+        const startBtn = document.getElementById("startBtn");
+        const contactBtn = document.getElementById("contactBtn");
+        const focusBtn = document.getElementById("focusBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          grid: [],
+          selectedRow: 0,
+          selectedCol: 1,
+          remaining: 0,
+          conflictCells: new Set(),
+          conflicts: 0,
+          message: "開始待ち",
+        };
+
+        function createInitialGrid() {
+          return givens.map((row) => row.slice());
+        }
+
+        function cellKey(row, col) {
+          return `${row}-${col}`;
+        }
+
+        function isEditable(row, col) {
+          return givens[row][col] === null;
+        }
+
+        function getLine(row, col, axis) {
+          if (axis === "row") return state.grid[row].map((value, index) => ({ row, col: index, value }));
+          return state.grid.map((line, index) => ({ row: index, col, value: line[col] }));
+        }
+
+        function markConflict(cells, reasons) {
+          cells.forEach(({ row, col }) => reasons.add(cellKey(row, col)));
+        }
+
+        function inspectLine(cells, reasons) {
+          const values = cells.map((cell) => cell.value);
+          const zeroCount = values.filter((value) => value === 0).length;
+          const oneCount = values.filter((value) => value === 1).length;
+          if (zeroCount > 2 || oneCount > 2) {
+            markConflict(cells.filter((cell) => cell.value !== null), reasons);
+          }
+          for (let index = 0; index <= values.length - 3; index += 1) {
+            const windowValues = values.slice(index, index + 3);
+            if (windowValues[0] !== null && windowValues.every((value) => value === windowValues[0])) {
+              markConflict(cells.slice(index, index + 3), reasons);
+            }
+          }
+        }
+
+        function findNextEditable(row, col, delta) {
+          let index = row * size + col;
+          for (let step = 0; step < size * size; step += 1) {
+            index = (index + delta + size * size) % (size * size);
+            const nextRow = Math.floor(index / size);
+            const nextCol = index % size;
+            if (isEditable(nextRow, nextCol)) return { row: nextRow, col: nextCol };
+          }
+          return { row, col };
+        }
+
+        function updateState() {
+          const reasons = new Set();
+
+          for (let row = 0; row < size; row += 1) inspectLine(getLine(row, 0, "row"), reasons);
+          for (let col = 0; col < size; col += 1) inspectLine(getLine(0, col, "col"), reasons);
+
+          for (let first = 0; first < size; first += 1) {
+            for (let second = first + 1; second < size; second += 1) {
+              const rowA = state.grid[first];
+              const rowB = state.grid[second];
+              if (rowA.every((value) => value !== null) && rowA.join("") === rowB.join("")) {
+                markConflict(
+                  rowA.map((value, col) => ({ row: first, col, value })).concat(
+                    rowB.map((value, col) => ({ row: second, col, value }))
+                  ),
+                  reasons
+                );
+              }
+
+              const colA = state.grid.map((row) => row[first]);
+              const colB = state.grid.map((row) => row[second]);
+              if (colA.every((value) => value !== null) && colA.join("") === colB.join("")) {
+                markConflict(
+                  colA
+                    .map((value, row) => ({ row, col: first, value }))
+                    .concat(colB.map((value, row) => ({ row, col: second, value }))),
+                  reasons
+                );
+              }
+            }
+          }
+
+          state.conflictCells = reasons;
+          state.conflicts = reasons.size;
+          state.remaining = state.grid.flat().filter((value) => value === null).length;
+
+          if (state.mode === "ready") {
+            state.message = "開始待ち";
+          } else if (state.remaining === 0 && state.conflicts === 0 && isSolved()) {
+            state.mode = "cleared";
+            state.message = "クリア";
+          } else if (state.conflicts > 0) {
+            state.message = "調整中";
+          } else {
+            state.message = "入力中";
+          }
+
+          updateHud();
+          renderBoard();
+        }
+
+        function updateHud() {
+          statusText.textContent = state.message;
+          remainingText.textContent = String(state.remaining);
+          conflictText.textContent = String(state.conflicts);
+          selectionText.textContent = `${state.selectedRow + 1}行${state.selectedCol + 1}列`;
+          selectionNote.textContent = isEditable(state.selectedRow, state.selectedCol)
+            ? "青い枠のセルを埋めます。"
+            : "固定マスは変更できません。";
+        }
+
+        function renderBoard() {
+          boardGrid.innerHTML = "";
+          state.grid.forEach((row, rowIndex) => {
+            row.forEach((value, colIndex) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "board-cell";
+              button.setAttribute("role", "gridcell");
+              button.dataset.row = String(rowIndex);
+              button.dataset.col = String(colIndex);
+              button.textContent = value === null ? "・" : labels[value];
+              if (value !== null) button.classList.add(classNames[value]);
+              if (!isEditable(rowIndex, colIndex)) button.classList.add("given", "locked");
+              if (rowIndex === state.selectedRow && colIndex === state.selectedCol) button.classList.add("selected");
+              if (state.conflictCells.has(cellKey(rowIndex, colIndex))) button.classList.add("conflict");
+              button.addEventListener("click", () => {
+                selectCell(rowIndex, colIndex);
+                if (isEditable(rowIndex, colIndex) && state.mode !== "ready") {
+                  toggleCell();
+                }
+              });
+              boardGrid.appendChild(button);
+            });
+          });
+        }
+
+        function selectCell(row, col) {
+          state.selectedRow = row;
+          state.selectedCol = col;
+          updateHud();
+          renderBoard();
+        }
+
+        function isSolved() {
+          return state.grid.every((row, rowIndex) =>
+            row.every((value, colIndex) => value === solution[rowIndex][colIndex])
+          );
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.message = "入力中";
+          const firstEditable = findNextEditable(0, 0, 1);
+          state.selectedRow = firstEditable.row;
+          state.selectedCol = firstEditable.col;
+          updateState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.grid = createInitialGrid();
+          state.selectedRow = 0;
+          state.selectedCol = 1;
+          state.remaining = 0;
+          state.conflictCells = new Set();
+          state.conflicts = 0;
+          state.message = "開始待ち";
+          updateState();
+        }
+
+        function setCellValue(value) {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          if (!isEditable(state.selectedRow, state.selectedCol)) return false;
+          state.grid[state.selectedRow][state.selectedCol] = value;
+          updateState();
+          return true;
+        }
+
+        function clearSelectedCell() {
+          return setCellValue(null);
+        }
+
+        function toggleCell() {
+          const current = state.grid[state.selectedRow][state.selectedCol];
+          if (current === null) return setCellValue(0);
+          if (current === 0) return setCellValue(1);
+          return setCellValue(null);
+        }
+
+        function moveSelection(deltaRow, deltaCol) {
+          let nextRow = state.selectedRow;
+          let nextCol = state.selectedCol;
+          for (let step = 0; step < size * size; step += 1) {
+            nextRow = (nextRow + deltaRow + size) % size;
+            nextCol = (nextCol + deltaCol + size) % size;
+            if (isEditable(nextRow, nextCol)) {
+              selectCell(nextRow, nextCol);
+              return true;
+            }
+          }
+          return false;
+        }
+
+        function autoFillOne() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if (state.grid[row][col] === null) {
+                state.selectedRow = row;
+                state.selectedCol = col;
+                setCellValue(solution[row][col]);
+                return true;
+              }
+            }
+          }
+          return false;
+        }
+
+        startBtn.addEventListener("click", startGame);
+        contactBtn.addEventListener("click", () => setCellValue(0));
+        focusBtn.addEventListener("click", () => setCellValue(1));
+        clearBtn.addEventListener("click", clearSelectedCell);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(-1, 0);
+            return;
+          }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(1, 0);
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(0, -1);
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(0, 1);
+            return;
+          }
+          if (event.key === "1") {
+            event.preventDefault();
+            setCellValue(0);
+            return;
+          }
+          if (event.key === "2") {
+            event.preventDefault();
+            setCellValue(1);
+            return;
+          }
+          if (event.key === "0" || event.key === "Delete" || event.key === "Backspace") {
+            event.preventDefault();
+            clearSelectedCell();
+            return;
+          }
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            toggleCell();
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.toggleCell = toggleCell;
+        window.setCellValue = setCellValue;
+        window.autoFillOne = autoFillOne;
+        window.advanceTime = () => updateState();
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            selected: { row: state.selectedRow, col: state.selectedCol },
+            remaining: state.remaining,
+            conflicts: state.conflicts,
+            board: state.grid.map((row) => row.map((value) => (value === null ? "." : value))),
+            message: state.message,
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

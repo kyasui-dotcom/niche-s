@@ -1,3 +1,11 @@
+## 2026-06-25
+
+- Added `business-procedures/morning-balance-binary.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の二択バランス" - a minimal 4x4 binary-logic / Takuzu-style puzzle where entrepreneurs balance only lightweight `連絡` and `集中` labels.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `toggleCell`, `setCellValue`, and `autoFillOne` hooks for automated validation.
+
 Original prompt: Automation: Daily classic game. Create a small game for entreprenuers with minimal scope on niche-s.com. However, never invade other authorities. Reuse existing repo tooling and patterns.
 
 ## 2026-06-23
