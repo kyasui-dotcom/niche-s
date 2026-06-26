@@ -1,3 +1,12 @@
+## 2026-06-26
+
+- Added `business-procedures/morning-order-logic.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4枠推理" - a minimal four-slot ordering puzzle where entrepreneurs place only lightweight `返信` `共有` `見積` `再訪` labels from four explicit clues.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Replaced the featured startup launch kit mini-game card in both copies, added discovery from both business procedure hub copies, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `cycleSelected`, `clearSelected`, `setSelectedValue`, and `autoPlayOne` hooks for automated validation.
+- TODO: avoid reusing pure four-slot ordering / clue-based arrangement puzzle formats on the next run.
+
 ## 2026-06-25
 
 - Added `business-procedures/morning-balance-binary.html` and mirrored it under `public/business-procedures/`.

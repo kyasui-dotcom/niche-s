@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の4枠推理 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4つの軽い朝タスクをヒントどおりに並べる、起業家向けの小さな順番推理ゲーム。扱うのは軽い段取りの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の4枠推理 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4つの軽い朝タスクをヒントどおりに並べる、最小スコープの順番推理ゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-order-logic.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-order-logic.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-panel,
+      .slot-grid,
+      .clue-list,
+      .legend-grid {
+        display: grid;
+        gap: 12px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-stat,
+      .legend-card,
+      .clue-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-stat,
+      .legend-card,
+      .clue-card {
+        padding: 16px;
+      }
+      .slot-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .slot-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: #f8fafc;
+      }
+      .slot-card.active {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .slot-card.good {
+        border-color: #16a34a;
+        background: #f0fdf4;
+      }
+      .slot-card.bad {
+        border-color: #ef4444;
+        background: #fef2f2;
+      }
+      .slot-card button {
+        width: 100%;
+        min-height: 72px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #ffffff;
+        font: inherit;
+        font-weight: 800;
+        color: var(--dark);
+        cursor: pointer;
+      }
+      .slot-card button:hover,
+      .slot-card button:focus-visible {
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .slot-index,
+      .legend-chip strong,
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+      }
+      .slot-index {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+      }
+      .slot-note,
+      .helper-text,
+      .game-copy,
+      .legend-chip span,
+      .clue-list li {
+        color: var(--muted);
+      }
+      .game-stat strong {
+        font-size: 1.3rem;
+      }
+      .legend-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .legend-chip {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .clue-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .slot-grid,
+        .legend-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の4枠推理</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の4枠推理</h1>
+        <p class="lede">
+          4つの軽い朝タスクを、4つのヒントどおりに並べる小さな順番推理ゲームです。
+          扱うのは起業家の朝段取りの比喩だけで、法務、税務、許認可、契約、労務、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-knight-route.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>4つの朝枠に正しい順番を入れる</h2>
+          <p class="section-copy">
+            各枠を押すたびに候補が切り替わります。重複なしで4つを並べ、ヒント4本をすべて満たせばクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div id="slotGrid" class="slot-grid" aria-label="朝の4枠"></div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>未配置</span>
+              <strong id="remainingText">4</strong>
+            </div>
+            <div class="game-stat">
+              <span>ヒント達成</span>
+              <strong id="clueText">0 / 4</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択枠</span>
+              <strong id="selectionText">1枠目</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="nextBtn" class="button ghost" type="button">次の候補</button>
+              <button id="prevBtn" class="button ghost" type="button">前の候補</button>
+              <button id="clearBtn" class="button ghost" type="button">消す</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p class="helper-text">キー操作: 矢印で枠移動 / `Enter` で次候補 / `Backspace` で消去 / `1-4` で直接入力</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card clue-card">
+        <div class="section-head">
+          <p class="section-label">Clues</p>
+          <h2>見るヒントは4本だけ</h2>
+        </div>
+        <ol id="clueList" class="clue-list"></ol>
+      </section>
+
+      <section class="card legend-card">
+        <div class="section-head">
+          <p class="section-label">Legend</p>
+          <h2>並べるのは軽い4タスク</h2>
+        </div>
+        <div class="legend-grid">
+          <div class="legend-chip"><strong>返信</strong><span>軽い返答やDM返信の比喩</span></div>
+          <div class="legend-chip"><strong>共有</strong><span>短い進捗共有や送付の比喩</span></div>
+          <div class="legend-chip"><strong>見積</strong><span>価格たたき台づくりの比喩</span></div>
+          <div class="legend-chip"><strong>再訪</strong><span>見込み先への再接触の比喩</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い段取りの比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政窓口、提出期限などの判断や助言は行いません。扱うのは、起業家の朝にある軽い段取りイメージだけです。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const labels = ["返信", "共有", "見積", "再訪"];
+        const solution = [0, 1, 2, 3];
+        const clues = [
+          {
+            text: "共有は、返信のすぐ後ろに入る。",
+            check: (slots) => {
+              const reply = slots.indexOf(0);
+              const share = slots.indexOf(1);
+              return reply !== -1 && share === reply + 1;
+            }
+          },
+          {
+            text: "見積は、1枠目にも4枠目にも入らない。",
+            check: (slots) => slots.indexOf(2) > 0 && slots.indexOf(2) < 3
+          },
+          {
+            text: "再訪は、見積より後ろに入る。",
+            check: (slots) => {
+              const estimate = slots.indexOf(2);
+              const revisit = slots.indexOf(3);
+              return estimate !== -1 && revisit !== -1 && revisit > estimate;
+            }
+          },
+          {
+            text: "1枠目は、返信で始まる。",
+            check: (slots) => slots[0] === 0
+          }
+        ];
+
+        const slotGrid = document.getElementById("slotGrid");
+        const clueList = document.getElementById("clueList");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const clueText = document.getElementById("clueText");
+        const selectionText = document.getElementById("selectionText");
+        const startBtn = document.getElementById("startBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          slots: [null, null, null, null],
+          selected: 0,
+          matchedClues: 0,
+          remaining: 4
+        };
+
+        function slotValueLabel(value) {
+          return value === null ? "未選択" : labels[value];
+        }
+
+        function countMatchedClues() {
+          return clues.filter((clue) => clue.check(state.slots)).length;
+        }
+
+        function hasDuplicateValues() {
+          const values = state.slots.filter((value) => value !== null);
+          return new Set(values).size !== values.length;
+        }
+
+        function isSolved() {
+          return state.slots.every((value, index) => value === solution[index]);
+        }
+
+        function updateState() {
+          state.remaining = state.slots.filter((value) => value === null).length;
+          state.matchedClues = countMatchedClues();
+
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          } else if (isSolved()) {
+            state.mode = "cleared";
+            statusText.textContent = "クリア";
+          } else if (hasDuplicateValues()) {
+            statusText.textContent = "重複あり";
+          } else {
+            statusText.textContent = "推理中";
+          }
+
+          remainingText.textContent = String(state.remaining);
+          clueText.textContent = `${state.matchedClues} / ${clues.length}`;
+          selectionText.textContent = `${state.selected + 1}枠目`;
+          renderSlots();
+          renderClues();
+        }
+
+        function renderSlots() {
+          slotGrid.innerHTML = "";
+          state.slots.forEach((value, index) => {
+            const card = document.createElement("div");
+            card.className = "slot-card";
+            if (index === state.selected) card.classList.add("active");
+            if (state.mode === "cleared" && value === solution[index]) {
+              card.classList.add("good");
+            } else if (value !== null && value !== solution[index]) {
+              card.classList.add("bad");
+            }
+
+            const label = document.createElement("span");
+            label.className = "slot-index";
+            label.textContent = `${index + 1}枠目`;
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = slotValueLabel(value);
+            button.addEventListener("click", () => {
+              selectSlot(index);
+              cycleSelected(1);
+            });
+
+            const note = document.createElement("p");
+            note.className = "slot-note";
+            note.textContent = value === null ? "クリックで候補を入れる" : "クリックで次の候補へ";
+
+            card.append(label, button, note);
+            slotGrid.appendChild(card);
+          });
+        }
+
+        function renderClues() {
+          clueList.innerHTML = "";
+          clues.forEach((clue) => {
+            const item = document.createElement("li");
+            item.textContent = clue.text;
+            if (clue.check(state.slots)) {
+              item.style.color = "#166534";
+              item.style.fontWeight = "700";
+            }
+            clueList.appendChild(item);
+          });
+        }
+
+        function selectSlot(index) {
+          state.selected = index;
+          updateState();
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          updateState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.slots = [null, null, null, null];
+          state.selected = 0;
+          updateState();
+        }
+
+        function cycleSelected(direction) {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          const current = state.slots[state.selected];
+          const next = current === null ? (direction > 0 ? 0 : labels.length - 1) : (current + direction + labels.length) % labels.length;
+          state.slots[state.selected] = next;
+          updateState();
+          return true;
+        }
+
+        function clearSelected() {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          state.slots[state.selected] = null;
+          updateState();
+          return true;
+        }
+
+        function moveSelection(delta) {
+          state.selected = (state.selected + delta + state.slots.length) % state.slots.length;
+          updateState();
+          return true;
+        }
+
+        function setSelectedValue(value) {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          state.slots[state.selected] = value;
+          updateState();
+          return true;
+        }
+
+        function autoPlayOne() {
+          for (let index = 0; index < solution.length; index += 1) {
+            if (state.slots[index] !== solution[index]) {
+              state.selected = index;
+              setSelectedValue(solution[index]);
+              return true;
+            }
+          }
+          return false;
+        }
+
+        startBtn.addEventListener("click", startGame);
+        nextBtn.addEventListener("click", () => cycleSelected(1));
+        prevBtn.addEventListener("click", () => cycleSelected(-1));
+        clearBtn.addEventListener("click", clearSelected);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "Enter" || event.code === "Space") {
+            event.preventDefault();
+            cycleSelected(1);
+            return;
+          }
+          if (event.key === "Backspace" || event.key === "Delete" || event.key === "0") {
+            event.preventDefault();
+            clearSelected();
+            return;
+          }
+          if (/^[1-4]$/.test(event.key)) {
+            event.preventDefault();
+            setSelectedValue(Number(event.key) - 1);
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.cycleSelected = cycleSelected;
+        window.clearSelected = clearSelected;
+        window.setSelectedValue = setSelectedValue;
+        window.autoPlayOne = autoPlayOne;
+        window.advanceTime = () => updateState();
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            selected: state.selected,
+            remaining: state.remaining,
+            matchedClues: state.matchedClues,
+            duplicate: hasDuplicateValues(),
+            slots: state.slots.map((value) => (value === null ? "." : labels[value]))
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
