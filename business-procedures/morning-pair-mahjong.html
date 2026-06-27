@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の軽牌ペア消し | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="軽い朝タスクの同じ牌を2枚ずつ消していく、起業家向けの小さな牌合わせゲーム。扱うのは返信や共有などの軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の軽牌ペア消し | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="左右どちらかが空いた同じ牌を2枚ずつ消す、小さなクラシック寄り牌合わせゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-pair-mahjong.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-pair-mahjong.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-panel,
+      .rule-list,
+      .pair-list {
+        display: grid;
+        gap: 12px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-stat,
+      .rule-card,
+      .pair-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-stat,
+      .rule-card,
+      .pair-card {
+        padding: 16px;
+      }
+      .board-wrap {
+        display: grid;
+        gap: 14px;
+      }
+      .board-surface {
+        position: relative;
+        min-height: 330px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background:
+          linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.98)),
+          radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 46%);
+        overflow: hidden;
+      }
+      .tile {
+        position: absolute;
+        width: 110px;
+        min-height: 72px;
+        border: 1px solid #cbd5e1;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+        color: var(--dark);
+        font: inherit;
+        font-weight: 800;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, opacity 120ms ease;
+      }
+      .tile span {
+        display: block;
+        font-size: 1rem;
+      }
+      .tile small {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .tile.open {
+        border-color: #38bdf8;
+      }
+      .tile.blocked {
+        cursor: not-allowed;
+        opacity: 0.58;
+        box-shadow: none;
+      }
+      .tile.selected {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18), 0 16px 32px rgba(15, 23, 42, 0.14);
+        transform: translateY(-2px);
+      }
+      .tile.removed {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .board-note,
+      .helper-text,
+      .rule-list li,
+      .pair-list li,
+      .game-copy {
+        color: var(--muted);
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.3rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .pair-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .board-note {
+        margin: 0;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 620px) {
+        .board-surface {
+          min-height: 420px;
+        }
+        .tile {
+          width: 92px;
+          min-height: 68px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の軽牌ペア消し</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の軽牌ペア消し</h1>
+        <p class="lede">
+          返信、共有、見積、整理、再訪のような軽い朝タスク牌を、同じ2枚ずつ消していく小さな牌合わせゲームです。
+          扱うのは起業家の軽い段取り比喩だけで、法務、税務、許認可、契約、労務、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-order-logic.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>左右どちらかが空いた同じ牌を2枚選ぶ</h2>
+          <p class="section-copy">
+            上に重なりがなく、左右どちらかが空いている牌だけ選べます。5ペアすべて消せばクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="board-wrap">
+              <div id="boardSurface" class="board-surface" aria-label="朝の軽牌ペア消し盤面"></div>
+              <p id="boardNote" class="board-note">開始すると、いま選べる牌に「選択可」が表示されます。</p>
+            </div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>残りペア</span>
+              <strong id="remainingText">5</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="moveText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択可ペア</span>
+              <strong id="openPairText">0</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="hintBtn" class="button ghost" type="button">選べる牌を見る</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p class="helper-text">キー操作: `1` から `0` で各牌を選択 / `R` でリセット</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card rule-card">
+        <div class="section-head">
+          <p class="section-label">Rules</p>
+          <h2>見るルールは3つだけ</h2>
+        </div>
+        <ul class="rule-list">
+          <li>同じラベルの牌2枚で1ペアです。</li>
+          <li>上に重なりがある牌は選べません。</li>
+          <li>左右どちらかが空いている牌だけ選べます。</li>
+        </ul>
+      </section>
+
+      <section class="card pair-card">
+        <div class="section-head">
+          <p class="section-label">Pairs</p>
+          <h2>出てくるのは軽い5ラベルだけ</h2>
+        </div>
+        <ul class="pair-list">
+          <li>返信: 軽い返答やDM返信の比喩</li>
+          <li>共有: 短い進捗共有の比喩</li>
+          <li>見積: たたき台づくりの比喩</li>
+          <li>整理: 朝の棚卸しや整え直しの比喩</li>
+          <li>再訪: 見込み先への再接触の比喩</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い段取りの比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政窓口、提出期限などの判断や助言は行いません。扱うのは、起業家の朝にある軽い段取りイメージだけです。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const boardSurface = document.getElementById("boardSurface");
+        const boardNote = document.getElementById("boardNote");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const moveText = document.getElementById("moveText");
+        const openPairText = document.getElementById("openPairText");
+        const startBtn = document.getElementById("startBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const tileDefs = [
+          { id: "b0", label: "返信", row: "bottom", order: 0, x: 12, y: 214, blocks: [] },
+          { id: "b1", label: "共有", row: "bottom", order: 1, x: 108, y: 214, blocks: ["m0"] },
+          { id: "b2", label: "整理", row: "bottom", order: 2, x: 204, y: 214, blocks: ["m1"] },
+          { id: "b3", label: "整理", row: "bottom", order: 3, x: 300, y: 214, blocks: ["m2"] },
+          { id: "b4", label: "返信", row: "bottom", order: 4, x: 396, y: 214, blocks: [] },
+          { id: "m0", label: "見積", row: "middle", order: 0, x: 60, y: 124, blocks: ["t0"] },
+          { id: "m1", label: "共有", row: "middle", order: 1, x: 156, y: 124, blocks: ["t0", "t1"] },
+          { id: "m2", label: "見積", row: "middle", order: 2, x: 252, y: 124, blocks: ["t1"] },
+          { id: "t0", label: "再訪", row: "top", order: 0, x: 132, y: 34, blocks: [] },
+          { id: "t1", label: "再訪", row: "top", order: 1, x: 228, y: 34, blocks: [] }
+        ];
+        const rowMap = {
+          bottom: ["b0", "b1", "b2", "b3", "b4"],
+          middle: ["m0", "m1", "m2"],
+          top: ["t0", "t1"]
+        };
+        const state = {
+          mode: "ready",
+          selected: [],
+          removed: new Set(),
+          moves: 0,
+          hinting: false
+        };
+
+        function isRemoved(id) {
+          return state.removed.has(id);
+        }
+
+        function getTile(id) {
+          return tileDefs.find((tile) => tile.id === id);
+        }
+
+        function isBlocked(tile) {
+          return tile.blocks.some((blocker) => !isRemoved(blocker));
+        }
+
+        function hasFreeSide(tile) {
+          const row = rowMap[tile.row].filter((id) => !isRemoved(id));
+          const index = row.indexOf(tile.id);
+          return index === 0 || index === row.length - 1;
+        }
+
+        function isOpen(tile) {
+          return !isRemoved(tile.id) && !isBlocked(tile) && hasFreeSide(tile);
+        }
+
+        function getOpenTiles() {
+          return tileDefs.filter((tile) => isOpen(tile));
+        }
+
+        function getOpenPairs() {
+          const counts = new Map();
+          for (const tile of getOpenTiles()) {
+            counts.set(tile.label, (counts.get(tile.label) || 0) + 1);
+          }
+          return [...counts.values()].filter((count) => count >= 2).length;
+        }
+
+        function updateHud() {
+          remainingText.textContent = String((tileDefs.length - state.removed.size) / 2);
+          moveText.textContent = String(state.moves);
+          openPairText.textContent = String(getOpenPairs());
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          } else if (state.mode === "playing") {
+            statusText.textContent = state.selected.length === 1 ? "1枚選択中" : "進行中";
+          } else if (state.mode === "won") {
+            statusText.textContent = "クリア";
+          } else {
+            statusText.textContent = "詰み";
+          }
+        }
+
+        function boardMessage() {
+          if (state.mode === "ready") {
+            return "開始すると、いま選べる牌に「選択可」が表示されます。";
+          }
+          if (state.mode === "won") {
+            return "5ペアすべて消しました。軽い朝段取りを整えて次へ進めます。";
+          }
+          if (state.mode === "stuck") {
+            return "同じ開き牌がなくなりました。最初からで並びを見直せます。";
+          }
+          if (state.hinting) {
+            const labels = [...new Set(getOpenTiles().map((tile) => tile.label))];
+            return `いま開いている牌: ${labels.join(" / ")}。同じラベルが2枚あるものから消せます。`;
+          }
+          if (state.selected.length === 1) {
+            return "同じラベルで、もう1枚も開いている牌を選んでください。";
+          }
+          return "上に重なりがなく、左右どちらかが空いた牌だけ選べます。";
+        }
+
+        function render() {
+          boardSurface.innerHTML = "";
+          const small = window.innerWidth <= 620;
+          for (const tile of tileDefs) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "tile";
+            button.dataset.id = tile.id;
+            button.style.left = `${small ? Math.round(tile.x * 0.78) : tile.x}px`;
+            button.style.top = `${small ? Math.round(tile.y * 1.06) : tile.y}px`;
+            button.style.zIndex = tile.row === "top" ? "3" : tile.row === "middle" ? "2" : "1";
+            if (isRemoved(tile.id)) {
+              button.classList.add("removed");
+              button.tabIndex = -1;
+            } else {
+              if (isOpen(tile)) {
+                button.classList.add("open");
+              } else {
+                button.classList.add("blocked");
+              }
+              if (state.selected.includes(tile.id)) {
+                button.classList.add("selected");
+              }
+              button.ariaLabel = `${tile.label}の牌`;
+              button.innerHTML = `<span>${tile.label}</span><small>${isOpen(tile) ? "選択可" : "まだ重なりあり"}</small>`;
+              button.addEventListener("click", () => choose(tile.id));
+            }
+            boardSurface.appendChild(button);
+          }
+          boardNote.textContent = boardMessage();
+          updateHud();
+        }
+
+        function syncWindowState() {
+          window.__pairMahjongState = {
+            mode: state.mode,
+            selected: [...state.selected],
+            moves: state.moves,
+            removed: [...state.removed],
+            remainingPairs: (tileDefs.length - state.removed.size) / 2,
+            openPairs: getOpenPairs()
+          };
+        }
+
+        function evaluateBoard() {
+          if (state.removed.size === tileDefs.length) {
+            state.mode = "won";
+            state.selected = [];
+            return;
+          }
+          if (getOpenPairs() === 0) {
+            state.mode = "stuck";
+            state.selected = [];
+          }
+        }
+
+        function startGame() {
+          if (state.mode === "playing") return;
+          state.mode = "playing";
+          state.selected = [];
+          state.hinting = false;
+          render();
+          syncWindowState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.selected = [];
+          state.removed = new Set();
+          state.moves = 0;
+          state.hinting = false;
+          render();
+          syncWindowState();
+        }
+
+        function choose(id) {
+          if (state.mode !== "playing") return;
+          const tile = getTile(id);
+          if (!tile || !isOpen(tile)) return;
+          state.hinting = false;
+          if (state.selected.includes(id)) {
+            state.selected = state.selected.filter((value) => value !== id);
+            render();
+            syncWindowState();
+            return;
+          }
+          if (state.selected.length === 0) {
+            state.selected = [id];
+            render();
+            syncWindowState();
+            return;
+          }
+          const firstTile = getTile(state.selected[0]);
+          state.moves += 1;
+          if (firstTile.label === tile.label) {
+            state.removed.add(firstTile.id);
+            state.removed.add(tile.id);
+            state.selected = [];
+            evaluateBoard();
+          } else {
+            state.selected = [id];
+          }
+          render();
+          syncWindowState();
+        }
+
+        function showHint() {
+          if (state.mode === "ready") {
+            startGame();
+            return;
+          }
+          state.hinting = true;
+          render();
+          syncWindowState();
+        }
+
+        function selectByIndex(index) {
+          const tile = tileDefs[index];
+          if (tile) choose(tile.id);
+        }
+
+        startBtn.addEventListener("click", startGame);
+        hintBtn.addEventListener("click", showHint);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (/^[1-9]$/.test(event.key)) {
+            selectByIndex(Number(event.key) - 1);
+          } else if (event.key === "0") {
+            selectByIndex(9);
+          } else if (event.key.toLowerCase() === "r") {
+            resetGame();
+          }
+        });
+
+        window.__pairMahjongApi = {
+          startGame,
+          resetGame,
+          choose,
+          selectByIndex
+        };
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

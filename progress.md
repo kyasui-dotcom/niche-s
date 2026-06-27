@@ -1,3 +1,11 @@
+## 2026-06-27
+
+- Added `business-procedures/morning-pair-mahjong.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の軽牌ペア消し" - a minimal mahjong-solitaire-style pair-removal game where entrepreneurs clear only lightweight `返信` `共有` `見積` `整理` `再訪` labels.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added deterministic `window.__pairMahjongApi` / `window.__pairMahjongState` hooks for automated validation.
+
 ## 2026-06-26
 
 - Added `business-procedures/morning-order-logic.html` and mirrored it under `public/business-procedures/`.
