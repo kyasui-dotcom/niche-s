@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の3レーン配分 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="9枚の朝コインを3レーンに配って4条件を満たす、起業家向けの小さな配分パズル。扱うのは軽い朝作業配分の比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の3レーン配分 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="9枚の朝コインを3レーンに配って4条件を満たす、最小スコープの配分パズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-three-lane-balance.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-three-lane-balance.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero,
+      .game-panel,
+      .lane-grid,
+      .clue-list,
+      .mini-list {
+        display: grid;
+        gap: 12px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-stat,
+      .lane-card,
+      .clue-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-stat,
+      .lane-card,
+      .clue-card {
+        padding: 16px;
+      }
+      .lane-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .lane-card.active {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .lane-label,
+      .game-stat strong,
+      .lane-value {
+        display: block;
+        color: var(--dark);
+      }
+      .lane-label {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .lane-value {
+        margin: 8px 0;
+        font-size: 2.1rem;
+        font-weight: 800;
+      }
+      .lane-note,
+      .helper-text,
+      .game-copy,
+      .mini-list,
+      .clue-list li {
+        color: var(--muted);
+      }
+      .lane-controls,
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .lane-controls button {
+        min-width: 52px;
+      }
+      .clue-list {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .game-stat strong {
+        font-size: 1.3rem;
+      }
+      @media (max-width: 820px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 680px) {
+        .lane-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の3レーン配分</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の3レーン配分</h1>
+        <p class="lede">
+          9枚の朝コインを、3つの軽い作業レーンへ配って4条件をそろえる小さな配分パズルです。
+          扱うのは起業家の朝段取りの比喩だけで、法務、税務、許認可、契約、労務、行政手続きなどの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-order-logic.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>9枚を3レーンへ配り切る</h2>
+          <p class="section-copy">
+            連絡、下書き、見直しの3レーンにコインを配り、4本の条件をすべて満たせばクリアです。足し引きだけで遊べます。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div id="laneGrid" class="lane-grid" aria-label="配分レーン"></div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="game-stat">
+              <span>残りコイン</span>
+              <strong id="remainingText">9</strong>
+            </div>
+            <div class="game-stat">
+              <span>条件達成</span>
+              <strong id="clueText">0 / 4</strong>
+            </div>
+            <div class="game-stat">
+              <span>選択中</span>
+              <strong id="selectionText">連絡</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="plusBtn" class="button ghost" type="button">+1</button>
+              <button id="minusBtn" class="button ghost" type="button">-1</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p class="helper-text">キー操作: `1-3` でレーン選択 / `+` `-` で増減 / 矢印左右でレーン移動</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card clue-card">
+        <div class="section-head">
+          <p class="section-label">Clues</p>
+          <h2>そろえる条件は4本だけ</h2>
+        </div>
+        <ol id="clueList" class="clue-list"></ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>見るポイント</h2>
+        </div>
+        <ul class="mini-list">
+          <li>下書きレーンは最大になります。</li>
+          <li>見直しレーンは、連絡レーンよりちょうど1枚多くなります。</li>
+          <li>これは朝の配分を題材にした娯楽で、実務判断の助言ではありません。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝配分の比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政窓口、提出期限などの判断や助言は行いません。扱うのは、起業家の朝にある軽い作業配分イメージだけです。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const TOTAL = 9;
+        const laneData = [
+          { label: "連絡", note: "短い返信や共有前の連絡の比喩" },
+          { label: "下書き", note: "提案や投稿のたたき台づくりの比喩" },
+          { label: "見直し", note: "送る前の軽い確認の比喩" }
+        ];
+        const solution = [2, 4, 3];
+        const clues = [
+          {
+            text: "下書きは、3レーンの中でいちばん多い。",
+            check: (counts) => counts[1] > counts[0] && counts[1] > counts[2]
+          },
+          {
+            text: "見直しは、連絡よりちょうど1枚多い。",
+            check: (counts) => counts[2] === counts[0] + 1
+          },
+          {
+            text: "下書きと見直しを合わせると7枚になる。",
+            check: (counts) => counts[1] + counts[2] === 7
+          },
+          {
+            text: "3レーンすべてに1枚以上入る。",
+            check: (counts) => counts.every((count) => count >= 1)
+          }
+        ];
+
+        const laneGrid = document.getElementById("laneGrid");
+        const clueList = document.getElementById("clueList");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const clueText = document.getElementById("clueText");
+        const selectionText = document.getElementById("selectionText");
+        const startBtn = document.getElementById("startBtn");
+        const plusBtn = document.getElementById("plusBtn");
+        const minusBtn = document.getElementById("minusBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          counts: [0, 0, 0],
+          selected: 0,
+          remaining: TOTAL,
+          matchedClues: 0
+        };
+
+        function sumCounts() {
+          return state.counts.reduce((sum, value) => sum + value, 0);
+        }
+
+        function countMatchedClues() {
+          return clues.filter((clue) => clue.check(state.counts)).length;
+        }
+
+        function isSolved() {
+          return state.counts.every((value, index) => value === solution[index]);
+        }
+
+        function updateState() {
+          state.remaining = TOTAL - sumCounts();
+          state.matchedClues = countMatchedClues();
+
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+          } else if (state.remaining < 0) {
+            statusText.textContent = "入れすぎ";
+          } else if (state.remaining === 0 && isSolved()) {
+            state.mode = "cleared";
+            statusText.textContent = "クリア";
+          } else {
+            state.mode = "playing";
+            statusText.textContent = "配分中";
+          }
+
+          remainingText.textContent = String(state.remaining);
+          clueText.textContent = `${state.matchedClues} / ${clues.length}`;
+          selectionText.textContent = laneData[state.selected].label;
+          renderLanes();
+          renderClues();
+        }
+
+        function renderLanes() {
+          laneGrid.innerHTML = "";
+          laneData.forEach((lane, index) => {
+            const card = document.createElement("div");
+            card.className = "lane-card";
+            if (index === state.selected) card.classList.add("active");
+
+            const label = document.createElement("span");
+            label.className = "lane-label";
+            label.textContent = lane.label;
+
+            const value = document.createElement("strong");
+            value.className = "lane-value";
+            value.textContent = String(state.counts[index]);
+
+            const note = document.createElement("p");
+            note.className = "lane-note";
+            note.textContent = lane.note;
+
+            const controls = document.createElement("div");
+            controls.className = "lane-controls";
+
+            const minus = document.createElement("button");
+            minus.type = "button";
+            minus.className = "button ghost";
+            minus.textContent = "-1";
+            minus.addEventListener("click", () => {
+              selectLane(index);
+              adjustLane(index, -1);
+            });
+
+            const plus = document.createElement("button");
+            plus.type = "button";
+            plus.className = "button ghost";
+            plus.textContent = "+1";
+            plus.addEventListener("click", () => {
+              selectLane(index);
+              adjustLane(index, 1);
+            });
+
+            controls.append(minus, plus);
+            card.append(label, value, note, controls);
+            laneGrid.appendChild(card);
+          });
+        }
+
+        function renderClues() {
+          clueList.innerHTML = "";
+          clues.forEach((clue) => {
+            const item = document.createElement("li");
+            item.textContent = clue.text;
+            if (clue.check(state.counts)) {
+              item.style.color = "#166534";
+              item.style.fontWeight = "700";
+            }
+            clueList.appendChild(item);
+          });
+        }
+
+        function startGame() {
+          if (state.mode === "ready") {
+            state.mode = "playing";
+          }
+          updateState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.counts = [0, 0, 0];
+          state.selected = 0;
+          updateState();
+        }
+
+        function selectLane(index) {
+          state.selected = index;
+          updateState();
+          return true;
+        }
+
+        function adjustLane(index, delta) {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          const next = state.counts[index] + delta;
+          if (next < 0) return false;
+          if (delta > 0 && state.remaining <= 0) return false;
+          state.counts[index] = next;
+          updateState();
+          return true;
+        }
+
+        function setLaneValue(index, value) {
+          if (state.mode === "ready") startGame();
+          if (state.mode === "cleared") return false;
+          if (value < 0) return false;
+          const nextCounts = [...state.counts];
+          nextCounts[index] = value;
+          if (nextCounts.reduce((sum, item) => sum + item, 0) > TOTAL) return false;
+          state.counts[index] = value;
+          updateState();
+          return true;
+        }
+
+        function moveSelection(delta) {
+          state.selected = (state.selected + delta + laneData.length) % laneData.length;
+          updateState();
+          return true;
+        }
+
+        function autoPlayOne() {
+          if (state.mode === "ready") startGame();
+          for (let index = 0; index < solution.length; index += 1) {
+            if (state.counts[index] < solution[index]) {
+              state.selected = index;
+              return adjustLane(index, 1);
+            }
+          }
+          for (let index = 0; index < solution.length; index += 1) {
+            if (state.counts[index] > solution[index]) {
+              state.selected = index;
+              return adjustLane(index, -1);
+            }
+          }
+          return false;
+        }
+
+        startBtn.addEventListener("click", startGame);
+        plusBtn.addEventListener("click", () => adjustLane(state.selected, 1));
+        minusBtn.addEventListener("click", () => adjustLane(state.selected, -1));
+        resetBtn.addEventListener("click", resetGame);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1);
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1);
+            return;
+          }
+          if (event.key === "+" || event.key === "=" || event.key === "ArrowUp") {
+            event.preventDefault();
+            adjustLane(state.selected, 1);
+            return;
+          }
+          if (event.key === "-" || event.key === "_" || event.key === "ArrowDown") {
+            event.preventDefault();
+            adjustLane(state.selected, -1);
+            return;
+          }
+          if (/^[1-3]$/.test(event.key)) {
+            event.preventDefault();
+            selectLane(Number(event.key) - 1);
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.selectLane = selectLane;
+        window.adjustLane = adjustLane;
+        window.setLaneValue = setLaneValue;
+        window.moveSelection = moveSelection;
+        window.autoPlayOne = autoPlayOne;
+        window.advanceTime = () => updateState();
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            mode: state.mode,
+            selected: state.selected,
+            remaining: state.remaining,
+            matchedClues: state.matchedClues,
+            counts: {
+              contact: state.counts[0],
+              draft: state.counts[1],
+              review: state.counts[2]
+            }
+          });
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

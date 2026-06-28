@@ -1,3 +1,16 @@
+## 2026-06-28
+
+- Added `business-procedures/morning-three-lane-balance.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の3レーン配分" - a minimal allocation puzzle where entrepreneurs distribute nine light morning coins across only `連絡`, `下書き`, and `見直し`.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, or administrative judgments.
+- Updated both business procedure hub copies, both startup launch kit featured mini-game cards, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `selectLane`, `adjustLane`, `setLaneValue`, `moveSelection`, and `autoPlayOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-three-lane-balance.html`.
+- Verified with Playwright-driven browser automation that the deterministic auto-play reaches `mode: "cleared"` with `remaining: 0`, `matchedClues: 4`, and `counts: { contact: 2, draft: 4, review: 3 }` with no console or page errors.
+- Verified desktop and 390px mobile rendering; the hero, three-lane controls, status panel, clue list, and boundary section remain legible.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-three-lane-balance.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-three-lane-balance.html`.
+- TODO: avoid reusing pure three-bucket allocation / exact-distribution puzzle formats on the next run.
+
 ## 2026-06-27
 
 - Added `business-procedures/morning-pair-mahjong.html` and mirrored it under `public/business-procedures/`.
