@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>訴求カルタ神経衰弱 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="悩みカードと一言カードをそろえる、起業家向けの小さな神経衰弱ゲーム。扱うのは訴求、整理、発信の比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="訴求カルタ神経衰弱 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="悩みカードと一言カードをそろえるだけの、起業家向けミニゲームです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/pitch-karuta-memory.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/pitch-karuta-memory.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage,
+      .game-panel,
+      .game-stat,
+      .note-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .game-stage,
+      .game-panel,
+      .game-stat,
+      .note-box {
+        padding: 16px;
+      }
+      .memory-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .memory-card {
+        min-height: 132px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      }
+      .memory-card:hover,
+      .memory-card:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .memory-card.is-hidden {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .memory-card.is-open {
+        border-color: #93c5fd;
+        background: #eff6ff;
+      }
+      .memory-card.is-matched {
+        border-color: #16a34a;
+        background: #f0fdf4;
+        cursor: default;
+      }
+      .memory-card small,
+      .memory-copy,
+      .helper-text,
+      .mini-list,
+      .note-box p {
+        color: var(--muted);
+      }
+      .memory-card strong,
+      .game-stat strong,
+      .section-title {
+        display: block;
+        color: var(--dark);
+      }
+      .memory-card strong {
+        margin-top: 8px;
+        line-height: 1.45;
+      }
+      .game-stat strong {
+        font-size: 1.35rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .mini-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 900px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 720px) {
+        .memory-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .memory-card {
+          min-height: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 訴求カルタ神経衰弱</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Mini game</p>
+        <h1>訴求カルタ神経衰弱</h1>
+        <p class="lede">
+          起業家が日々ぶつかりやすい「悩みカード」と、それに対応する「一言カード」をそろえるだけの小さな神経衰弱です。
+          扱うのは訴求、整理、発信、段取りの比喩だけで、法務、税務、許認可、契約解釈、行政判断など他領域の助言には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./pitch-one-liner.html">ひとこと訴求クイズを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>悩みと一言を4ペアそろえる</h2>
+          <p class="section-copy">
+            カードを2枚ずつめくって、対応する組み合わせを見つけます。悩みを見たら、どんな短い言い換えが次の一歩になるかを軽く連想するだけで十分です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <div class="memory-grid" id="memoryGrid" aria-live="polite"></div>
+          </div>
+
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>そろったペア</span>
+              <strong id="matchText">0 / 4</strong>
+            </div>
+            <div class="game-stat">
+              <span>手数</span>
+              <strong id="turnText">0</strong>
+            </div>
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">準備中</strong>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">シャッフル</button>
+            </div>
+            <p class="helper-text">2枚ずつめくって、悩みと一言の対応をそろえます。</p>
+            <div class="note-box">
+              <strong id="noteTitle">ヒント</strong>
+              <p id="noteText">悩みを解く専門助言ではなく、相手に伝わる短い整理に注目します。</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Pairs</p>
+          <h2>このゲームで扱う範囲</h2>
+        </div>
+        <ul class="mini-list">
+          <li>返信が遅れがち、サービスが曖昧、発信ネタが切れる、お金の見通しが不安など、起業初期の軽い悩みだけを比喩として扱います。</li>
+          <li>正解は「専門的に正しい」ではなく、「次の一歩が短く見える」組み合わせです。</li>
+          <li>法務、税務、許認可、契約、補助金、行政窓口案内などはこのゲームの対象外です。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>権威領域には踏み込みません</h2>
+        </div>
+        <p class="memory-copy">
+          このページは娯楽用のミニゲームです。扱うのは起業家の訴求、整理、発信の言い換えだけであり、法務、税務、許認可、契約判断、行政提出、医療、投資などの判断や助言は行いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const basePairs = [
+          {
+            id: "reply",
+            prompt: "悩み: 返信が遅れがち",
+            answer: "一言: 返信の型を先に作る",
+            note: "細かい返答より先に、最初の返し方を短く整える組み合わせです。"
+          },
+          {
+            id: "offer",
+            prompt: "悩み: サービス内容が曖昧",
+            answer: "一言: 入口・標準・上位を分ける",
+            note: "全部を一度に説明するより、選びやすい段を置く発想です。"
+          },
+          {
+            id: "content",
+            prompt: "悩み: 発信ネタが切れる",
+            answer: "一言: 今週の1テーマを先に決める",
+            note: "毎回ひらめきを待つより、今週の軸を1本置くほうが回しやすいです。"
+          },
+          {
+            id: "money",
+            prompt: "悩み: お金の見通しが不安",
+            answer: "一言: 固定費と月次の型を見える化",
+            note: "専門判断ではなく、まず見える化する整理の一言としてそろえます。"
+          }
+        ];
+
+        const memoryGrid = document.getElementById("memoryGrid");
+        const matchText = document.getElementById("matchText");
+        const turnText = document.getElementById("turnText");
+        const statusText = document.getElementById("statusText");
+        const noteTitle = document.getElementById("noteTitle");
+        const noteText = document.getElementById("noteText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          cards: [],
+          opened: [],
+          matchedPairs: 0,
+          turns: 0,
+          ready: false,
+          busy: false
+        };
+
+        function shuffle(array) {
+          const next = [...array];
+          for (let i = next.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [next[i], next[j]] = [next[j], next[i]];
+          }
+          return next;
+        }
+
+        function buildDeck() {
+          return shuffle(
+            basePairs.flatMap((pair) => [
+              { key: `${pair.id}-prompt`, pairId: pair.id, type: "悩み", text: pair.prompt, note: pair.note, opened: false, matched: false },
+              { key: `${pair.id}-answer`, pairId: pair.id, type: "一言", text: pair.answer, note: pair.note, opened: false, matched: false }
+            ])
+          );
+        }
+
+        function updateHud() {
+          matchText.textContent = `${state.matchedPairs} / ${basePairs.length}`;
+          turnText.textContent = String(state.turns);
+          if (!state.ready) {
+            statusText.textContent = "準備中";
+          } else if (state.matchedPairs === basePairs.length) {
+            statusText.textContent = "完成";
+          } else if (state.busy) {
+            statusText.textContent = "判定中";
+          } else if (state.opened.length === 1) {
+            statusText.textContent = "2枚目待ち";
+          } else {
+            statusText.textContent = "プレイ中";
+          }
+        }
+
+        function render() {
+          memoryGrid.innerHTML = "";
+
+          state.cards.forEach((card, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            const isVisible = card.opened || card.matched;
+            button.className = `memory-card ${isVisible ? "is-open" : "is-hidden"} ${card.matched ? "is-matched" : ""}`.trim();
+            button.disabled = !state.ready || state.busy || card.opened || card.matched;
+
+            if (isVisible) {
+              button.innerHTML = `<small>${card.type}</small><strong>${card.text}</strong>`;
+            } else {
+              button.textContent = "?";
+              button.setAttribute("aria-label", `カード ${index + 1}`);
+            }
+
+            button.addEventListener("click", () => openCard(index));
+            memoryGrid.appendChild(button);
+          });
+
+          updateHud();
+        }
+
+        function setNote(title, text) {
+          noteTitle.textContent = title;
+          noteText.textContent = text;
+        }
+
+        function startGame() {
+          state.cards = buildDeck();
+          state.opened = [];
+          state.matchedPairs = 0;
+          state.turns = 0;
+          state.ready = true;
+          state.busy = false;
+          setNote("ヒント", "悩みと一言の2枚がそろったら成功です。");
+          render();
+        }
+
+        function resetGame() {
+          startGame();
+        }
+
+        function finishTurn(firstIndex, secondIndex) {
+          const first = state.cards[firstIndex];
+          const second = state.cards[secondIndex];
+          const matched = first && second && first.pairId === second.pairId && first.type !== second.type;
+
+          if (matched) {
+            first.matched = true;
+            second.matched = true;
+            state.matchedPairs += 1;
+            setNote("そろいました", first.note);
+            state.opened = [];
+            state.busy = false;
+            render();
+            if (state.matchedPairs === basePairs.length) {
+              setNote("4ペア完成", "短い整理を連想しながら全部そろえました。もう一度シャッフルして遊べます。");
+            }
+            return;
+          }
+
+          setNote("おしい", "悩みと一言の対応が違いました。短く次の一歩が見える組み合わせを探します。");
+          window.setTimeout(() => {
+            first.opened = false;
+            second.opened = false;
+            state.opened = [];
+            state.busy = false;
+            render();
+          }, 700);
+        }
+
+        function openCard(index) {
+          if (!state.ready || state.busy) return;
+          const card = state.cards[index];
+          if (!card || card.opened || card.matched) return;
+
+          card.opened = true;
+          state.opened.push(index);
+          render();
+
+          if (state.opened.length === 2) {
+            state.turns += 1;
+            state.busy = true;
+            render();
+            finishTurn(state.opened[0], state.opened[1]);
+          }
+        }
+
+        function prepareGame() {
+          state.cards = buildDeck();
+          state.opened = [];
+          state.matchedPairs = 0;
+          state.turns = 0;
+          state.ready = false;
+          state.busy = false;
+          setNote("ヒント", "開始すると、悩みと一言の4ペアがシャッフルされます。");
+          render();
+        }
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        window.render_game_to_text = () =>
+          JSON.stringify({
+            ready: state.ready,
+            matchedPairs: state.matchedPairs,
+            turns: state.turns,
+            status: statusText.textContent,
+            note: noteText.textContent,
+            openCards: state.cards.filter((card) => card.opened || card.matched).map((card) => card.text)
+          });
+
+        prepareGame();
+      })();
+    </script>
+  </body>
+</html>
