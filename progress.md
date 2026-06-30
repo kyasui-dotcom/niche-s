@@ -1,3 +1,16 @@
+## 2026-06-30
+
+- Added `business-procedures/morning-sum-grid.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の3x3合計パズル" - a minimal 3x3 sum-grid puzzle where entrepreneurs fill only lightweight `返信` `共有` `再訪` `発信` labels via digits 1-4.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, administrative, medical, or investment judgments.
+- Added discovery from the business procedure hub chip list, replaced the featured startup launch kit mini-game card, and added sitemap entries in both root and `public` copies.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `setCellValue`, `setSelectedValue`, `moveSelection`, and `autoFillOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-sum-grid.html`.
+- Verified with Playwright that deterministic `startGame -> autoFillOne` steps reach `status: "完成"` with `remaining: 0`, `conflicts: 0`, and no console/page errors.
+- Verified desktop and 390px mobile screenshots; the hero, 3x3 board, side stats, digit controls, legend, rules, and boundary section remain legible.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-sum-grid.html`, `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-sum-grid.html`, and the updated startup hub page.
+- TODO: avoid reusing sum-grid / row-and-column-total puzzle formats on the next run.
+
 ## 2026-06-28
 
 - Added `business-procedures/morning-three-lane-balance.html` and mirrored it under `public/business-procedures/`.
