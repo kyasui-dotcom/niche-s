@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の4x4ケージ計算 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4x4 の盤で行列の重複を避けながらケージ条件を満たす、起業家向けの小さな計算パズルです。扱うのは朝の軽い行動ラベルの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の4x4ケージ計算 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4x4 の盤で四則ケージ条件を満たす、小さなクラシック寄り計算パズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-calcudoku.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-calcudoku.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .calc-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 18px;
+        align-items: start;
+      }
+      .calc-board,
+      .calc-panel,
+      .calc-stat,
+      .note-box,
+      .legend-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+      .calc-board,
+      .calc-panel,
+      .calc-stat,
+      .note-box,
+      .legend-box {
+        padding: 16px;
+      }
+      .calc-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 88px));
+        grid-template-rows: repeat(4, minmax(0, 88px));
+        gap: 0;
+        justify-content: center;
+        margin: 0 auto;
+        width: fit-content;
+      }
+      .calc-cell {
+        position: relative;
+        border: 1px solid #cbd5e1;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark);
+        cursor: pointer;
+        user-select: none;
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      }
+      .calc-cell:hover,
+      .calc-cell:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .calc-cell.is-selected {
+        z-index: 1;
+        background: #eff6ff;
+        box-shadow: inset 0 0 0 3px rgba(37, 99, 235, 0.22);
+      }
+      .calc-cell.is-conflict {
+        background: #fff1f2;
+      }
+      .calc-cell[data-top="1"] {
+        border-top-width: 3px;
+        border-top-color: #0f172a;
+      }
+      .calc-cell[data-right="1"] {
+        border-right-width: 3px;
+        border-right-color: #0f172a;
+      }
+      .calc-cell[data-bottom="1"] {
+        border-bottom-width: 3px;
+        border-bottom-color: #0f172a;
+      }
+      .calc-cell[data-left="1"] {
+        border-left-width: 3px;
+        border-left-color: #0f172a;
+      }
+      .cell-clue {
+        position: absolute;
+        top: 7px;
+        left: 8px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: #475569;
+      }
+      .calc-stat strong,
+      .legend-box strong {
+        display: block;
+        color: var(--dark);
+      }
+      .calc-stat strong {
+        font-size: 1.3rem;
+      }
+      .calc-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .calc-controls,
+      .digit-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .digit-row .button {
+        flex: 1 1 56px;
+        min-width: 0;
+      }
+      .helper-text,
+      .legend-box p,
+      .note-box p,
+      .mini-list {
+        color: var(--muted);
+      }
+      .mini-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 920px) {
+        .calc-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .calc-grid {
+          grid-template-columns: repeat(4, minmax(0, 70px));
+          grid-template-rows: repeat(4, minmax(0, 70px));
+        }
+        .calc-cell {
+          font-size: 1.65rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の4x4ケージ計算</span>
+      </nav>
+
+      <section class="hero card">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の4x4ケージ計算</h1>
+        <p class="lede">
+          4x4 の盤で 1 から 4 を重複なく入れながら、太線で囲まれたケージの合計やかけ算条件を満たす小さな計算パズルです。
+          扱うのは返信、見直し、共有、発信を軽く並べ直すための比喩だけで、法務、税務、許認可、契約判断、行政提出など他領域の助言には踏み込みません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-sum-grid.html">3x3合計パズルも見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>行列の重複を避けてケージ条件をそろえる</h2>
+          <p class="section-copy">
+            各行と各列では 1〜4 を 1 回ずつ使います。左上の小さなラベルが、そのケージ内で満たす条件です。マスを選んで 1〜4 を入れてください。
+          </p>
+        </div>
+        <div class="calc-shell">
+          <div class="calc-board">
+            <div id="calcGrid" class="calc-grid" aria-live="polite"></div>
+          </div>
+
+          <aside class="calc-panel" aria-label="game status">
+            <div class="calc-stat">
+              <span>残りマス</span>
+              <strong id="remainingText">16</strong>
+            </div>
+            <div class="calc-stat">
+              <span>一致したケージ</span>
+              <strong id="cageText">0 / 8</strong>
+            </div>
+            <div class="calc-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="calc-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="resetBtn" class="button ghost" type="button">リセット</button>
+            </div>
+            <div class="digit-row" aria-label="digit controls">
+              <button class="button ghost" type="button" data-digit="1">1</button>
+              <button class="button ghost" type="button" data-digit="2">2</button>
+              <button class="button ghost" type="button" data-digit="3">3</button>
+              <button class="button ghost" type="button" data-digit="4">4</button>
+              <button class="button ghost" type="button" data-digit="0">消す</button>
+            </div>
+            <p class="helper-text">操作: クリック / 矢印 / 1〜4 / Delete。Aで1手オート、Rでリセット、Fでフルスクリーン。</p>
+            <div class="note-box">
+              <strong id="noteTitle">ヒント</strong>
+              <p id="noteText">まず 1 行目と 4 行目の 2 マスケージから埋めると組み立てやすいです。</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Legend</p>
+          <h2>このページでの数字の見立て</h2>
+        </div>
+        <div class="legend-box">
+          <strong>1 = 返信 / 2 = 見直し / 3 = 共有 / 4 = 発信</strong>
+          <p>軽い朝タスクの比喩として置いているだけで、専門判断の優先順位や正解を示すものではありません。</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Rules</p>
+          <h2>扱う範囲</h2>
+        </div>
+        <ul class="mini-list">
+          <li>見るのは 4x4 の数字配置とケージ条件だけです。複雑な式変形や専門知識は不要です。</li>
+          <li>数字は軽い朝タスクの比喩であり、営業、会計、申請、契約の正解を示すものではありません。</li>
+          <li>法務、税務、許認可、契約、補助金、行政判断、医療、投資などはこのゲームの対象外です。</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>権威領域には踏み込みません</h2>
+        </div>
+        <p class="memory-copy">
+          このページは娯楽用のミニパズルです。扱うのは返信、見直し、共有、発信の軽い比喩だけであり、法務、税務、許認可、契約判断、行政提出、医療、投資などの判断や助言は行いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const puzzle = {
+          size: 4,
+          solution: [
+            [1, 2, 3, 4],
+            [3, 4, 1, 2],
+            [2, 1, 4, 3],
+            [4, 3, 2, 1]
+          ],
+          cages: [
+            { clue: "3+", cells: [[0, 0], [0, 1]] },
+            { clue: "12x", cells: [[0, 2], [0, 3]] },
+            { clue: "6x", cells: [[1, 0], [2, 0]] },
+            { clue: "4x", cells: [[1, 1], [1, 2]] },
+            { clue: "5+", cells: [[1, 3], [2, 3]] },
+            { clue: "4x", cells: [[2, 1], [2, 2]] },
+            { clue: "1-", cells: [[3, 0], [3, 1]] },
+            { clue: "1-", cells: [[3, 2], [3, 3]] }
+          ]
+        };
+
+        const calcGrid = document.getElementById("calcGrid");
+        const remainingText = document.getElementById("remainingText");
+        const cageText = document.getElementById("cageText");
+        const statusText = document.getElementById("statusText");
+        const noteTitle = document.getElementById("noteTitle");
+        const noteText = document.getElementById("noteText");
+        const startBtn = document.getElementById("startBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const digitButtons = Array.from(document.querySelectorAll("[data-digit]"));
+
+        const size = puzzle.size;
+        const totalCages = puzzle.cages.length;
+        const cageLookup = new Map();
+        const clueLookup = new Map();
+        const borderLookup = new Map();
+
+        puzzle.cages.forEach((cage, cageIndex) => {
+          const cellSet = new Set(cage.cells.map(([row, col]) => `${row},${col}`));
+          let anchorKey = cage.cells[0].join(",");
+          cage.cells.forEach(([row, col]) => {
+            const key = `${row},${col}`;
+            cageLookup.set(key, cageIndex);
+            if (row < Number(anchorKey.split(",")[0]) || (row === Number(anchorKey.split(",")[0]) && col < Number(anchorKey.split(",")[1]))) {
+              anchorKey = key;
+            }
+            const borders = {
+              top: !cellSet.has(`${row - 1},${col}`),
+              right: !cellSet.has(`${row},${col + 1}`),
+              bottom: !cellSet.has(`${row + 1},${col}`),
+              left: !cellSet.has(`${row},${col - 1}`)
+            };
+            borderLookup.set(key, borders);
+          });
+          clueLookup.set(anchorKey, cage.clue);
+        });
+
+        const state = {
+          board: Array.from({ length: size }, () => Array(size).fill(0)),
+          selectedRow: 0,
+          selectedCol: 0,
+          mode: "ready"
+        };
+
+        function cloneBoard(board) {
+          return board.map((row) => [...row]);
+        }
+
+        function startGame() {
+          state.board = Array.from({ length: size }, () => Array(size).fill(0));
+          state.selectedRow = 0;
+          state.selectedCol = 0;
+          state.mode = "playing";
+          noteTitle.textContent = "ヒント";
+          noteText.textContent = "同じ行と列で 1〜4 が重ならない形を先に作ると、ケージ条件を合わせやすくなります。";
+          render();
+          return true;
+        }
+
+        function resetGame() {
+          state.board = Array.from({ length: size }, () => Array(size).fill(0));
+          state.selectedRow = 0;
+          state.selectedCol = 0;
+          state.mode = "ready";
+          noteTitle.textContent = "ヒント";
+          noteText.textContent = "まず 1 行目と 4 行目の 2 マスケージから埋めると組み立てやすいです。";
+          render();
+          return true;
+        }
+
+        function currentValue(row, col) {
+          return state.board[row][col];
+        }
+
+        function cellConflict(row, col) {
+          const value = currentValue(row, col);
+          if (!value) return false;
+          for (let index = 0; index < size; index += 1) {
+            if (index !== col && currentValue(row, index) === value) return true;
+            if (index !== row && currentValue(index, col) === value) return true;
+          }
+          return false;
+        }
+
+        function evaluateCage(cage) {
+          const values = cage.cells.map(([row, col]) => currentValue(row, col));
+          const filled = values.every(Boolean);
+          if (!filled) {
+            return { filled: false, matched: false };
+          }
+          const numbers = [...values];
+          const clue = cage.clue;
+          let matched = false;
+          if (clue.endsWith("+")) {
+            const target = Number(clue.slice(0, -1));
+            matched = numbers.reduce((sum, value) => sum + value, 0) === target;
+          } else if (clue.endsWith("x")) {
+            const target = Number(clue.slice(0, -1));
+            matched = numbers.reduce((product, value) => product * value, 1) === target;
+          } else if (clue.endsWith("-")) {
+            const target = Number(clue.slice(0, -1));
+            matched = Math.abs(numbers[0] - numbers[1]) === target;
+          }
+          return { filled: true, matched };
+        }
+
+        function completedCages() {
+          return puzzle.cages.reduce((count, cage) => count + (evaluateCage(cage).matched ? 1 : 0), 0);
+        }
+
+        function boardComplete() {
+          return state.board.every((row) => row.every(Boolean));
+        }
+
+        function anyConflicts() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if (cellConflict(row, col)) return true;
+            }
+          }
+          return false;
+        }
+
+        function updateStatus() {
+          const remaining = state.board.flat().filter((value) => !value).length;
+          const matchedCages = completedCages();
+          remainingText.textContent = String(remaining);
+          cageText.textContent = `${matchedCages} / ${totalCages}`;
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+            return;
+          }
+          if (boardComplete() && !anyConflicts() && matchedCages === totalCages) {
+            state.mode = "cleared";
+            statusText.textContent = "完成";
+            noteTitle.textContent = "クリア";
+            noteText.textContent = "4x4 の行列と全ケージ条件がそろいました。もう1回で別の休憩に切り替えられます。";
+            return;
+          }
+          if (anyConflicts()) {
+            statusText.textContent = "重複あり";
+            return;
+          }
+          if (matchedCages === totalCages && !boardComplete()) {
+            statusText.textContent = "あと少し";
+            return;
+          }
+          statusText.textContent = "入力中";
+        }
+
+        function renderGrid() {
+          calcGrid.innerHTML = "";
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              const key = `${row},${col}`;
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "calc-cell";
+              button.dataset.row = String(row);
+              button.dataset.col = String(col);
+              const borders = borderLookup.get(key);
+              button.dataset.top = borders.top ? "1" : "0";
+              button.dataset.right = borders.right ? "1" : "0";
+              button.dataset.bottom = borders.bottom ? "1" : "0";
+              button.dataset.left = borders.left ? "1" : "0";
+              if (row === state.selectedRow && col === state.selectedCol) {
+                button.classList.add("is-selected");
+              }
+              if (cellConflict(row, col)) {
+                button.classList.add("is-conflict");
+              }
+              const clue = clueLookup.get(key);
+              if (clue) {
+                const clueNode = document.createElement("span");
+                clueNode.className = "cell-clue";
+                clueNode.textContent = clue;
+                button.appendChild(clueNode);
+              }
+              const value = currentValue(row, col);
+              if (value) {
+                const valueNode = document.createElement("span");
+                valueNode.textContent = String(value);
+                button.appendChild(valueNode);
+              }
+              button.addEventListener("click", () => {
+                state.selectedRow = row;
+                state.selectedCol = col;
+                if (state.mode === "ready") state.mode = "playing";
+                render();
+              });
+              calcGrid.appendChild(button);
+            }
+          }
+        }
+
+        function render() {
+          renderGrid();
+          updateStatus();
+        }
+
+        function setCellValue(row, col, value) {
+          if (state.mode === "ready") {
+            state.mode = "playing";
+          }
+          state.board[row][col] = value;
+          render();
+          return true;
+        }
+
+        function setSelectedValue(value) {
+          return setCellValue(state.selectedRow, state.selectedCol, value);
+        }
+
+        function clearSelected() {
+          return setSelectedValue(0);
+        }
+
+        function moveSelection(direction) {
+          const offsets = {
+            up: [-1, 0],
+            down: [1, 0],
+            left: [0, -1],
+            right: [0, 1]
+          };
+          const [dRow, dCol] = offsets[direction] || [0, 0];
+          state.selectedRow = (state.selectedRow + dRow + size) % size;
+          state.selectedCol = (state.selectedCol + dCol + size) % size;
+          render();
+          return true;
+        }
+
+        function nextEmptyCell() {
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if (!currentValue(row, col)) return [row, col];
+            }
+          }
+          return null;
+        }
+
+        function autoFillOne() {
+          if (state.mode === "ready") startGame();
+          const target = nextEmptyCell();
+          if (!target) {
+            render();
+            return false;
+          }
+          const [row, col] = target;
+          state.selectedRow = row;
+          state.selectedCol = col;
+          setCellValue(row, col, puzzle.solution[row][col]);
+          return true;
+        }
+
+        function renderGameToText() {
+          const remaining = state.board.flat().filter((value) => !value).length;
+          const matchedCages = completedCages();
+          return JSON.stringify({
+            mode: state.mode,
+            selected: { row: state.selectedRow, col: state.selectedCol },
+            board: cloneBoard(state.board),
+            remaining,
+            matchedCages,
+            totalCages,
+            conflicts: anyConflicts(),
+            coordinateSystem: "origin: top-left, rows increase downward, cols increase rightward"
+          });
+        }
+
+        function advanceTime() {
+          render();
+        }
+
+        digitButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const value = Number(button.dataset.digit);
+            if (value === 0) {
+              clearSelected();
+            } else {
+              setSelectedValue(value);
+            }
+          });
+        });
+
+        startBtn.addEventListener("click", startGame);
+        resetBtn.addEventListener("click", resetGame);
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection("up");
+            return;
+          }
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection("down");
+            return;
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection("left");
+            return;
+          }
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection("right");
+            return;
+          }
+          if (event.key >= "1" && event.key <= "4") {
+            event.preventDefault();
+            setSelectedValue(Number(event.key));
+            return;
+          }
+          if (event.key === "Backspace" || event.key === "Delete" || event.key === "0") {
+            event.preventDefault();
+            clearSelected();
+            return;
+          }
+          if (event.key.toLowerCase() === "a") {
+            event.preventDefault();
+            autoFillOne();
+            return;
+          }
+          if (event.key.toLowerCase() === "r") {
+            event.preventDefault();
+            resetGame();
+            return;
+          }
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (state.mode === "ready") startGame();
+            return;
+          }
+          if (event.key.toLowerCase() === "f") {
+            event.preventDefault();
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen?.();
+            } else {
+              document.exitFullscreen?.();
+            }
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.setSelectedValue = setSelectedValue;
+        window.clearSelected = clearSelected;
+        window.moveSelection = moveSelection;
+        window.setCellValue = setCellValue;
+        window.autoFillOne = autoFillOne;
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = advanceTime;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
