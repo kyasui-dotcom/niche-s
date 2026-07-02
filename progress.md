@@ -1,3 +1,11 @@
+## 2026-07-02
+
+- Added `business-procedures/morning-futoshiki.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4x4不等号" - a minimal 4x4 futoshiki / inequality puzzle where entrepreneurs only juggle lightweight `返信` `見直し` `共有` `発信` labels.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, administrative, medical, or investment judgments.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `setSelectedValue`, `clearSelected`, `moveSelection`, `setCellValue`, and `autoFillOne` hooks for automated validation.
+
 ## 2026-07-01
 
 - Added `business-procedures/morning-calcudoku.html` and mirrored it under `public/business-procedures/`.
