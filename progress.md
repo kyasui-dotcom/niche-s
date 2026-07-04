@@ -1,3 +1,16 @@
+## 2026-07-04
+
+- Added `business-procedures/morning-hitori.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4x4ひとり塗り" - a minimal 4x4 Hitori-style shading puzzle where entrepreneurs only juggle lightweight `返信` `見直し` `共有` `発信` labels.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, administrative, medical, or investment judgments.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `toggleSelected`, `toggleCell`, `setCellState`, and `autoFillOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-hitori.html`.
+- Verified with the shared Playwright client that the deterministic `Enter -> A x3` path reaches `mode: "cleared"` with `remainingTargetShades: 0`, `adjacentShadePairs: 0`, `whiteGroupCount: 1`, and no wrong shaded cells.
+- Verified the generated gameplay screenshot; the board, side memo, and clear overlay remain legible on desktop.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-hitori.html`, `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-hitori.html`, and the updated startup launch kit page.
+- TODO: avoid reusing Hitori / duplicate-elimination shading puzzle formats on the next run.
+
 ## 2026-07-03
 
 - Added `business-procedures/morning-skyscrapers.html` and mirrored it under `public/business-procedures/`.
