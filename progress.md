@@ -1,3 +1,17 @@
+Original prompt: Create a small game for entrepreneurs with minimal scope on niche-s.com. However, never invade other authorities.
+
+## 2026-07-05
+
+- Added `business-procedures/morning-river-crossing.html` as a minimal entrepreneur mini game built around a classic river-crossing puzzle.
+- Kept the authority boundary explicit: the page only uses light startup-prep metaphors and does not handle legal, tax, permit, contract, labor, administrative, medical, or investment judgments.
+- Mirrored the page under `public/business-procedures/` and updated the business procedure hub, startup launch kit mini-game section, and sitemap in both source and public copies.
+- Added deterministic hooks: `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `crossRiver`, and `autoPlayOne`.
+- Verified local HTTP 200 for `/business-procedures/morning-river-crossing.html`.
+- Verified with the shared Playwright client that deterministic `Start -> B x7` reaches `mode: "cleared"` with all tokens on the right bank and no conflict.
+- Verified the generated gameplay screenshot; the river, both banks, boat, and right-bank clear state remain visible on desktop.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-river-crossing.html`, `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-river-crossing.html`, and the updated startup launch kit page.
+- TODO: avoid reusing classic river-crossing / wolf-goat-cabbage style transfer constraints on the next run.
+
 ## 2026-07-04
 
 - Added `business-procedures/morning-hitori.html` and mirrored it under `public/business-procedures/`.
