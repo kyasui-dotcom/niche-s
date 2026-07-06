@@ -1,5 +1,16 @@
 Original prompt: Create a small game for entrepreneurs with minimal scope on niche-s.com. However, never invade other authorities.
 
+## 2026-07-06
+
+- Added `business-procedures/morning-magic-square.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の3x3魔方陣" - a minimal Lo Shu / magic-square puzzle where entrepreneurs only touch light morning-setup metaphors and explicit authority-boundary copy.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `setSelectedValue`, `setCellValue`, and `autoFillOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-magic-square.html`.
+- Verified with the shared Playwright client that the deterministic `Enter -> A x4` path reaches `mode: "cleared"` with `matchedLines: 8`, `remaining: 0`, and no console/page errors.
+- Verified the generated gameplay screenshot; the 3x3 board, selected cell, and side guidance remain legible on desktop.
+- TODO: push commit and deploy.
+
 ## 2026-07-05
 
 - Added `business-procedures/morning-river-crossing.html` as a minimal entrepreneur mini game built around a classic river-crossing puzzle.

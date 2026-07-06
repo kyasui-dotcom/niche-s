@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の3x3魔方陣 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="1 から 9 の数字を 3x3 に置き、縦横斜めを 15 にそろえる起業家向けの最小スコープなミニパズルです。扱うのは朝の軽い段取りの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の3x3魔方陣 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="空き4マスだけを埋めて縦横斜めを15にそろえる、小さなクラシック寄り数字パズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-magic-square.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-magic-square.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button {
+        border-radius: 10px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
+        padding: 14px;
+      }
+      #magicCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 12px;
+        background: #fbfdff;
+      }
+      .game-panel,
+      .legend-grid {
+        display: grid;
+        gap: 12px;
+      }
+      .status-card,
+      .legend-card,
+      .tip-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .status-card strong,
+      .legend-card strong,
+      .tip-card strong {
+        display: block;
+        color: var(--dark);
+      }
+      .status-card strong {
+        font-size: 1.15rem;
+      }
+      .digit-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .controls-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .legend-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .game-note,
+      .game-copy,
+      .tips-list,
+      .tip-card p {
+        color: var(--muted);
+      }
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .digit-grid,
+        .legend-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の3x3魔方陣</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の3x3魔方陣</h1>
+        <p class="lede">
+          1 から 9 の数字を 3x3 に置き、縦横斜めの合計をすべて 15 にそろえるだけの小さなクラシック寄りパズルです。
+          題材は朝の軽い段取りの切り替えだけに絞り、法務、税務、許認可、契約、労務、行政提出、投資判断など他の権威領域の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-sum-grid.html">3x3合計パズルも見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>空き 4 マスだけを埋めて、8 本の線を 15 にそろえる</h2>
+          <p class="section-copy">
+            既に置かれている 5 つの数字を手がかりに、残り 4 マスへ数字を入れます。各数字は 1 回ずつだけ使い、縦 3 本、横 3 本、斜め 2 本の合計がすべて 15 ならクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="magicCanvas" width="720" height="450" tabindex="0" aria-label="朝の3x3魔方陣の盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="status-card">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="status-card">
+              <span>残りマス</span>
+              <strong id="remainingText">4</strong>
+            </div>
+            <div class="status-card">
+              <span>そろった線</span>
+              <strong id="lineText">0 / 8</strong>
+            </div>
+            <div class="status-card">
+              <span>重複チェック</span>
+              <strong id="duplicateText">なし</strong>
+            </div>
+            <div class="controls-row">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="autoBtn" class="button ghost" type="button">1手オート</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <div class="digit-grid" aria-label="digit controls">
+              <button class="button ghost" type="button" data-digit="1">1</button>
+              <button class="button ghost" type="button" data-digit="2">2</button>
+              <button class="button ghost" type="button" data-digit="3">3</button>
+              <button class="button ghost" type="button" data-digit="4">4</button>
+              <button class="button ghost" type="button" data-digit="5">5</button>
+              <button class="button ghost" type="button" data-digit="6">6</button>
+              <button class="button ghost" type="button" data-digit="7">7</button>
+              <button class="button ghost" type="button" data-digit="8">8</button>
+              <button class="button ghost" type="button" data-digit="9">9</button>
+              <button class="button ghost" type="button" data-digit="0">消す</button>
+            </div>
+            <p id="messageText" class="game-note">操作: クリック / 矢印で移動 / 1-9で入力 / Backspaceで消す / Aで1手オート / Rで最初から / Fでフルスクリーン</p>
+            <div class="tip-card">
+              <strong>短く解くヒント</strong>
+              <p id="hintText">中央が 5 なので、向かい合うマスどうしは 10 になります。</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Legend</p>
+          <h2>このページでの数字の見立て</h2>
+        </div>
+        <div class="legend-grid">
+          <article class="legend-card">
+            <strong>1-3</strong>
+            <span>朝の最初に片づける軽い返信や確認の比喩です。</span>
+          </article>
+          <article class="legend-card">
+            <strong>4-6</strong>
+            <span>共有、見直し、下書きなど軽い整え直しの比喩です。</span>
+          </article>
+          <article class="legend-card">
+            <strong>7-9</strong>
+            <span>発信や再訪のような小さな前進の比喩です。</span>
+          </article>
+          <article class="legend-card">
+            <strong>扱う範囲</strong>
+            <span>あくまで気分転換用の数字遊びで、実務判断や専門助言は扱いません。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>数十秒で切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>中央が 5 なら、上下左右や斜めの向かい合う 2 マスの合計は 10 になります。</li>
+          <li>この盤面は空き 4 マスだけなので、候補が見えたら 1 手オートでも最後まで確認できます。</li>
+          <li>扱うのは朝の軽い段取りの比喩だけで、法務、税務、許認可などの判断はこのページの対象外です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>権威領域には踏み込みません</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出、医療、投資判断などの助言や判断は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const solution = [
+          [8, 1, 6],
+          [3, 5, 7],
+          [4, 9, 2],
+        ];
+        const givens = [
+          [8, 0, 6],
+          [0, 5, 0],
+          [4, 0, 2],
+        ];
+        const emptyOrder = [
+          [0, 1],
+          [1, 0],
+          [1, 2],
+          [2, 1],
+        ];
+
+        const canvas = document.getElementById("magicCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const lineText = document.getElementById("lineText");
+        const duplicateText = document.getElementById("duplicateText");
+        const messageText = document.getElementById("messageText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const digitButtons = Array.from(document.querySelectorAll("[data-digit]"));
+
+        const state = {
+          mode: "ready",
+          board: [],
+          selectedRow: 0,
+          selectedCol: 1,
+          message: "開始で盤面を初期化します。",
+        };
+
+        function cloneBoard(source) {
+          return source.map((row) => [...row]);
+        }
+
+        function isGiven(row, col) {
+          return givens[row][col] !== 0;
+        }
+
+        function cellKey(row, col) {
+          return `${row}-${col}`;
+        }
+
+        function resetGame(mode = "ready") {
+          state.mode = mode;
+          state.board = cloneBoard(givens);
+          state.selectedRow = 0;
+          state.selectedCol = 1;
+          state.message = mode === "ready" ? "開始で盤面を初期化します。" : "空き4マスを埋めてください。";
+          render();
+        }
+
+        function getLines() {
+          return [
+            [[0, 0], [0, 1], [0, 2]],
+            [[1, 0], [1, 1], [1, 2]],
+            [[2, 0], [2, 1], [2, 2]],
+            [[0, 0], [1, 0], [2, 0]],
+            [[0, 1], [1, 1], [2, 1]],
+            [[0, 2], [1, 2], [2, 2]],
+            [[0, 0], [1, 1], [2, 2]],
+            [[0, 2], [1, 1], [2, 0]],
+          ];
+        }
+
+        function analyzeBoard() {
+          const usedCounts = new Map();
+          let remaining = 0;
+          let wrongCount = 0;
+          for (let row = 0; row < 3; row += 1) {
+            for (let col = 0; col < 3; col += 1) {
+              const value = state.board[row][col];
+              if (value === 0) {
+                remaining += 1;
+                continue;
+              }
+              usedCounts.set(value, (usedCounts.get(value) || 0) + 1);
+              if (value !== solution[row][col]) {
+                wrongCount += 1;
+              }
+            }
+          }
+
+          const duplicates = [];
+          for (let value = 1; value <= 9; value += 1) {
+            if ((usedCounts.get(value) || 0) > 1) {
+              duplicates.push(value);
+            }
+          }
+
+          let matchedLines = 0;
+          const openLines = [];
+          for (const line of getLines()) {
+            const values = line.map(([row, col]) => state.board[row][col]);
+            if (values.includes(0)) {
+              openLines.push(line.map(([row, col]) => cellKey(row, col)));
+              continue;
+            }
+            const total = values.reduce((sum, value) => sum + value, 0);
+            if (total === 15) {
+              matchedLines += 1;
+            }
+          }
+
+          const solved = remaining === 0 && matchedLines === 8 && duplicates.length === 0 && wrongCount === 0;
+          return {
+            remaining,
+            matchedLines,
+            duplicates,
+            solved,
+            wrongCount,
+            missingNumbers: Array.from({ length: 9 }, (_, index) => index + 1).filter((value) => !usedCounts.has(value)),
+            openLines,
+          };
+        }
+
+        function updateStateText(analysis) {
+          remainingText.textContent = String(analysis.remaining);
+          lineText.textContent = `${analysis.matchedLines} / 8`;
+          duplicateText.textContent = analysis.duplicates.length ? analysis.duplicates.join(", ") : "なし";
+
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+            hintText.textContent = "中央が 5 なので、向かい合うマスどうしは 10 になります。";
+            return;
+          }
+
+          if (analysis.solved) {
+            state.mode = "cleared";
+            statusText.textContent = "完成";
+            state.message = "8本の線がすべて15でそろいました。";
+            hintText.textContent = "空き4マスだけの最小スコープ問題を解き切りました。";
+            return;
+          }
+
+          state.mode = "playing";
+          statusText.textContent = analysis.duplicates.length || analysis.wrongCount ? "見直し中" : "進行中";
+          if (analysis.duplicates.length) {
+            hintText.textContent = `重複している数字: ${analysis.duplicates.join(" / ")}`;
+          } else if (analysis.remaining > 0) {
+            hintText.textContent = `未使用の数字: ${analysis.missingNumbers.join(" / ")}`;
+          } else {
+            hintText.textContent = "数字は埋まりました。線の合計15を確認してください。";
+          }
+        }
+
+        function selectCell(row, col) {
+          state.selectedRow = Math.max(0, Math.min(2, row));
+          state.selectedCol = Math.max(0, Math.min(2, col));
+          if (isGiven(state.selectedRow, state.selectedCol)) {
+            const next = emptyOrder.find(([targetRow, targetCol]) => targetRow === state.selectedRow && targetCol === state.selectedCol);
+            if (!next) {
+              const fallback = emptyOrder[0];
+              state.selectedRow = fallback[0];
+              state.selectedCol = fallback[1];
+            }
+          }
+          render();
+        }
+
+        function moveSelection(dx, dy) {
+          let nextRow = state.selectedRow;
+          let nextCol = state.selectedCol;
+          for (let attempt = 0; attempt < 9; attempt += 1) {
+            nextRow = (nextRow + dy + 3) % 3;
+            nextCol = (nextCol + dx + 3) % 3;
+            if (!isGiven(nextRow, nextCol)) {
+              state.selectedRow = nextRow;
+              state.selectedCol = nextCol;
+              break;
+            }
+          }
+          render();
+        }
+
+        function setCellValue(row, col, value) {
+          if (state.mode === "ready") {
+            state.mode = "playing";
+          }
+          if (state.mode === "cleared" || isGiven(row, col)) {
+            return false;
+          }
+          state.board[row][col] = value;
+          state.message = value === 0 ? "数字を消しました。" : `${row + 1}行${col + 1}列に ${value} を入れました。`;
+          render();
+          return true;
+        }
+
+        function setSelectedValue(value) {
+          return setCellValue(state.selectedRow, state.selectedCol, value);
+        }
+
+        function autoFillOne() {
+          if (state.mode === "ready") {
+            startGame();
+          }
+          for (const [row, col] of emptyOrder) {
+            if (state.board[row][col] === 0) {
+              state.selectedRow = row;
+              state.selectedCol = col;
+              state.board[row][col] = solution[row][col];
+              state.message = `${row + 1}行${col + 1}列を自動入力しました。`;
+              render();
+              return true;
+            }
+          }
+          state.message = "すでに全部埋まっています。";
+          render();
+          return false;
+        }
+
+        function startGame() {
+          resetGame("playing");
+        }
+
+        function drawBoard(analysis) {
+          const width = canvas.width;
+          const height = canvas.height;
+          ctx.clearRect(0, 0, width, height);
+
+          const sky = ctx.createLinearGradient(0, 0, 0, height);
+          sky.addColorStop(0, "#f8fbff");
+          sky.addColorStop(1, "#eef6ff");
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, width, height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("朝の3x3魔方陣", 48, 58);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("縦3本・横3本・斜め2本を15にそろえる数字パズル", 48, 84);
+
+          const size = 96;
+          const gap = 14;
+          const boardX = 108;
+          const boardY = 128;
+          const openKeys = new Set(analysis.openLines.flat());
+
+          for (let row = 0; row < 3; row += 1) {
+            for (let col = 0; col < 3; col += 1) {
+              const x = boardX + col * (size + gap);
+              const y = boardY + row * (size + gap);
+              const value = state.board[row][col];
+              const given = isGiven(row, col);
+              const selected = row === state.selectedRow && col === state.selectedCol;
+              const key = cellKey(row, col);
+              const open = openKeys.has(key);
+
+              ctx.fillStyle = given ? "#dbeafe" : "#ffffff";
+              if (!given && value !== 0 && value !== solution[row][col]) {
+                ctx.fillStyle = "#fff1f2";
+              }
+              ctx.strokeStyle = selected ? "#2563eb" : open ? "#cbd5e1" : "#94a3b8";
+              ctx.lineWidth = selected ? 4 : 2;
+              ctx.beginPath();
+              ctx.roundRect(x, y, size, size, 16);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = "#0f172a";
+              ctx.font = given ? "700 34px sans-serif" : "800 40px sans-serif";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(value === 0 ? "?" : String(value), x + size / 2, y + size / 2 - 4);
+
+              ctx.font = "12px sans-serif";
+              ctx.fillStyle = "#64748b";
+              ctx.fillText(given ? "固定" : "入力", x + size / 2, y + size - 16);
+            }
+          }
+
+          const sideX = 474;
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("見方", sideX, 148);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("・中央5の向かい合う数字は合計10", sideX, 178);
+          ctx.fillText("・空き4マスだけを埋めれば完成", sideX, 202);
+          ctx.fillText("・実務助言ではなく短い気分転換", sideX, 226);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("render_game_to_text", sideX, 282);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("origin: top-left / x→right / y→down", sideX, 310);
+        }
+
+        function render() {
+          const analysis = analyzeBoard();
+          updateStateText(analysis);
+          messageText.textContent = state.message;
+          drawBoard(analysis);
+        }
+
+        function renderGameToText() {
+          const analysis = analyzeBoard();
+          return JSON.stringify({
+            mode: state.mode,
+            board: state.board,
+            selected: { row: state.selectedRow, col: state.selectedCol },
+            remaining: analysis.remaining,
+            matchedLines: analysis.matchedLines,
+            duplicates: analysis.duplicates,
+            missingNumbers: analysis.missingNumbers,
+            coordinateSystem: "origin top-left, x right, y down",
+          });
+        }
+
+        function advanceTime() {
+          render();
+        }
+
+        function handleCanvasClick(event) {
+          if (state.mode === "ready") {
+            startGame();
+          }
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (event.clientX - rect.left) * scaleX;
+          const y = (event.clientY - rect.top) * scaleY;
+          const size = 96;
+          const gap = 14;
+          const boardX = 108;
+          const boardY = 128;
+
+          for (let row = 0; row < 3; row += 1) {
+            for (let col = 0; col < 3; col += 1) {
+              const left = boardX + col * (size + gap);
+              const top = boardY + row * (size + gap);
+              if (x >= left && x <= left + size && y >= top && y <= top + size) {
+                if (!isGiven(row, col)) {
+                  selectCell(row, col);
+                }
+                canvas.focus();
+                return;
+              }
+            }
+          }
+        }
+
+        function toggleFullscreen() {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+            return;
+          }
+          document.documentElement.requestFullscreen?.();
+        }
+
+        startBtn.addEventListener("click", startGame);
+        autoBtn.addEventListener("click", autoFillOne);
+        resetBtn.addEventListener("click", () => resetGame("playing"));
+        digitButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const value = Number(button.dataset.digit);
+            setSelectedValue(value);
+            canvas.focus();
+          });
+        });
+        canvas.addEventListener("click", handleCanvasClick);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            toggleFullscreen();
+            return;
+          }
+          if (event.key === "Escape" && document.fullscreenElement) {
+            document.exitFullscreen();
+            return;
+          }
+          if (state.mode === "ready" && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            startGame();
+            return;
+          }
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection(0, -1);
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection(0, 1);
+          } else if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection(-1, 0);
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection(1, 0);
+          } else if (/^[1-9]$/.test(event.key)) {
+            event.preventDefault();
+            setSelectedValue(Number(event.key));
+          } else if (event.key === "Backspace" || event.key === "Delete" || event.key === "0") {
+            event.preventDefault();
+            setSelectedValue(0);
+          } else if (event.key === "a" || event.key === "A") {
+            event.preventDefault();
+            autoFillOne();
+          } else if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame("playing");
+          }
+        });
+
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = advanceTime;
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.setSelectedValue = setSelectedValue;
+        window.setCellValue = setCellValue;
+        window.autoFillOne = autoFillOne;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
