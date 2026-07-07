@@ -1,5 +1,16 @@
 Original prompt: Create a small game for entrepreneurs with minimal scope on niche-s.com. However, never invade other authorities.
 
+## 2026-07-07
+
+- Added `business-procedures/morning-kakurasu.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4x4カックラス" - a minimal 4x4 Kakurasu-style shading puzzle where entrepreneurs only touch light morning-setup metaphors and explicit authority-boundary copy.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `toggleSelected`, `toggleCell`, `setCellState`, and `autoFillOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-kakurasu.html`.
+- Verified with the shared Playwright client that deterministic `Enter -> A x8` reaches `mode: "cleared"` with `matchedLines: 8`, `remaining: 0`, `extras: 0`, and no console/page errors.
+- Verified the generated gameplay screenshot; the 4x4 grid, row/column clues, and side guidance remain legible on desktop.
+- TODO: push commit and deploy.
+
 ## 2026-07-06
 
 - Added `business-procedures/morning-magic-square.html` and mirrored it under `public/business-procedures/`.

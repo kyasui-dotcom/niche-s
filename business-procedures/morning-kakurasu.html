@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の4x4カックラス | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4x4 のマスを塗って行と列の合計ヒントをそろえる、起業家向けの最小スコープなクラシック寄り数字パズルです。扱うのは朝の軽い段取りの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の4x4カックラス | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="4x4 のマスを塗って行列の数字合計をそろえる、数十秒で触れるクラシック寄りロジックパズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-kakurasu.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-kakurasu.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button { border-radius: 10px; }
+      .game-hero { display: grid; gap: 16px; }
+      .game-shell { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; align-items: start; }
+      .game-stage { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%); padding: 14px; }
+      #kakurasuCanvas { display: block; width: 100%; max-width: 720px; aspect-ratio: 16 / 10; border-radius: 12px; background: #fbfdff; }
+      .game-panel, .legend-grid { display: grid; gap: 12px; }
+      .status-card, .legend-card, .tip-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fbfdff; }
+      .status-card strong, .legend-card strong, .tip-card strong { display: block; color: var(--dark); }
+      .status-card strong { font-size: 1.15rem; }
+      .controls-row { display: flex; flex-wrap: wrap; gap: 10px; }
+      .legend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .game-note, .game-copy, .tips-list, .tip-card p { color: var(--muted); }
+      .tips-list { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+      @media (max-width: 840px) { .game-shell { grid-template-columns: 1fr; } }
+      @media (max-width: 640px) { .legend-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の4x4カックラス</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の4x4カックラス</h1>
+        <p class="lede">
+          4x4 のマスを塗り、行と列の合計ヒントをそろえるだけの小さなクラシック寄りロジックパズルです。
+          題材は朝の軽い段取りの切り替えだけに絞り、法務、税務、許認可、契約、労務、行政提出、投資判断など他の権威領域の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-magic-square.html">3x3魔方陣も見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>塗るマスを決めて、行4本と列4本の合計を合わせる</h2>
+          <p class="section-copy">
+            各マスは列番号 1 から 4 の重みを持ちます。黒く塗ったマスだけを足して、右側の行ヒントと下側の列ヒントに一致したらクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="kakurasuCanvas" width="720" height="450" tabindex="0" aria-label="朝の4x4カックラスの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="status-card"><span>状態</span><strong id="statusText">開始待ち</strong></div>
+            <div class="status-card"><span>残り正解マス</span><strong id="remainingText">8</strong></div>
+            <div class="status-card"><span>一致したヒント</span><strong id="lineText">0 / 8</strong></div>
+            <div class="status-card"><span>余分な塗り</span><strong id="extraText">0</strong></div>
+            <div class="controls-row">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="autoBtn" class="button ghost" type="button">1手オート</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p id="messageText" class="game-note">操作: クリック / 矢印で移動 / Space で塗る / Aで1手オート / Rで最初から / Fでフルスクリーン</p>
+            <div class="tip-card"><strong>短く解くヒント</strong><p id="hintText">列番号の 1, 2, 3, 4 を足して、右と下の合計に合わせます。</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Legend</p><h2>このページでの見立て</h2></div>
+        <div class="legend-grid">
+          <article class="legend-card"><strong>1列目</strong><span>最初の返信や確認のような、いちばん軽い着手の比喩です。</span></article>
+          <article class="legend-card"><strong>2列目</strong><span>下書きや共有など、朝に先に置きたい軽作業の比喩です。</span></article>
+          <article class="legend-card"><strong>3-4列目</strong><span>見直しや発信のような、小さな前進を表す比喩です。</span></article>
+          <article class="legend-card"><strong>扱う範囲</strong><span>あくまで気分転換用の数字遊びで、実務判断や専門助言は扱いません。</span></article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Tips</p><h2>数十秒で切り替えるコツ</h2></div>
+        <ol class="tips-list">
+          <li>右側の行ヒントが 5 なら、1+4 か 2+3 の組み合わせを先に疑うと早く進みます。</li>
+          <li>この盤面は 8 マスだけが正解なので、1手オートを押すと完成形の確認もすぐできます。</li>
+          <li>扱うのは朝の軽い段取りの比喩だけで、法務、税務、許認可などの判断はこのページの対象外です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Boundary</p><h2>権威領域には踏み込みません</h2></div>
+        <p class="game-copy">このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出、医療、投資判断などの助言や判断は扱いません。</p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const solution = [[1,0,0,1],[0,1,1,0],[1,0,1,0],[0,1,0,1]];
+        const rowTargets = [5,5,4,6];
+        const colTargets = [4,6,5,5];
+        const fillOrder = [[0,0],[0,3],[1,1],[1,2],[2,0],[2,2],[3,1],[3,3]];
+        const canvas = document.getElementById("kakurasuCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const lineText = document.getElementById("lineText");
+        const extraText = document.getElementById("extraText");
+        const messageText = document.getElementById("messageText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const state = { mode: "ready", board: [], selectedRow: 0, selectedCol: 0, message: "開始で盤面を初期化します。" };
+
+        function createBoard() { return Array.from({ length: 4 }, () => Array(4).fill(0)); }
+        function resetGame(mode = "ready") {
+          state.mode = mode;
+          state.board = createBoard();
+          state.selectedRow = 0;
+          state.selectedCol = 0;
+          state.message = mode === "ready" ? "開始で盤面を初期化します。" : "塗るマスを選んでください。";
+          render();
+        }
+        function analyzeBoard() {
+          const rowSums = [0,0,0,0];
+          const colSums = [0,0,0,0];
+          let remaining = 0;
+          let extras = 0;
+          for (let row = 0; row < 4; row += 1) {
+            for (let col = 0; col < 4; col += 1) {
+              if (!state.board[row][col]) {
+                if (solution[row][col]) remaining += 1;
+                continue;
+              }
+              rowSums[row] += col + 1;
+              colSums[col] += row + 1;
+              if (!solution[row][col]) extras += 1;
+            }
+          }
+          const matchedRows = rowSums.filter((sum, index) => sum === rowTargets[index]).length;
+          const matchedCols = colSums.filter((sum, index) => sum === colTargets[index]).length;
+          const matchedLines = matchedRows + matchedCols;
+          return { rowSums, colSums, remaining, extras, matchedLines, solved: remaining === 0 && extras === 0 && matchedLines === 8 };
+        }
+        function updateStateText(analysis) {
+          remainingText.textContent = String(analysis.remaining);
+          lineText.textContent = `${analysis.matchedLines} / 8`;
+          extraText.textContent = String(analysis.extras);
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+            hintText.textContent = "列番号の 1, 2, 3, 4 を足して、右と下の合計に合わせます。";
+            return;
+          }
+          if (analysis.solved) {
+            state.mode = "cleared";
+            statusText.textContent = "完成";
+            state.message = "行4本と列4本の合計がそろいました。";
+            hintText.textContent = "8マスの最小スコープ問題を解き切りました。";
+            return;
+          }
+          state.mode = "playing";
+          if (analysis.extras > 0) {
+            statusText.textContent = "見直し中";
+            hintText.textContent = `余分な塗りが ${analysis.extras} マスあります。`;
+          } else if (analysis.remaining > 0) {
+            statusText.textContent = "進行中";
+            hintText.textContent = `残り ${analysis.remaining} マスで全ヒントがそろいます。`;
+          } else {
+            statusText.textContent = "最終確認";
+            hintText.textContent = "塗る場所はそろっています。行列の合計一致を確認してください。";
+          }
+        }
+        function selectCell(row, col) { state.selectedRow = Math.max(0, Math.min(3, row)); state.selectedCol = Math.max(0, Math.min(3, col)); render(); }
+        function moveSelection(dx, dy) { state.selectedRow = (state.selectedRow + dy + 4) % 4; state.selectedCol = (state.selectedCol + dx + 4) % 4; render(); }
+        function setCellState(row, col, value) {
+          if (state.mode === "ready") state.mode = "playing";
+          if (state.mode === "cleared") return false;
+          state.board[row][col] = value ? 1 : 0;
+          state.message = value ? `${row + 1}行${col + 1}列を塗りました。` : `${row + 1}行${col + 1}列を消しました。`;
+          render();
+          return true;
+        }
+        function toggleSelected() { return setCellState(state.selectedRow, state.selectedCol, state.board[state.selectedRow][state.selectedCol] ? 0 : 1); }
+        function toggleCell(row, col) { return setCellState(row, col, state.board[row][col] ? 0 : 1); }
+        function autoFillOne() {
+          if (state.mode === "ready") startGame();
+          for (const [row, col] of fillOrder) {
+            if (!state.board[row][col]) {
+              state.selectedRow = row;
+              state.selectedCol = col;
+              state.board[row][col] = 1;
+              state.message = `${row + 1}行${col + 1}列を自動で塗りました。`;
+              render();
+              return true;
+            }
+          }
+          state.message = "正解マスはすでに全部塗られています。";
+          render();
+          return false;
+        }
+        function startGame() { resetGame("playing"); }
+        function drawBoard(analysis) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          sky.addColorStop(0, "#f8fbff");
+          sky.addColorStop(1, "#eef6ff");
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("朝の4x4カックラス", 48, 58);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("塗ったマスの列番号・行番号を足してヒントに合わせる数字パズル", 48, 84);
+          const size = 72;
+          const gap = 12;
+          const boardX = 132;
+          const boardY = 122;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = "700 20px sans-serif";
+          ctx.fillStyle = "#0f172a";
+          for (let col = 0; col < 4; col += 1) ctx.fillText(String(col + 1), boardX + col * (size + gap) + size / 2, boardY - 28);
+          for (let row = 0; row < 4; row += 1) ctx.fillText(String(row + 1), boardX - 28, boardY + row * (size + gap) + size / 2);
+          for (let row = 0; row < 4; row += 1) {
+            for (let col = 0; col < 4; col += 1) {
+              const x = boardX + col * (size + gap);
+              const y = boardY + row * (size + gap);
+              const active = state.board[row][col] === 1;
+              const selected = row === state.selectedRow && col === state.selectedCol;
+              const wrong = active && !solution[row][col];
+              ctx.fillStyle = wrong ? "#dc2626" : active ? "#1d4ed8" : "#ffffff";
+              ctx.strokeStyle = selected ? "#f59e0b" : "#94a3b8";
+              ctx.lineWidth = selected ? 4 : 2;
+              ctx.beginPath();
+              ctx.roundRect(x, y, size, size, 14);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = active ? "#ffffff" : "#475569";
+              ctx.font = active ? "700 28px sans-serif" : "600 22px sans-serif";
+              ctx.fillText(active ? "ON" : "OFF", x + size / 2, y + size / 2 - 3);
+            }
+          }
+          ctx.font = "700 24px sans-serif";
+          for (let row = 0; row < 4; row += 1) {
+            ctx.fillStyle = analysis.rowSums[row] === rowTargets[row] ? "#15803d" : "#0f172a";
+            ctx.fillText(String(rowTargets[row]), boardX + 4 * (size + gap) + 30, boardY + row * (size + gap) + size / 2);
+          }
+          for (let col = 0; col < 4; col += 1) {
+            ctx.fillStyle = analysis.colSums[col] === colTargets[col] ? "#15803d" : "#0f172a";
+            ctx.fillText(String(colTargets[col]), boardX + col * (size + gap) + size / 2, boardY + 4 * (size + gap) + 30);
+          }
+          const sideX = 500;
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("見方", sideX, 148);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("・右は行ごとの列番号合計", sideX, 178);
+          ctx.fillText("・下は列ごとの行番号合計", sideX, 202);
+          ctx.fillText("・赤は余分な塗りの警告", sideX, 226);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.fillText("render_game_to_text", sideX, 282);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("origin: top-left / x→right / y→down", sideX, 310);
+        }
+        function render() { const analysis = analyzeBoard(); updateStateText(analysis); messageText.textContent = state.message; drawBoard(analysis); }
+        function renderGameToText() {
+          const analysis = analyzeBoard();
+          return JSON.stringify({ mode: state.mode, board: state.board, selected: { row: state.selectedRow, col: state.selectedCol }, rowTargets, colTargets, rowSums: analysis.rowSums, colSums: analysis.colSums, remaining: analysis.remaining, extras: analysis.extras, matchedLines: analysis.matchedLines, coordinateSystem: "origin top-left, x right, y down" });
+        }
+        function advanceTime() { render(); }
+        function handleCanvasClick(event) {
+          if (state.mode === "ready") startGame();
+          const rect = canvas.getBoundingClientRect();
+          const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+          const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+          const size = 72;
+          const gap = 12;
+          const boardX = 132;
+          const boardY = 122;
+          for (let row = 0; row < 4; row += 1) {
+            for (let col = 0; col < 4; col += 1) {
+              const left = boardX + col * (size + gap);
+              const top = boardY + row * (size + gap);
+              if (x >= left && x <= left + size && y >= top && y <= top + size) {
+                selectCell(row, col);
+                canvas.focus();
+                return;
+              }
+            }
+          }
+        }
+        function toggleFullscreen() {
+          if (document.fullscreenElement) { document.exitFullscreen(); return; }
+          document.documentElement.requestFullscreen?.();
+        }
+        startBtn.addEventListener("click", startGame);
+        autoBtn.addEventListener("click", autoFillOne);
+        resetBtn.addEventListener("click", () => resetGame("playing"));
+        canvas.addEventListener("click", handleCanvasClick);
+        canvas.addEventListener("dblclick", () => { toggleSelected(); canvas.focus(); });
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") { event.preventDefault(); toggleFullscreen(); return; }
+          if (event.key === "Escape" && document.fullscreenElement) { document.exitFullscreen(); return; }
+          if (state.mode === "ready" && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); startGame(); return; }
+          if (event.key === "ArrowUp") { event.preventDefault(); moveSelection(0, -1); }
+          else if (event.key === "ArrowDown") { event.preventDefault(); moveSelection(0, 1); }
+          else if (event.key === "ArrowLeft") { event.preventDefault(); moveSelection(-1, 0); }
+          else if (event.key === "ArrowRight") { event.preventDefault(); moveSelection(1, 0); }
+          else if (event.key === " " || event.key === "Enter") { event.preventDefault(); toggleSelected(); }
+          else if (event.key === "a" || event.key === "A") { event.preventDefault(); autoFillOne(); }
+          else if (event.key === "r" || event.key === "R") { event.preventDefault(); resetGame("playing"); }
+          else if (event.key === "0" || event.key === "Backspace" || event.key === "Delete") { event.preventDefault(); setCellState(state.selectedRow, state.selectedCol, 0); }
+        });
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = advanceTime;
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.toggleSelected = toggleSelected;
+        window.toggleCell = toggleCell;
+        window.setCellState = setCellState;
+        window.autoFillOne = autoFillOne;
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
