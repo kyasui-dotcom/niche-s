@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の橋かけ6 | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="6つの島を単橋・二重橋でつないで数字をそろえる、起業家向けの最小スコープなクラシック寄り橋かけパズルです。扱うのは朝の軽い段取りの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の橋かけ6 | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="6つの島を橋でつなぎ、島の数字どおりに本数をそろえる、数十秒で触れるクラシック寄りロジックパズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-bridge-links.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-bridge-links.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button { border-radius: 10px; }
+      .game-hero { display: grid; gap: 16px; }
+      .game-shell { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; align-items: start; }
+      .game-stage { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%); padding: 14px; }
+      #bridgeCanvas { display: block; width: 100%; max-width: 720px; aspect-ratio: 16 / 10; border-radius: 12px; background: #fbfdff; }
+      .game-panel, .legend-grid { display: grid; gap: 12px; }
+      .status-card, .legend-card, .tip-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fbfdff; }
+      .status-card strong, .legend-card strong, .tip-card strong { display: block; color: var(--dark); }
+      .status-card strong { font-size: 1.15rem; }
+      .controls-row { display: flex; flex-wrap: wrap; gap: 10px; }
+      .legend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .game-note, .game-copy, .tips-list, .tip-card p { color: var(--muted); }
+      .tips-list { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+      @media (max-width: 840px) { .game-shell { grid-template-columns: 1fr; } }
+      @media (max-width: 640px) { .legend-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の橋かけ6</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の橋かけ6</h1>
+        <p class="lede">
+          6つの島を単橋か二重橋でつなぎ、島の数字どおりに本数をそろえるだけの小さなクラシック寄りロジックパズルです。
+          題材は朝の軽い段取りの流れだけに絞り、法務、税務、許認可、契約、労務、行政提出、医療、投資判断など他の権威領域の判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-kakurasu.html">4x4カックラスも見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>6つの島をつなぎ、数字どおりに橋をそろえる</h2>
+          <p class="section-copy">
+            島の数字は、その島につながる橋の本数です。候補線を選んで 0 → 1 → 2 本と切り替え、6つすべての島をひとつながりにしたらクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="bridgeCanvas" width="720" height="450" tabindex="0" aria-label="朝の橋かけ6の盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="status-card"><span>状態</span><strong id="statusText">開始待ち</strong></div>
+            <div class="status-card"><span>残り橋本数</span><strong id="remainingText">8</strong></div>
+            <div class="status-card"><span>一致した島</span><strong id="islandText">0 / 6</strong></div>
+            <div class="status-card"><span>二重橋</span><strong id="doubleText">0</strong></div>
+            <div class="controls-row">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="autoBtn" class="button ghost" type="button">1手オート</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <p id="messageText" class="game-note">操作: クリック / 矢印で候補線移動 / Space で橋切替 / Aで1手オート / Rで最初から / Fでフルスクリーン</p>
+            <div class="tip-card"><strong>短く解くヒント</strong><p id="hintText">中央2島は 4 本ずつ必要なので、二重橋の置き場を先に見ると早いです。</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Legend</p><h2>このページでの見立て</h2></div>
+        <div class="legend-grid">
+          <article class="legend-card"><strong>左列の島</strong><span>返信や下書きのような、朝に軽く着手する作業の比喩です。</span></article>
+          <article class="legend-card"><strong>中央列の島</strong><span>共有や見直しのように、流れをつなぐ中心作業の比喩です。</span></article>
+          <article class="legend-card"><strong>右列の島</strong><span>確認や発信のような、小さな完了ポイントの比喩です。</span></article>
+          <article class="legend-card"><strong>扱う範囲</strong><span>あくまで気分転換用の橋かけ遊びで、実務判断や専門助言は扱いません。</span></article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Tips</p><h2>数十秒で切り替えるコツ</h2></div>
+        <ol class="tips-list">
+          <li>中央の 4 は上下左右の候補を見ながら、どこか1本は二重橋になる前提で考えると進みます。</li>
+          <li>この盤面は候補線が 7 本だけなので、1手オートを数回押すだけでも完成形を確認できます。</li>
+          <li>扱うのは朝の軽い段取りの比喩だけで、法務、税務、許認可などの判断はこのページの対象外です。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><p class="section-label">Boundary</p><h2>権威領域には踏み込みません</h2></div>
+        <p class="game-copy">このページは娯楽用のミニゲームです。法務、税務、許認可、契約、労務、行政提出、医療、投資判断などの助言や判断は扱いません。</p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const nodes = [
+          { x: 180, y: 160, target: 2, label: "返信" },
+          { x: 360, y: 160, target: 4, label: "共有" },
+          { x: 540, y: 160, target: 2, label: "確認" },
+          { x: 180, y: 320, target: 2, label: "下書き" },
+          { x: 360, y: 320, target: 4, label: "見直し" },
+          { x: 540, y: 320, target: 2, label: "発信" }
+        ];
+        const edges = [
+          { from: 0, to: 1 },
+          { from: 1, to: 2 },
+          { from: 3, to: 4 },
+          { from: 4, to: 5 },
+          { from: 0, to: 3 },
+          { from: 1, to: 4 },
+          { from: 2, to: 5 }
+        ];
+        const solution = [1, 1, 1, 1, 1, 2, 1];
+        const fillOrder = [5, 0, 1, 4, 6, 2, 3, 5];
+        const canvas = document.getElementById("bridgeCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const remainingText = document.getElementById("remainingText");
+        const islandText = document.getElementById("islandText");
+        const doubleText = document.getElementById("doubleText");
+        const messageText = document.getElementById("messageText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const autoBtn = document.getElementById("autoBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const state = { mode: "ready", edgeCounts: [], selectedEdge: 0, message: "開始で盤面を初期化します。" };
+
+        function createEdgeCounts() { return Array(edges.length).fill(0); }
+        function resetGame(mode = "ready") {
+          state.mode = mode;
+          state.edgeCounts = createEdgeCounts();
+          state.selectedEdge = 0;
+          state.message = mode === "ready" ? "開始で盤面を初期化します。" : "候補線を選んで橋本数を切り替えてください。";
+          render();
+        }
+        function analyzeBoard() {
+          const nodeCounts = Array(nodes.length).fill(0);
+          let remaining = 0;
+          let extras = 0;
+          let doubleBridges = 0;
+          for (let index = 0; index < edges.length; index += 1) {
+            const count = state.edgeCounts[index];
+            const target = solution[index];
+            const edge = edges[index];
+            nodeCounts[edge.from] += count;
+            nodeCounts[edge.to] += count;
+            if (count < target) remaining += target - count;
+            if (count > target) extras += count - target;
+            if (count === 2) doubleBridges += 1;
+          }
+          const matchedIslands = nodeCounts.filter((count, index) => count === nodes[index].target).length;
+          const connected = isConnected();
+          return { nodeCounts, remaining, extras, matchedIslands, doubleBridges, connected, solved: remaining === 0 && extras === 0 && matchedIslands === nodes.length && connected };
+        }
+        function isConnected() {
+          const graph = Array.from({ length: nodes.length }, () => []);
+          for (let index = 0; index < edges.length; index += 1) {
+            if (state.edgeCounts[index] === 0) continue;
+            const edge = edges[index];
+            graph[edge.from].push(edge.to);
+            graph[edge.to].push(edge.from);
+          }
+          const seen = new Set([0]);
+          const queue = [0];
+          while (queue.length) {
+            const current = queue.shift();
+            for (const next of graph[current]) {
+              if (seen.has(next)) continue;
+              seen.add(next);
+              queue.push(next);
+            }
+          }
+          return seen.size === nodes.length;
+        }
+        function updateStateText(analysis) {
+          remainingText.textContent = String(analysis.remaining);
+          islandText.textContent = `${analysis.matchedIslands} / 6`;
+          doubleText.textContent = String(analysis.doubleBridges);
+          if (state.mode === "ready") {
+            statusText.textContent = "開始待ち";
+            hintText.textContent = "中央2島は 4 本ずつ必要なので、二重橋の置き場を先に見ると早いです。";
+            return;
+          }
+          if (analysis.solved) {
+            state.mode = "cleared";
+            statusText.textContent = "完成";
+            state.message = "6つの島が数字どおりにつながりました。";
+            hintText.textContent = "全島一致かつ1グループで完成です。";
+            return;
+          }
+          state.mode = "playing";
+          if (analysis.extras > 0) {
+            statusText.textContent = "見直し中";
+            hintText.textContent = `多すぎる橋が ${analysis.extras} 本あります。`;
+          } else if (!analysis.connected && analysis.matchedIslands >= 4) {
+            statusText.textContent = "接続確認";
+            hintText.textContent = "数字が合っても、島はひとつながりである必要があります。";
+          } else {
+            statusText.textContent = "進行中";
+            hintText.textContent = `残り ${analysis.remaining} 本で完成です。`;
+          }
+        }
+        function selectEdge(index) {
+          state.selectedEdge = (index + edges.length) % edges.length;
+          render();
+        }
+        function moveSelection(step) { selectEdge(state.selectedEdge + step); }
+        function setEdgeValue(index, value) {
+          if (state.mode === "ready") state.mode = "playing";
+          if (state.mode === "cleared") return false;
+          state.edgeCounts[index] = Math.max(0, Math.min(2, value));
+          state.selectedEdge = index;
+          const edge = edges[index];
+          state.message = `${nodes[edge.from].label}と${nodes[edge.to].label}の橋を ${state.edgeCounts[index]} 本にしました。`;
+          render();
+          return true;
+        }
+        function cycleSelectedEdge() {
+          const next = (state.edgeCounts[state.selectedEdge] + 1) % 3;
+          return setEdgeValue(state.selectedEdge, next);
+        }
+        function autoFillOne() {
+          if (state.mode === "ready") startGame();
+          for (const edgeIndex of fillOrder) {
+            if (state.edgeCounts[edgeIndex] < solution[edgeIndex]) {
+              setEdgeValue(edgeIndex, state.edgeCounts[edgeIndex] + 1);
+              return true;
+            }
+          }
+          state.message = "正解の橋はすでにすべて入っています。";
+          render();
+          return false;
+        }
+        function startGame() { resetGame("playing"); }
+        function drawBridge(fromNode, toNode, count, selected) {
+          const horizontal = fromNode.y === toNode.y;
+          const offset = count === 2 ? 8 : 0;
+          const lines = count === 0 ? 1 : count;
+          for (let line = 0; line < lines; line += 1) {
+            let startX = fromNode.x;
+            let startY = fromNode.y;
+            let endX = toNode.x;
+            let endY = toNode.y;
+            if (horizontal) {
+              startX += 34;
+              endX -= 34;
+              startY += line === 0 ? -offset : offset;
+              endY += line === 0 ? -offset : offset;
+            } else {
+              startY += 34;
+              endY -= 34;
+              startX += line === 0 ? -offset : offset;
+              endX += line === 0 ? -offset : offset;
+            }
+            ctx.strokeStyle = count === 0 ? "#cbd5e1" : selected ? "#f59e0b" : "#2563eb";
+            ctx.lineWidth = count === 0 ? (selected ? 4 : 2) : (selected ? 6 : 5);
+            if (count === 0) ctx.setLineDash([8, 8]);
+            else ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
+        }
+        function drawBoard(analysis) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          sky.addColorStop(0, "#f8fbff");
+          sky.addColorStop(1, "#eef6ff");
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("朝の橋かけ6", 48, 58);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("単橋・二重橋を切り替えて、6つの島をひとつながりにする橋かけパズル", 48, 84);
+
+          for (let index = 0; index < edges.length; index += 1) {
+            const edge = edges[index];
+            drawBridge(nodes[edge.from], nodes[edge.to], state.edgeCounts[index], index === state.selectedEdge);
+          }
+
+          for (let index = 0; index < nodes.length; index += 1) {
+            const node = nodes[index];
+            const matched = analysis.nodeCounts[index] === node.target;
+            ctx.fillStyle = matched ? "#dbeafe" : "#ffffff";
+            ctx.strokeStyle = matched ? "#15803d" : "#94a3b8";
+            ctx.lineWidth = matched ? 4 : 2;
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 34, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "700 24px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(String(node.target), node.x, node.y - 2);
+            ctx.font = "12px sans-serif";
+            ctx.fillStyle = "#475569";
+            ctx.fillText(node.label, node.x, node.y + 50);
+          }
+
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 16px sans-serif";
+          ctx.fillText("見方: 数字は総橋本数 / 候補線は 0 → 1 → 2 本 / 全島が1グループで完成", 48, 398);
+          ctx.fillStyle = "#475569";
+          ctx.font = "14px sans-serif";
+          ctx.fillText("render_game_to_text: origin top-left / x→right / y→down", 48, 426);
+        }
+        function render() {
+          const analysis = analyzeBoard();
+          updateStateText(analysis);
+          messageText.textContent = state.message;
+          drawBoard(analysis);
+        }
+        function renderGameToText() {
+          const analysis = analyzeBoard();
+          return JSON.stringify({
+            mode: state.mode,
+            selectedEdge: state.selectedEdge,
+            edges: state.edgeCounts,
+            nodeCounts: analysis.nodeCounts,
+            targets: nodes.map((node) => node.target),
+            remaining: analysis.remaining,
+            extras: analysis.extras,
+            matchedIslands: analysis.matchedIslands,
+            connected: analysis.connected,
+            coordinateSystem: "origin top-left, x right, y down"
+          });
+        }
+        function advanceTime() { render(); }
+        function distanceToSegment(px, py, x1, y1, x2, y2) {
+          const dx = x2 - x1;
+          const dy = y2 - y1;
+          const lengthSquared = dx * dx + dy * dy;
+          if (!lengthSquared) return Math.hypot(px - x1, py - y1);
+          let t = ((px - x1) * dx + (py - y1) * dy) / lengthSquared;
+          t = Math.max(0, Math.min(1, t));
+          const x = x1 + t * dx;
+          const y = y1 + t * dy;
+          return Math.hypot(px - x, py - y);
+        }
+        function handleCanvasClick(event) {
+          if (state.mode === "ready") startGame();
+          const rect = canvas.getBoundingClientRect();
+          const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+          const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+          let bestIndex = -1;
+          let bestDistance = 20;
+          for (let index = 0; index < edges.length; index += 1) {
+            const edge = edges[index];
+            const fromNode = nodes[edge.from];
+            const toNode = nodes[edge.to];
+            const horizontal = fromNode.y === toNode.y;
+            const startX = horizontal ? fromNode.x + 34 : fromNode.x;
+            const startY = horizontal ? fromNode.y : fromNode.y + 34;
+            const endX = horizontal ? toNode.x - 34 : toNode.x;
+            const endY = horizontal ? toNode.y : toNode.y - 34;
+            const distance = distanceToSegment(x, y, startX, startY, endX, endY);
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              bestIndex = index;
+            }
+          }
+          if (bestIndex >= 0) {
+            if (bestIndex === state.selectedEdge) cycleSelectedEdge();
+            else selectEdge(bestIndex);
+            canvas.focus();
+          }
+        }
+        function toggleFullscreen() {
+          if (document.fullscreenElement) { document.exitFullscreen(); return; }
+          document.documentElement.requestFullscreen?.();
+        }
+        startBtn.addEventListener("click", startGame);
+        autoBtn.addEventListener("click", autoFillOne);
+        resetBtn.addEventListener("click", () => resetGame("playing"));
+        canvas.addEventListener("click", handleCanvasClick);
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "f" || event.key === "F") { event.preventDefault(); toggleFullscreen(); return; }
+          if (event.key === "Escape" && document.fullscreenElement) { document.exitFullscreen(); return; }
+          if (state.mode === "ready" && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); startGame(); return; }
+          if (event.key === "ArrowUp" || event.key === "ArrowLeft") { event.preventDefault(); moveSelection(-1); }
+          else if (event.key === "ArrowDown" || event.key === "ArrowRight") { event.preventDefault(); moveSelection(1); }
+          else if (event.key === " " || event.key === "Enter") { event.preventDefault(); cycleSelectedEdge(); }
+          else if (event.key === "a" || event.key === "A") { event.preventDefault(); autoFillOne(); }
+          else if (event.key === "r" || event.key === "R") { event.preventDefault(); resetGame("playing"); }
+          else if (event.key === "0" || event.key === "Backspace" || event.key === "Delete") { event.preventDefault(); setEdgeValue(state.selectedEdge, 0); }
+          else if (event.key === "1") { event.preventDefault(); setEdgeValue(state.selectedEdge, 1); }
+          else if (event.key === "2") { event.preventDefault(); setEdgeValue(state.selectedEdge, 2); }
+        });
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = advanceTime;
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.selectEdge = selectEdge;
+        window.cycleSelectedEdge = cycleSelectedEdge;
+        window.setEdgeValue = setEdgeValue;
+        window.autoFillOne = autoFillOne;
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>

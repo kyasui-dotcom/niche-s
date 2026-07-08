@@ -1,5 +1,18 @@
 Original prompt: Create a small game for entrepreneurs with minimal scope on niche-s.com. However, never invade other authorities.
 
+## 2026-07-08
+
+- Added `business-procedures/morning-bridge-links.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の橋かけ6" - a minimal Hashi / bridge-link puzzle where entrepreneurs only touch light morning-flow metaphors such as `返信` `共有` `確認` `下書き` `見直し` `発信`.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, permit, contract, labor, administrative, medical, or investment judgments.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `selectEdge`, `cycleSelectedEdge`, `setEdgeValue`, and `autoFillOne` hooks for automated validation.
+- Verified local HTTP 200 for `/business-procedures/morning-bridge-links.html`.
+- Verified with the shared Playwright client that the deterministic `Enter -> A x8` path reaches `mode: "cleared"` with `edges: [1,1,1,1,1,2,1]`, `matchedIslands: 6`, `remaining: 0`, `extras: 0`, and `connected: true`.
+- Verified the generated gameplay screenshot; the 6-island board, single/double bridges, and footer guidance remain legible on desktop.
+- Deployed with `npx wrangler deploy`; live HTTP 200 confirmed on `https://niche-s.com/business-procedures/morning-bridge-links.html` and `https://niche-s.yasuikunihiro.workers.dev/business-procedures/morning-bridge-links.html`.
+- TODO: avoid reusing Hashi / bridge-link logic-puzzle formats on the next run.
+
 ## 2026-07-07
 
 - Added `business-procedures/morning-kakurasu.html` and mirrored it under `public/business-procedures/`.
