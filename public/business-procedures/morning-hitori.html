@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>朝の4x4ひとり塗り | 起業家向けミニゲーム</title>
+    <title>今日いっしょに行きたい4x4ひとり塗り | 親子向けミニゲーム</title>
     <meta
       name="description"
-      content="重複数字を黒マスにして消していく、4x4 の小さな Hitori 風パズルです。扱うのは返信や見直しの軽い比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+      content="重複数字を黒マスにして消していく、4x4 の小さな Hitori 風パズルです。数字は親が今日子どもと行きたくなるおでかけの良さに置き換えており、気軽に親子時間を想像しながら遊べます。"
     />
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#0f172a" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="事業手続きナビ" />
-    <meta property="og:title" content="朝の4x4ひとり塗り | 起業家向けミニゲーム" />
-    <meta property="og:description" content="重複数字を消して整える、4x4 の小さなクラシック寄り塗り分けパズルです。" />
+    <meta property="og:title" content="今日いっしょに行きたい4x4ひとり塗り | 親子向けミニゲーム" />
+    <meta property="og:description" content="親子で今日行きたくなる気分を重ねながら遊ぶ、4x4 の小さな塗り分けパズルです。" />
     <meta property="og:url" content="https://niche-s.com/business-procedures/morning-hitori.html" />
     <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -104,28 +104,29 @@
         <a href="../">Niche-s</a>
         <span>/</span>
         <a href="./">事業手続きナビ</a>
-        <span>/ 朝の4x4ひとり塗り</span>
+        <span>/ 今日いっしょに行きたい4x4ひとり塗り</span>
       </nav>
 
       <section class="hero card game-hero">
         <p class="eyebrow">Mini game</p>
-        <h1>朝の4x4ひとり塗り</h1>
+        <h1>今日いっしょに行きたい4x4ひとり塗り</h1>
         <p class="lede">
           重複している数字だけを黒マスにして消していく、4x4 の小さな Hitori 風パズルです。
-          題材は返信、見直し、共有、発信の軽い比喩に限り、法務、税務、許認可、契約、労務、行政提出など他領域の判断には踏み込みません。
+          数字は、親が「今日このまま子どもと寄ってみたい」と思えるおでかけ時間の良さに置き換えています。
+          解きながら、声をかけやすさ、反応の見やすさ、休みやすさ、見通しのよさを軽く想像できる内容です。
         </p>
         <div class="hero-actions">
-          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
-          <a class="button ghost" href="./morning-skyscrapers.html">4x4ビル数えも見る</a>
+          <a class="button ghost" href="./startup-launch-kit.html">一覧へ戻る</a>
+          <a class="button ghost" href="./morning-skyscrapers.html">別の4x4パズルも見る</a>
         </div>
       </section>
 
       <section class="card">
         <div class="section-head">
           <p class="section-label">Play</p>
-          <h2>重複数字を消しながら白マスをつなげる</h2>
+          <h2>今日行きたい気分を重ねながら盤面を整える</h2>
           <p class="section-copy">
-            同じ行と列で同じ数字が白マスのまま重ならないようにします。黒マスどうしは上下左右で接せず、白マスは1つながりのまま残せばクリアです。
+            同じ行と列で同じ数字が白マスのまま重ならないようにします。黒マスどうしは上下左右で接せず、白マスは1つながりのまま残せばクリアです。短く遊びながら、親子で出かけやすい空気を想像するための軽い読み物にもしています。
           </p>
         </div>
         <div class="game-shell">
@@ -134,27 +135,27 @@
           </div>
           <aside class="game-panel" aria-label="game status">
             <div class="game-stat">
-              <span>状態</span>
+              <span>いまの気分</span>
               <strong id="statusText">開始待ち</strong>
             </div>
             <div class="game-stat">
-              <span>残り正解マス</span>
+              <span>あと少しの数</span>
               <strong id="remainingText">3</strong>
             </div>
             <div class="game-stat">
-              <span>違反</span>
+              <span>見直しポイント</span>
               <strong id="warningText">なし</strong>
             </div>
             <div class="game-controls">
-              <button id="startBtn" class="button primary" type="button">開始</button>
-              <button id="toggleBtn" class="button ghost" type="button">選択マスを黒/白</button>
+              <button id="startBtn" class="button primary" type="button">あそぶ</button>
+              <button id="toggleBtn" class="button ghost" type="button">えらんだマスを切替</button>
               <button id="autoBtn" class="button ghost" type="button">1手オート</button>
-              <button id="resetBtn" class="button ghost" type="button">やり直し</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
             </div>
-            <p class="game-note">操作: クリック / 矢印で移動 / Space または Enter で黒白切替 / A で1手オート / R でやり直し / F でフルスクリーン</p>
+            <p class="game-note">操作: クリック / 矢印で移動 / Space または Enter で黒白切替 / A で1手オート / R で最初から / F でフルスクリーン</p>
             <div class="tip-box">
-              <strong>最初の見方</strong>
-              <p id="tipText">右上の 2 と最下段の重複に注目すると、3マスだけで盤面が整います。</p>
+              <strong>今日の寄り道ヒント</strong>
+              <p id="tipText">右上の 2 と最下段の重複に注目すると、3マスだけで盤面が整います。短時間で「今日はここなら行けそう」と感じる流れに寄せています。</p>
             </div>
           </aside>
         </div>
@@ -163,24 +164,24 @@
       <section class="card">
         <div class="section-head">
           <p class="section-label">Legend</p>
-          <h2>数字の見立て</h2>
+          <h2>親が今日子どもと行きたくなるポイント</h2>
         </div>
         <div class="legend-list">
           <article class="legend-item">
-            <strong>1 = 返信</strong>
-            <span>軽く返す枠</span>
+            <strong>1 = 声に出しやすい</strong>
+            <span>「ここ行ってみようか」と自然に声をかけやすい</span>
           </article>
           <article class="legend-item">
-            <strong>2 = 見直し</strong>
-            <span>確認し直す枠</span>
+            <strong>2 = 反応を見やすい</strong>
+            <span>子どもが乗っているかをすぐ感じ取りやすい</span>
           </article>
           <article class="legend-item">
-            <strong>3 = 共有</strong>
-            <span>渡す枠</span>
+            <strong>3 = 途中で区切りやすい</strong>
+            <span>疲れる前に切り上げやすく今日でも動きやすい</span>
           </article>
           <article class="legend-item">
-            <strong>4 = 発信</strong>
-            <span>出す枠</span>
+            <strong>4 = 見通しが立つ</strong>
+            <span>親が段取りを想像しやすく出発の迷いが減る</span>
           </article>
         </div>
       </section>
@@ -188,22 +189,22 @@
       <section class="card">
         <div class="section-head">
           <p class="section-label">Tips</p>
-          <h2>短く解くコツ</h2>
+          <h2>読みながら気分が上がる見方</h2>
         </div>
         <ol class="tips-list">
           <li>同じ行や列に2回出てくる数字のうち、どちらを黒にすると他の重複が同時に消えるかを見ると早いです。</li>
-          <li>黒マスを並べすぎるとそこで詰むので、上下左右の接触だけ先に避けます。</li>
-          <li>扱うのは軽い朝タスクの比喩だけで、実務判断や助言の代わりにはしません。</li>
+          <li>「声をかけやすい」「反応を見やすい」が残る形を想像すると、今日動く気分に寄せやすくなります。</li>
+          <li>あくまで親子のおでかけ気分を軽く膨らませる読み物で、実際の案内や判断を置き換えるものではありません。</li>
         </ol>
       </section>
 
       <section class="card">
         <div class="section-head">
-          <p class="section-label">Boundary</p>
-          <h2>他領域の助言はしません</h2>
+          <p class="section-label">Note</p>
+          <h2>今日の親子時間を想像するための小さなページです</h2>
         </div>
         <p class="game-copy">
-          このページは娯楽用のミニゲームです。法務、税務、許認可、行政提出、労務、契約条件など、他の専門領域の判断や助言は扱いません。
+          このページは娯楽用のミニゲームです。親が「今日なら子どもと出かけられそう」と感じる軽い言葉を置いているだけで、実際の施設案内、営業情報、予約可否、専門的な助言を示すものではありません。
         </p>
       </section>
     </main>
@@ -218,10 +219,10 @@
         ];
         const solutionKeys = new Set(["0-3", "3-1", "3-3"]);
         const labelMap = {
-          1: "返信",
-          2: "見直し",
-          3: "共有",
-          4: "発信",
+          1: "声に出しやすい",
+          2: "反応を見やすい",
+          3: "途中で区切りやすい",
+          4: "見通しが立つ",
         };
 
         const statusText = document.getElementById("statusText");
@@ -389,10 +390,10 @@
 
           ctx.fillStyle = "#0f172a";
           ctx.font = "700 30px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
-          ctx.fillText("4x4 ひとり塗り", 48, 54);
+          ctx.fillText("4x4 おでかけひとり塗り", 48, 54);
           ctx.font = "500 16px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
           ctx.fillStyle = "#475569";
-          ctx.fillText("重複数字を消し、白マスをつなげたまま整えます。", 48, 82);
+          ctx.fillText("今日いっしょに行きたい気分を重ねながら整えます。", 48, 82);
 
           const boardX = 84;
           const boardY = 110;
@@ -431,12 +432,12 @@
           ctx.textAlign = "left";
           ctx.fillStyle = "#0f172a";
           ctx.font = "700 18px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
-          ctx.fillText("盤面メモ", 436, 154);
+          ctx.fillText("親目線メモ", 436, 154);
           ctx.font = "500 14px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
           ctx.fillStyle = "#475569";
-          ctx.fillText("黒マス同士は接触不可", 436, 184);
-          ctx.fillText("白マスは1つながり維持", 436, 208);
-          ctx.fillText("同じ行列の重複数字を消す", 436, 232);
+          ctx.fillText("無理なく動ける雰囲気を残す", 436, 184);
+          ctx.fillText("親子でつながる気分を維持", 436, 208);
+          ctx.fillText("重なりすぎた迷いを減らす", 436, 232);
 
           ctx.fillStyle = "#0f172a";
           ctx.font = "700 16px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
@@ -453,7 +454,7 @@
             ctx.font = "800 34px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
             ctx.fillText("クリア", canvas.width / 2, canvas.height / 2 - 8);
             ctx.font = "500 18px Inter, 'Hiragino Sans', 'Noto Sans JP', sans-serif";
-            ctx.fillText("重複なし・黒接触なし・白マス連結を達成しました。", canvas.width / 2, canvas.height / 2 + 28);
+          ctx.fillText("今日なら行けそう、と思える軽さまで整いました。", canvas.width / 2, canvas.height / 2 + 28);
             ctx.textAlign = "left";
           }
         }
@@ -467,16 +468,16 @@
 
           if (state.mode === "ready") {
             statusText.textContent = "開始待ち";
-            tipText.textContent = "右上の 2 と最下段の重複に注目すると、3マスだけで盤面が整います。";
+            tipText.textContent = "右上の 2 と最下段の重複に注目すると、3マスだけで盤面が整います。今日でも動けそうな軽さを先に残す見方です。";
           } else if (state.mode === "cleared") {
             statusText.textContent = "盤面クリア";
-            tipText.textContent = "白マスの連結を崩さず、3マスだけ黒にして整いました。";
+            tipText.textContent = "白マスの連結を崩さず、3マスだけ黒にして整いました。親子で出かける想像がすっと残る形です。";
           } else if (analysis.duplicateKeys.size || analysis.adjacentShadePairs || analysis.whiteGroupCount > 1 || analysis.wrongShadeKeys.size) {
             statusText.textContent = "違反を調整中";
-            tipText.textContent = "重複、黒マス接触、白マス分断のどれかが残っています。";
+            tipText.textContent = "迷いがまだ重なっています。親が今日動けそうと思える軽さを残す方向で見直します。";
           } else {
             statusText.textContent = "あと少し";
-            tipText.textContent = "ルール違反は消えています。残る正解マスを埋めれば完成です。";
+            tipText.textContent = "引っかかりは減っています。あと少しで今日行きたくなる気分にまとまります。";
           }
         }
 
