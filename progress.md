@@ -1,5 +1,16 @@
 Original prompt: Create a small game for entrepreneurs with minimal scope on niche-s.com. However, never invade other authorities.
 
+## 2026-07-11
+
+- Added `business-procedures/morning-akari.html` and mirrored it under `public/business-procedures/`.
+- Game concept: "朝の4x4アカリ" - a minimal 4x4 Akari / Light Up style puzzle where entrepreneurs only touch lightweight morning-task metaphors.
+- Kept the authority boundary explicit: the page states it does not handle legal, tax, labor, contract, permit, administrative, medical, or investment judgments.
+- Updated both business procedure hub copies, both startup launch kit mini-game sections, and both sitemap copies so the new page is discoverable.
+- Added `render_game_to_text`, `advanceTime`, `startGame`, `resetGame`, `moveSelection`, `toggleLamp`, `setLamp`, `autoFillOne`, and `getState` hooks for automated validation.
+- Verified local browser behavior with Playwright against a temporary static server: deterministic `Start -> autoFillOne x5` reaches `mode: "cleared"` with `lamps: [2,4,7,9,14]`, `lit: 11`, `conflicts: []`, and `satisfiedNumbers: 2`.
+- Verified the generated desktop screenshot; the board, lamp markers, side stats, and authority-boundary copy remain legible.
+- TODO: avoid reusing Akari / Light Up illumination puzzle formats on the next run.
+
 ## 2026-07-08
 
 - Added `business-procedures/morning-bridge-links.html` and mirrored it under `public/business-procedures/`.

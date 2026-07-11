@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の4x4アカリ | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="4x4 盤面に灯りを置いて全マスを照らす、起業家向けの小さなアカリ風パズル。扱うのは返信や見直しのような軽い朝タスクの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の4x4アカリ | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="灯りを置いて 4x4 の盤面を照らし切るだけで遊べる、起業家向けの最小スコープなアカリ風パズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-akari.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-akari.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #akariCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .guide-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .guide-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の4x4アカリ</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の4x4アカリ</h1>
+        <p class="lede">
+          4x4 の小さな盤面に灯りを置いて、白マスを全部照らすだけのアカリ風パズルです。
+          題材は返信、見直し、共有のような軽い朝タスクの比喩だけで、法務、税務、労務、契約、許認可、行政手続きの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-focus-nonogram.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>灯りを置いて全部照らす</h2>
+          <p class="section-copy">
+            白マスに灯りを置くと上下左右へ光が伸びます。黒マスの数字は、隣り合う 4 マスに置く灯りの数です。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="akariCanvas" width="720" height="450" aria-label="朝の4x4アカリの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>灯り</span>
+                <strong id="lampText">0 / 5</strong>
+              </div>
+              <div class="score-chip">
+                <span>点灯</span>
+                <strong id="litText">0 / 11</strong>
+              </div>
+              <div class="score-chip">
+                <span>競合</span>
+                <strong id="conflictText">0</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>数字壁</span>
+                <strong id="numberText">0 / 2</strong>
+              </div>
+              <div class="score-chip">
+                <span>選択</span>
+                <strong id="selectedText">1,1</strong>
+              </div>
+              <div class="score-chip">
+                <span>ヒント</span>
+                <strong id="hintText">-</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="hintBtn" class="button ghost" type="button">1手ヒント</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <div class="guide-card">
+              <p class="section-label">ルール</p>
+              <ol class="guide-list">
+                <li>白マスに灯りを置き、全白マスを 1 回以上照らします。</li>
+                <li>灯りどうしが黒マスなしで一直線に見えてはいけません。</li>
+                <li>数字つき黒マスは、上下左右の灯り数が数字どおりなら達成です。</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: 矢印で移動 / Enter または Space で灯り切替 / H=1手ヒント / R=最初から / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>数十秒で切り替えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>数字つき黒マスのまわりから置き始めると、候補を早く減らせます。</li>
+          <li>遠くまで光る列を先に見ると、灯り同士の競合を避けやすいです。</li>
+          <li>これは気分転換用のミニゲームで、実務判断や専門助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝タスクを照らす比喩だけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、労務、契約、許認可、行政提出などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const SIZE = 4;
+        const BOARD = [
+          { type: "empty" },
+          { type: "wall", number: 1 },
+          { type: "empty" },
+          { type: "wall" },
+          { type: "empty" },
+          { type: "wall" },
+          { type: "empty" },
+          { type: "empty" },
+          { type: "empty" },
+          { type: "empty" },
+          { type: "wall", number: 2 },
+          { type: "empty" },
+          { type: "wall" },
+          { type: "empty" },
+          { type: "empty" },
+          { type: "empty" },
+        ];
+        const SOLUTION = [2, 4, 7, 9, 14];
+
+        const canvas = document.getElementById("akariCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const lampText = document.getElementById("lampText");
+        const litText = document.getElementById("litText");
+        const conflictText = document.getElementById("conflictText");
+        const numberText = document.getElementById("numberText");
+        const selectedText = document.getElementById("selectedText");
+        const hintText = document.getElementById("hintText");
+        const startBtn = document.getElementById("startBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const whiteCells = BOARD.map((cell, index) => ({ cell, index }))
+          .filter(({ cell }) => cell.type === "empty")
+          .map(({ index }) => index);
+        const numberedWalls = BOARD.filter((cell) => typeof cell.number === "number").length;
+
+        const state = {
+          mode: "ready",
+          lamps: new Set(),
+          lit: new Set(),
+          conflicts: new Set(),
+          satisfiedNumbers: 0,
+          status: "開始待ち",
+          selected: whiteCells[0],
+          lastHint: "-",
+        };
+
+        function rowOf(index) {
+          return Math.floor(index / SIZE);
+        }
+
+        function colOf(index) {
+          return index % SIZE;
+        }
+
+        function isWhite(index) {
+          return BOARD[index]?.type === "empty";
+        }
+
+        function getCellRect(index) {
+          const boardSize = 320;
+          const cellSize = boardSize / SIZE;
+          const originX = (canvas.width - boardSize) / 2;
+          const originY = 74;
+          const row = rowOf(index);
+          const col = colOf(index);
+          return {
+            x: originX + col * cellSize,
+            y: originY + row * cellSize,
+            size: cellSize,
+          };
+        }
+
+        function getAdjacent(index) {
+          const row = rowOf(index);
+          const col = colOf(index);
+          const result = [];
+          if (row > 0) result.push(index - SIZE);
+          if (row < SIZE - 1) result.push(index + SIZE);
+          if (col > 0) result.push(index - 1);
+          if (col < SIZE - 1) result.push(index + 1);
+          return result;
+        }
+
+        function trace(index, stepRow, stepCol) {
+          const seen = [];
+          let row = rowOf(index) + stepRow;
+          let col = colOf(index) + stepCol;
+          while (row >= 0 && row < SIZE && col >= 0 && col < SIZE) {
+            const nextIndex = row * SIZE + col;
+            if (!isWhite(nextIndex)) break;
+            seen.push(nextIndex);
+            row += stepRow;
+            col += stepCol;
+          }
+          return seen;
+        }
+
+        function recalc() {
+          const lit = new Set();
+          const conflicts = new Set();
+
+          for (const lamp of state.lamps) {
+            lit.add(lamp);
+            const rays = [
+              trace(lamp, -1, 0),
+              trace(lamp, 1, 0),
+              trace(lamp, 0, -1),
+              trace(lamp, 0, 1),
+            ];
+            for (const ray of rays) {
+              for (const target of ray) {
+                lit.add(target);
+                if (state.lamps.has(target)) {
+                  conflicts.add(lamp);
+                  conflicts.add(target);
+                }
+              }
+            }
+          }
+
+          let satisfiedNumbers = 0;
+          for (let index = 0; index < BOARD.length; index += 1) {
+            const cell = BOARD[index];
+            if (typeof cell.number !== "number") continue;
+            const count = getAdjacent(index).filter((adjacent) => state.lamps.has(adjacent)).length;
+            if (count === cell.number) satisfiedNumbers += 1;
+          }
+
+          state.lit = lit;
+          state.conflicts = conflicts;
+          state.satisfiedNumbers = satisfiedNumbers;
+
+          const cleared =
+            whiteCells.every((index) => lit.has(index)) &&
+            conflicts.size === 0 &&
+            satisfiedNumbers === numberedWalls;
+
+          if (cleared) {
+            state.mode = "cleared";
+            state.status = "クリア";
+          } else if (state.mode === "ready") {
+            state.status = "開始待ち";
+          } else {
+            state.mode = "playing";
+            state.status = "プレイ中";
+          }
+        }
+
+        function updateDom() {
+          recalc();
+          const selectedRow = rowOf(state.selected) + 1;
+          const selectedCol = colOf(state.selected) + 1;
+          statusText.textContent = state.status;
+          lampText.textContent = `${state.lamps.size} / ${SOLUTION.length}`;
+          litText.textContent = `${state.lit.size} / ${whiteCells.length}`;
+          conflictText.textContent = String(state.conflicts.size);
+          numberText.textContent = `${state.satisfiedNumbers} / ${numberedWalls}`;
+          selectedText.textContent = `${selectedRow},${selectedCol}`;
+          hintText.textContent = state.lastHint;
+          draw();
+        }
+
+        function drawLamp(x, y, radius) {
+          ctx.fillStyle = "#f59e0b";
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "#b45309";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.strokeStyle = "rgba(245, 158, 11, 0.55)";
+          ctx.lineWidth = 3;
+          for (let ray = 0; ray < 8; ray += 1) {
+            const angle = (Math.PI / 4) * ray;
+            ctx.beginPath();
+            ctx.moveTo(x + Math.cos(angle) * (radius + 4), y + Math.sin(angle) * (radius + 4));
+            ctx.lineTo(x + Math.cos(angle) * (radius + 15), y + Math.sin(angle) * (radius + 15));
+            ctx.stroke();
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText("4x4 アカリ", 36, 42);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("軽い朝タスクを照らす感覚だけで遊ぶ、小さなロジックパズル", 36, 64);
+
+          for (let index = 0; index < BOARD.length; index += 1) {
+            const rect = getCellRect(index);
+            const cell = BOARD[index];
+
+            if (cell.type === "wall") {
+              ctx.fillStyle = "#1e293b";
+              ctx.fillRect(rect.x, rect.y, rect.size, rect.size);
+              if (typeof cell.number === "number") {
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "700 34px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(String(cell.number), rect.x + rect.size / 2, rect.y + rect.size / 2);
+              }
+            } else {
+              const isLit = state.lit.has(index);
+              ctx.fillStyle = isLit ? "#fef3c7" : "#ffffff";
+              ctx.fillRect(rect.x, rect.y, rect.size, rect.size);
+              if (state.selected === index) {
+                ctx.strokeStyle = "#2563eb";
+                ctx.lineWidth = 4;
+                ctx.strokeRect(rect.x + 2, rect.y + 2, rect.size - 4, rect.size - 4);
+              }
+              if (state.lamps.has(index)) {
+                drawLamp(rect.x + rect.size / 2, rect.y + rect.size / 2, 16);
+              }
+              if (state.conflicts.has(index)) {
+                ctx.strokeStyle = "#dc2626";
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(rect.x + 14, rect.y + 14);
+                ctx.lineTo(rect.x + rect.size - 14, rect.y + rect.size - 14);
+                ctx.moveTo(rect.x + rect.size - 14, rect.y + 14);
+                ctx.lineTo(rect.x + 14, rect.y + rect.size - 14);
+                ctx.stroke();
+              }
+            }
+
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(rect.x, rect.y, rect.size, rect.size);
+          }
+
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "#334155";
+          ctx.font = "15px sans-serif";
+          ctx.fillText("灯り競合なし / 数字壁一致 / 全マス点灯でクリア", 36, 426);
+
+          if (state.mode === "cleared") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.74)";
+            ctx.fillRect(190, 180, 340, 92);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 32px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("クリア", 360, 214);
+            ctx.font = "16px sans-serif";
+            ctx.fillText("軽い朝タスクの比喩だけを照らして完了", 360, 246);
+          }
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.status = "プレイ中";
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.lamps = new Set();
+          state.lit = new Set();
+          state.conflicts = new Set();
+          state.satisfiedNumbers = 0;
+          state.status = "開始待ち";
+          state.selected = whiteCells[0];
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function moveSelection(direction) {
+          const delta =
+            direction === "left" ? [0, -1] :
+            direction === "right" ? [0, 1] :
+            direction === "up" ? [-1, 0] :
+            direction === "down" ? [1, 0] :
+            [0, 0];
+          const [rowDelta, colDelta] = delta;
+          let row = rowOf(state.selected);
+          let col = colOf(state.selected);
+
+          for (let step = 0; step < SIZE; step += 1) {
+            row = Math.max(0, Math.min(SIZE - 1, row + rowDelta));
+            col = Math.max(0, Math.min(SIZE - 1, col + colDelta));
+            const nextIndex = row * SIZE + col;
+            if (isWhite(nextIndex)) {
+              state.selected = nextIndex;
+              break;
+            }
+          }
+
+          updateDom();
+          return getState();
+        }
+
+        function toggleLamp(index = state.selected) {
+          if (!isWhite(index)) return getState();
+          if (state.mode === "ready") state.mode = "playing";
+          if (state.lamps.has(index)) {
+            state.lamps.delete(index);
+          } else {
+            state.lamps.add(index);
+          }
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function setLamp(index, on) {
+          if (!isWhite(index)) return getState();
+          if (on) state.lamps.add(index);
+          else state.lamps.delete(index);
+          if (state.mode === "ready") state.mode = "playing";
+          updateDom();
+          return getState();
+        }
+
+        function autoFillOne() {
+          if (state.mode === "ready") state.mode = "playing";
+          const nextLamp = SOLUTION.find((index) => !state.lamps.has(index));
+          if (typeof nextLamp === "number") {
+            state.lamps.add(nextLamp);
+            state.selected = nextLamp;
+            state.lastHint = `${rowOf(nextLamp) + 1},${colOf(nextLamp) + 1}`;
+          } else {
+            state.lastHint = "完了";
+          }
+          updateDom();
+          return getState();
+        }
+
+        function getState() {
+          return {
+            mode: state.mode,
+            status: state.status,
+            selected: state.selected,
+            lamps: [...state.lamps].sort((a, b) => a - b),
+            lit: [...state.lit].sort((a, b) => a - b),
+            conflicts: [...state.conflicts].sort((a, b) => a - b),
+            satisfiedNumbers: state.satisfiedNumbers,
+            lastHint: state.lastHint,
+          };
+        }
+
+        function renderGameToText() {
+          const summary = getState();
+          return [
+            `mode:${summary.mode}`,
+            `status:${summary.status}`,
+            `selected:${summary.selected}`,
+            `lamps:${summary.lamps.join(",") || "-"}`,
+            `lit:${summary.lit.length}`,
+            `conflicts:${summary.conflicts.join(",") || "-"}`,
+            `numbers:${summary.satisfiedNumbers}/${numberedWalls}`,
+          ].join(" | ");
+        }
+
+        function clickCanvas(event) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (event.clientX - rect.left) * scaleX;
+          const y = (event.clientY - rect.top) * scaleY;
+          for (const index of whiteCells) {
+            const cellRect = getCellRect(index);
+            const inside =
+              x >= cellRect.x &&
+              x <= cellRect.x + cellRect.size &&
+              y >= cellRect.y &&
+              y <= cellRect.y + cellRect.size;
+            if (!inside) continue;
+            if (state.selected === index) toggleLamp(index);
+            else {
+              state.selected = index;
+              updateDom();
+            }
+            break;
+          }
+        }
+
+        startBtn.addEventListener("click", startGame);
+        hintBtn.addEventListener("click", autoFillOne);
+        resetBtn.addEventListener("click", resetGame);
+        canvas.addEventListener("click", clickCanvas);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection("left");
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection("right");
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection("up");
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection("down");
+          } else if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleLamp();
+          } else if (event.key === "h" || event.key === "H") {
+            event.preventDefault();
+            autoFillOne();
+          } else if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+          } else if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            if (document.fullscreenElement) document.exitFullscreen();
+            else document.documentElement.requestFullscreen().catch(() => {});
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.toggleLamp = toggleLamp;
+        window.setLamp = setLamp;
+        window.autoFillOne = autoFillOne;
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => getState();
+        window.getState = getState;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
