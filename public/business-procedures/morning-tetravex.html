@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>朝の2x2テトラベックス | 起業家向けミニゲーム</title>
+    <meta
+      name="description"
+      content="2x2 の盤面で数字の辺を合わせるだけの、起業家向けミニ・テトラベックス風パズル。扱うのは返信や見直しのような軽い朝タスクの比喩だけで、法務・税務・許認可など他領域の判断には踏み込みません。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="事業手続きナビ" />
+    <meta property="og:title" content="朝の2x2テトラベックス | 起業家向けミニゲーム" />
+    <meta
+      property="og:description"
+      content="数字の辺をそろえて 2x2 を完成させるだけで遊べる、起業家向けの最小スコープなクラシックパズルです。"
+    />
+    <meta property="og:url" content="https://niche-s.com/business-procedures/morning-tetravex.html" />
+    <meta property="og:image" content="https://niche-s.com/business-procedures/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://niche-s.com/business-procedures/morning-tetravex.html" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .game-page .card,
+      .game-page .button,
+      .game-page .snapshot-links a {
+        border-radius: 8px;
+      }
+      .game-hero {
+        display: grid;
+        gap: 16px;
+      }
+      .game-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+      }
+      .game-stage {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 14px;
+      }
+      #tetravexCanvas {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+      .game-panel {
+        display: grid;
+        gap: 12px;
+      }
+      .game-stat,
+      .guide-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfdff;
+      }
+      .game-stat strong {
+        display: block;
+        color: var(--dark);
+        font-size: 1.2rem;
+      }
+      .score-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .score-chip {
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .score-chip strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .game-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .guide-list,
+      .tips-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .game-copy,
+      .game-note {
+        color: var(--muted);
+      }
+      @media (max-width: 840px) {
+        .game-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body class="game-page">
+    <main class="shell">
+      <nav class="breadcrumb card" aria-label="breadcrumb">
+        <a href="../">Niche-s</a>
+        <span>/</span>
+        <a href="./">事業手続きナビ</a>
+        <span>/ 朝の2x2テトラベックス</span>
+      </nav>
+
+      <section class="hero card game-hero">
+        <p class="eyebrow">Mini game</p>
+        <h1>朝の2x2テトラベックス</h1>
+        <p class="lede">
+          4枚のタイルを入れ替えて、隣り合う辺の数字をそろえるだけの小さなテトラベックス風パズルです。
+          題材は返信、下書き、共有、見直しのような軽い朝タスクの比喩だけで、法務、税務、労務、契約、許認可、行政手続きの判断は扱いません。
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./startup-launch-kit.html">開業強化ハブへ戻る</a>
+          <a class="button ghost" href="./morning-akari.html">別のミニゲームを見る</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Play</p>
+          <h2>辺の数字をそろえて完成</h2>
+          <p class="section-copy">
+            2x2 の盤面でカーソルを動かし、2枚のタイルを選んで入れ替えます。上下左右で接する辺の数字が全部一致すればクリアです。
+          </p>
+        </div>
+        <div class="game-shell">
+          <div class="game-stage">
+            <canvas id="tetravexCanvas" width="720" height="450" aria-label="朝の2x2テトラベックスの盤面"></canvas>
+          </div>
+          <aside class="game-panel" aria-label="game status">
+            <div class="game-stat">
+              <span>状態</span>
+              <strong id="statusText">開始待ち</strong>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>合致辺</span>
+                <strong id="matchText">0 / 4</strong>
+              </div>
+              <div class="score-chip">
+                <span>手数</span>
+                <strong id="movesText">0</strong>
+              </div>
+              <div class="score-chip">
+                <span>選択</span>
+                <strong id="selectedText">1,1</strong>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-chip">
+                <span>確定</span>
+                <strong id="lockedText">なし</strong>
+              </div>
+              <div class="score-chip">
+                <span>ヒント</span>
+                <strong id="hintText">-</strong>
+              </div>
+              <div class="score-chip">
+                <span>配置</span>
+                <strong id="orderText">1-0-3-2</strong>
+              </div>
+            </div>
+            <div class="game-controls">
+              <button id="startBtn" class="button primary" type="button">開始</button>
+              <button id="hintBtn" class="button ghost" type="button">1手ヒント</button>
+              <button id="resetBtn" class="button ghost" type="button">最初から</button>
+            </div>
+            <div class="guide-card">
+              <p class="section-label">ルール</p>
+              <ol class="guide-list">
+                <li>カーソルでマスを選び、Enter か Space で1枚目を確定します。</li>
+                <li>2枚目を選んで Enter か Space を押すと、その2枚が入れ替わります。</li>
+                <li>4本の接辺がすべて一致したら完成です。</li>
+              </ol>
+            </div>
+            <p class="game-note">操作: 矢印で移動 / Enter または Space で選択・入替 / H=1手ヒント / R=最初から / F=フルスクリーン</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Tips</p>
+          <h2>数十秒で整えるコツ</h2>
+        </div>
+        <ol class="tips-list">
+          <li>まず横2本、次に縦2本のどちらかへ注目すると、見るべき辺が減ります。</li>
+          <li>中央ラベルは軽い朝タスクの比喩で、数字一致だけを見れば十分です。</li>
+          <li>これは気分転換用のミニゲームで、実務判断や専門助言の代わりにはしません。</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <p class="section-label">Boundary</p>
+          <h2>扱うのは軽い朝タスクの並べ替えだけ</h2>
+        </div>
+        <p class="game-copy">
+          このページは娯楽用のミニゲームです。法務、税務、労務、契約、許認可、行政提出などの判断や助言は扱いません。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const SIZE = 2;
+        const TILES = [
+          { label: "返信", top: 1, right: 2, bottom: 3, left: 1, color: "#dbeafe" },
+          { label: "下書き", top: 4, right: 6, bottom: 4, left: 2, color: "#dcfce7" },
+          { label: "共有", top: 3, right: 5, bottom: 1, left: 7, color: "#fef3c7" },
+          { label: "見直し", top: 4, right: 8, bottom: 2, left: 5, color: "#fee2e2" },
+        ];
+        const START_ORDER = [1, 0, 3, 2];
+        const SOLUTION = [0, 1, 2, 3];
+
+        const canvas = document.getElementById("tetravexCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusText = document.getElementById("statusText");
+        const matchText = document.getElementById("matchText");
+        const movesText = document.getElementById("movesText");
+        const selectedText = document.getElementById("selectedText");
+        const lockedText = document.getElementById("lockedText");
+        const hintText = document.getElementById("hintText");
+        const orderText = document.getElementById("orderText");
+        const startBtn = document.getElementById("startBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const state = {
+          mode: "ready",
+          order: [...START_ORDER],
+          selected: 0,
+          locked: null,
+          matches: 0,
+          status: "開始待ち",
+          moves: 0,
+          lastHint: "-",
+        };
+
+        function rowOf(index) {
+          return Math.floor(index / SIZE);
+        }
+
+        function colOf(index) {
+          return index % SIZE;
+        }
+
+        function getRect(index) {
+          const boardSize = 300;
+          const cellSize = boardSize / SIZE;
+          const originX = (canvas.width - boardSize) / 2;
+          const originY = 88;
+          const row = rowOf(index);
+          const col = colOf(index);
+          return {
+            x: originX + col * cellSize,
+            y: originY + row * cellSize,
+            size: cellSize,
+          };
+        }
+
+        function tileAt(position) {
+          return TILES[state.order[position]];
+        }
+
+        function countMatches() {
+          let count = 0;
+          if (tileAt(0).right === tileAt(1).left) count += 1;
+          if (tileAt(2).right === tileAt(3).left) count += 1;
+          if (tileAt(0).bottom === tileAt(2).top) count += 1;
+          if (tileAt(1).bottom === tileAt(3).top) count += 1;
+          return count;
+        }
+
+        function recalc() {
+          state.matches = countMatches();
+          const cleared = state.matches === 4;
+          if (cleared) {
+            state.mode = "cleared";
+            state.status = "クリア";
+          } else if (state.mode === "ready") {
+            state.status = "開始待ち";
+          } else {
+            state.mode = "playing";
+            state.status = "プレイ中";
+          }
+        }
+
+        function updateDom() {
+          recalc();
+          statusText.textContent = state.status;
+          matchText.textContent = `${state.matches} / 4`;
+          movesText.textContent = String(state.moves);
+          selectedText.textContent = `${rowOf(state.selected) + 1},${colOf(state.selected) + 1}`;
+          lockedText.textContent =
+            state.locked === null ? "なし" : `${rowOf(state.locked) + 1},${colOf(state.locked) + 1}`;
+          hintText.textContent = state.lastHint;
+          orderText.textContent = state.order.join("-");
+          draw();
+        }
+
+        function drawTile(position) {
+          const tile = tileAt(position);
+          const rect = getRect(position);
+          ctx.fillStyle = tile.color;
+          ctx.fillRect(rect.x, rect.y, rect.size, rect.size);
+
+          if (state.selected === position) {
+            ctx.strokeStyle = "#2563eb";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(rect.x + 3, rect.y + 3, rect.size - 6, rect.size - 6);
+          }
+          if (state.locked === position) {
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(rect.x + 9, rect.y + 9, rect.size - 18, rect.size - 18);
+          }
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 18px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(tile.label, rect.x + rect.size / 2, rect.y + rect.size / 2);
+
+          ctx.font = "700 28px sans-serif";
+          ctx.fillText(String(tile.top), rect.x + rect.size / 2, rect.y + 24);
+          ctx.fillText(String(tile.right), rect.x + rect.size - 24, rect.y + rect.size / 2);
+          ctx.fillText(String(tile.bottom), rect.x + rect.size / 2, rect.y + rect.size - 24);
+          ctx.fillText(String(tile.left), rect.x + 24, rect.y + rect.size / 2);
+
+          ctx.strokeStyle = "#94a3b8";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(rect.x, rect.y, rect.size, rect.size);
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "700 28px sans-serif";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillText("2x2 テトラベックス", 36, 42);
+          ctx.font = "16px sans-serif";
+          ctx.fillStyle = "#475569";
+          ctx.fillText("軽い朝タスクの比喩だけを並べる、小さな辺合わせパズル", 36, 64);
+
+          for (let position = 0; position < SIZE * SIZE; position += 1) {
+            drawTile(position);
+          }
+
+          ctx.fillStyle = "#334155";
+          ctx.font = "15px sans-serif";
+          ctx.fillText("横2本 + 縦2本の接辺が全部そろえばクリア", 36, 426);
+
+          if (state.mode === "cleared") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.74)";
+            ctx.fillRect(190, 184, 340, 88);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "700 32px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("クリア", 360, 214);
+            ctx.font = "16px sans-serif";
+            ctx.fillText("軽い朝タスクの辺合わせだけを整えて完了", 360, 244);
+          }
+        }
+
+        function startGame() {
+          state.mode = "playing";
+          state.status = "プレイ中";
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function resetGame() {
+          state.mode = "ready";
+          state.order = [...START_ORDER];
+          state.selected = 0;
+          state.locked = null;
+          state.matches = 0;
+          state.status = "開始待ち";
+          state.moves = 0;
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function moveSelection(direction) {
+          const row = rowOf(state.selected);
+          const col = colOf(state.selected);
+          if (direction === "left" && col > 0) state.selected -= 1;
+          if (direction === "right" && col < SIZE - 1) state.selected += 1;
+          if (direction === "up" && row > 0) state.selected -= SIZE;
+          if (direction === "down" && row < SIZE - 1) state.selected += SIZE;
+          updateDom();
+          return getState();
+        }
+
+        function swapPositions(a, b) {
+          const next = [...state.order];
+          [next[a], next[b]] = [next[b], next[a]];
+          state.order = next;
+          state.moves += 1;
+        }
+
+        function selectCell(index = state.selected) {
+          if (state.mode === "ready") state.mode = "playing";
+          if (state.locked === null) {
+            state.locked = index;
+          } else if (state.locked === index) {
+            state.locked = null;
+          } else {
+            swapPositions(state.locked, index);
+            state.locked = null;
+          }
+          state.lastHint = "-";
+          updateDom();
+          return getState();
+        }
+
+        function autoPlayOne() {
+          if (state.mode === "ready") state.mode = "playing";
+          const mismatch = state.order.findIndex((tile, index) => tile !== SOLUTION[index]);
+          if (mismatch === -1) {
+            state.lastHint = "完了";
+            updateDom();
+            return getState();
+          }
+          const targetTile = SOLUTION[mismatch];
+          const other = state.order.indexOf(targetTile);
+          swapPositions(mismatch, other);
+          state.selected = other;
+          state.locked = null;
+          state.lastHint = `${rowOf(mismatch) + 1},${colOf(mismatch) + 1}↔${rowOf(other) + 1},${colOf(other) + 1}`;
+          updateDom();
+          return getState();
+        }
+
+        function clickCanvas(event) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (event.clientX - rect.left) * scaleX;
+          const y = (event.clientY - rect.top) * scaleY;
+          for (let position = 0; position < SIZE * SIZE; position += 1) {
+            const tileRect = getRect(position);
+            const inside =
+              x >= tileRect.x &&
+              x <= tileRect.x + tileRect.size &&
+              y >= tileRect.y &&
+              y <= tileRect.y + tileRect.size;
+            if (!inside) continue;
+            state.selected = position;
+            selectCell(position);
+            break;
+          }
+        }
+
+        function getState() {
+          return {
+            mode: state.mode,
+            status: state.status,
+            order: [...state.order],
+            selected: state.selected,
+            locked: state.locked,
+            matches: state.matches,
+            moves: state.moves,
+            lastHint: state.lastHint,
+          };
+        }
+
+        function renderGameToText() {
+          const summary = getState();
+          return [
+            `mode:${summary.mode}`,
+            `status:${summary.status}`,
+            `order:${summary.order.join(",")}`,
+            `matches:${summary.matches}/4`,
+            `moves:${summary.moves}`,
+            `locked:${summary.locked === null ? "-" : summary.locked}`,
+          ].join(" | ");
+        }
+
+        startBtn.addEventListener("click", startGame);
+        hintBtn.addEventListener("click", autoPlayOne);
+        resetBtn.addEventListener("click", resetGame);
+        canvas.addEventListener("click", clickCanvas);
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            moveSelection("left");
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            moveSelection("right");
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveSelection("up");
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveSelection("down");
+          } else if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectCell();
+          } else if (event.key === "h" || event.key === "H") {
+            event.preventDefault();
+            autoPlayOne();
+          } else if (event.key === "r" || event.key === "R") {
+            event.preventDefault();
+            resetGame();
+          } else if (event.key === "f" || event.key === "F") {
+            event.preventDefault();
+            if (document.fullscreenElement) document.exitFullscreen();
+            else document.documentElement.requestFullscreen().catch(() => {});
+          }
+        });
+
+        window.startGame = startGame;
+        window.resetGame = resetGame;
+        window.moveSelection = moveSelection;
+        window.selectCell = selectCell;
+        window.autoPlayOne = autoPlayOne;
+        window.render_game_to_text = renderGameToText;
+        window.advanceTime = () => getState();
+        window.getState = getState;
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
